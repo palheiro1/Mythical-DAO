@@ -21,7 +21,8 @@
     "test:browser": "playwright test",
     "rehearse": "forge build && node scripts/local-rehearsal.mjs",
     "format": "prettier --write src worker shared tests scripts *.json *.ts *.html",
-    "test:recovery": "node scripts/verify-local-recovery.mjs"
+    "test:recovery": "node scripts/verify-local-recovery.mjs",
+    "messages:sync": "node scripts/sync-messages.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.0",

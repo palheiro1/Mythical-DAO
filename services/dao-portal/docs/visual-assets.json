@@ -1,0 +1,41 @@
+[
+  {
+    "file": "public/brand/logo-black.png",
+    "source": "/home/usuario/Documentos/GitHub/wallet/public/images/logos/new/logo_negro.png",
+    "sha256": "77fde0050a4948d05532dbce716f4adcbf163e49d74f33faf27c2af4ac38a816",
+    "modified": false
+  },
+  {
+    "file": "public/brand/logo-white.png",
+    "source": "/home/usuario/Documentos/GitHub/wallet/public/images/logos/new/logo_blanco.png",
+    "sha256": "0599a2d30b3e44e2fde2179d58cc59dd789abfd4348550576b4ba6896800c1ad",
+    "modified": false
+  },
+  {
+    "file": "public/brand/mana.png",
+    "source": "/home/usuario/Documentos/GitHub/wallet/public/images/currency/mana.png",
+    "sha256": "26d002e3f41c1e914da2b0c8832d4d3717c3dc740beb5b43a3c51825fa586c2d",
+    "modified": false
+  },
+  {
+    "file": "public/brand/weth.png",
+    "source": "/home/usuario/Documentos/GitHub/wallet/public/images/currency/weth.png",
+    "sha256": "33752ceaa265daefcbe313fa7d7049030767180981f9b35f628a0f7a3e806793",
+    "modified": false
+  },
+  {
+    "file": "public/brand/polygon.png",
+    "source": "/home/usuario/Documentos/GitHub/wallet/public/images/chains/polygon.png",
+    "sha256": "9146df3f3fb40828811c013047890642a36bcfae325591e704c2f1bbc7cc4cb5",
+    "modified": false
+  },
+  {
+    "file": "public/brand/usdc.svg",
+    "source": "https://www.circle.com/pressroom",
+    "download": "https://6778953.fs1.hubspotusercontent-na1.net/hubfs/6778953/Pressroom/brandkit/logo-downloads/usdc.zip",
+    "archiveEntry": "Token Logo/USDC Token.svg",
+    "sha256": "fe4f9d5f34ef4ebeb5d80e1f5ff63dcaf5a0d5495f4adf206e4c3011d1f5c57d",
+    "modified": false,
+    "note": "Official USDC icon; asset remains explicitly labeled USDC.e (bridged)."
+  }
+]

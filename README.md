@@ -2,6 +2,7 @@
 
 Implementação local do portal independente descrito em [PLAN_MYTHICAL_DAO.md](PLAN_MYTHICAL_DAO.md).
 
+- [Melhoria visual e de experiência: relatório e capturas](services/dao-portal/docs/VISUAL_UX_REVIEW.md)
 - [Portal, contratos e API](services/dao-portal/README.md)
 - [Resultados dos testes e evidência](services/dao-portal/docs/evidence/VALIDATION.md)
 - [Estado de implementação e condições de lançamento](services/dao-portal/docs/IMPLEMENTATION_STATUS.md)

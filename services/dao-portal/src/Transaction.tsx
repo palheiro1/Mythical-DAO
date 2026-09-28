@@ -12,6 +12,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { Action, Health, PortalConfig } from "../shared/domain";
 import { api } from "./api";
 import { actionSummary } from "../shared/action-summary";
+import { m } from "./i18n";
+import { ErrorNotice } from "./ui";
 import { waitForOperation } from "./transaction-receipt";
 export interface TransactionIntent {
   title: string;
@@ -21,6 +23,9 @@ export interface TransactionIntent {
   effect: string;
   details: { label: string; value: string }[];
   actions?: Action[];
+  displayActions?: Action[];
+  validUntil?: number;
+  assertCurrent?: () => void;
 }
 interface BatchSimulation {
   ok: boolean;
@@ -51,7 +56,8 @@ export function TransactionProvider({
     { data: wallet } = useWalletClient(),
     client = usePublicClient({ chainId: config.chainId });
   const queries = useQueryClient(),
-    dialog = useRef<HTMLDialogElement>(null);
+    dialog = useRef<HTMLDialogElement>(null),
+    reviewOrigin = useRef<HTMLElement | null>(null);
   const [acknowledged, setAcknowledged] = useState(false);
   const [review, setReview] = useState<Review | null>(null),
     [status, setStatus] = useState(""),
@@ -61,17 +67,27 @@ export function TransactionProvider({
   useEffect(() => {
     if (review && !dialog.current?.open) dialog.current?.showModal();
   }, [review]);
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    if (!review?.intent.validUntil) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [review]);
   async function prepare(intent: TransactionIntent) {
+    reviewOrigin.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     setError("");
     setHash(undefined);
-    setStatus("Checking current state…");
+    setStatus(m("Checking current state…"));
     setBusy(true);
     try {
       if (!address || chainId !== config.chainId)
-        throw new Error("Connect your wallet to the correct network first.");
+        throw new Error(m("Connect your wallet to the correct network first."));
       const health = await api<Health>("health");
       if (!health.signingAllowed)
-        throw new Error(health.reason ?? "Signing is unavailable.");
+        throw new Error(health.reason ?? m("Signing is unavailable."));
       const batch = intent.actions
         ? await api<BatchSimulation>("simulate-actions", {
             actions: intent.actions,
@@ -86,11 +102,13 @@ export function TransactionProvider({
           value: intent.value ?? "0",
         },
       );
+      intent.assertCurrent?.();
+      setNow(Date.now());
       setAcknowledged(false);
       setReview({ intent, account: address, ...result, batch });
-      setStatus("Review before signing");
+      setStatus(m("Review before signing"));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Simulation failed.");
+      setError(e instanceof Error ? e.message : m("Simulation failed."));
       setStatus("");
     } finally {
       setBusy(false);
@@ -107,16 +125,19 @@ export function TransactionProvider({
         (await wallet.getChainId()) !== config.chainId
       )
         throw new Error(
-          "Wallet or network changed. Review the operation again.",
+          m("Wallet or network changed. Review the operation again."),
         );
-      setStatus("Simulating again before signature…");
+      intent.assertCurrent?.();
+      setStatus(m("Simulating again before signature…"));
       if (intent.actions) {
         const latest = await api<BatchSimulation>("simulate-actions", {
           actions: intent.actions,
         });
         if (!latest.ok && (!acknowledged || review.batch?.ok))
           throw new Error(
-            "Proposed actions are not currently executable. Close this review and review the new simulation result.",
+            m(
+              "Proposed actions are not currently executable. Close this review and review the new simulation result.",
+            ),
           );
       }
       await api("preflight", {
@@ -125,7 +146,16 @@ export function TransactionProvider({
         data: intent.data,
         value: intent.value ?? "0",
       });
-      setStatus("Waiting for wallet signature…");
+      intent.assertCurrent?.();
+      if (
+        (await wallet.getAddresses())[0]?.toLowerCase() !==
+          review.account.toLowerCase() ||
+        (await wallet.getChainId()) !== config.chainId
+      )
+        throw new Error(
+          m("Wallet or network changed. Review the operation again."),
+        );
+      setStatus(m("Waiting for wallet signature…"));
       const sent = await wallet.sendTransaction({
         account: review.account,
         chain: wallet.chain,
@@ -134,26 +164,26 @@ export function TransactionProvider({
         value: BigInt(intent.value ?? "0"),
       });
       setHash(sent);
-      setStatus("Pending · waiting for inclusion");
+      setStatus(m("Pending · waiting for inclusion"));
       await waitForOperation(client, sent, config.confirmations, (progress) => {
         setHash(progress.hash);
         setStatus(
           progress.phase === "included"
-            ? "Included · waiting for " +
+            ? m("Included · waiting for ") +
                 config.confirmations +
-                " confirmations"
-            : "Replaced · checking replacement",
+                m(" confirmations")
+            : m("Replaced · checking replacement"),
         );
         if (progress.phase === "included") void queries.invalidateQueries();
       });
-      setStatus("Confirmed · operation completed");
+      setStatus(m("Confirmed · operation completed"));
       await queries.invalidateQueries();
     } catch (e) {
-      setStatus("Operation not completed");
-      const message = e instanceof Error ? e.message : "Transaction failed.";
+      setStatus(m("Operation not completed"));
+      const message = e instanceof Error ? e.message : m("Transaction failed.");
       setError(
         /reject|denied/i.test(message)
-          ? "Signature declined. Nothing was submitted."
+          ? m("Signature declined. Nothing was submitted.")
           : message.slice(0, 280),
       );
     } finally {
@@ -169,15 +199,19 @@ export function TransactionProvider({
         </div>
       )}
       {!review && error && (
-        <div role="alert" className="toast error">
-          {error}
-          <button aria-label="Dismiss" onClick={() => setError("")}>
+        <div className="toast error">
+          <ErrorNotice error={error} />
+          <button aria-label={m("Dismiss")} onClick={() => setError("")}>
             ×
           </button>
         </div>
       )}
       <dialog
         ref={dialog}
+        onClose={() => {
+          if (reviewOrigin.current?.isConnected) reviewOrigin.current.focus();
+          else document.getElementById("main-content")?.focus();
+        }}
         onCancel={(e) => {
           if (busy) e.preventDefault();
           else setReview(null);
@@ -187,9 +221,9 @@ export function TransactionProvider({
         {review && (
           <>
             <div className="section-top">
-              <span className="eyebrow">Wallet operation</span>
+              <span className="eyebrow">{m("Wallet operation")}</span>
               <button
-                aria-label="Close review"
+                aria-label={m("Close review")}
                 disabled={busy}
                 onClick={() => {
                   dialog.current?.close();
@@ -203,13 +237,13 @@ export function TransactionProvider({
             <p>{review.intent.effect}</p>
             <dl className="review-list">
               <div>
-                <dt>Network</dt>
+                <dt>{m("Network")}</dt>
                 <dd>
                   {config.chainId === 137
                     ? "Polygon"
                     : config.chainId === 80002
-                      ? "Polygon Amoy"
-                      : "Local test chain"}{" "}
+                      ? m("Polygon Amoy")
+                      : m("Local test chain")}{" "}
                   · {config.chainId}
                 </dd>
               </div>
@@ -220,28 +254,39 @@ export function TransactionProvider({
                 </div>
               ))}
               <div>
-                <dt>Estimated network fee</dt>
-                <dd>{formatEther(BigInt(review.estimatedFee))} POL</dd>
+                <dt>{m("Estimated network fee")}</dt>
+                <dd>
+                  {formatEther(BigInt(review.estimatedFee))}
+                  {m("POL")}
+                </dd>
               </div>
             </dl>
-            {review.intent.actions && (
+            {(review.intent.displayActions ?? review.intent.actions) && (
               <section>
-                <h3>Every proposed action</h3>
-                {review.intent.actions.map((a, i) => (
-                  <div className="action-item" key={i}>
-                    <strong>Action {i + 1}</strong>
-                    <p>{actionSummary(a, config)}</p>
-                    <p>
-                      Target: <code>{a.target}</code>
-                    </p>
-                    <p>Native value: {formatEther(BigInt(a.value))} POL</p>
-                    <code className="calldata">{a.data}</code>
-                  </div>
-                ))}
+                <h3>{m("Every proposed action")}</h3>
+                {(review.intent.displayActions ?? review.intent.actions)!.map(
+                  (a, i) => (
+                    <div className="action-item" key={i}>
+                      <strong>{m("Action {number}", { number: i + 1 })}</strong>
+                      <p>{actionSummary(a, config)}</p>
+                      <p>
+                        {m("Target:")} <code>{a.target}</code>
+                      </p>
+                      <p>
+                        {m("Native value:")} {formatEther(BigInt(a.value))}{" "}
+                        {m("POL")}
+                      </p>
+                      <details>
+                        <summary>{m("Exact calldata")}</summary>
+                        <code className="calldata">{a.data}</code>
+                      </details>
+                    </div>
+                  ),
+                )}
                 {review.batch && (
                   <p className="notice">
-                    {review.batch.warning} Simulated at block{" "}
-                    {review.batch.block}.
+                    {review.batch.warning}
+                    {m("Simulated at block")} {review.batch.block}.
                   </p>
                 )}
                 {review.batch && !review.batch.ok && (
@@ -251,31 +296,30 @@ export function TransactionProvider({
                       checked={acknowledged}
                       onChange={(e) => setAcknowledged(e.target.checked)}
                     />
-                    I understand these actions are not currently executable and
-                    still want to publish them for voting.
+                    {m(
+                      "I understand these actions are not currently executable and still want to publish them for voting.",
+                    )}
                   </label>
                 )}
               </section>
             )}
             <details>
-              <summary>Technical details</summary>
+              <summary>{m("Technical details")}</summary>
               <p>
-                Signing account: <code>{review.account}</code>
+                {m("Signing account:")} <code>{review.account}</code>
               </p>
               <p>
-                Contract: <code>{review.intent.to}</code>
+                {m("Contract:")} <code>{review.intent.to}</code>
               </p>
-              <p>Native value: {review.intent.value ?? "0"} wei</p>
+              <p>
+                {m("Native value:")} {review.intent.value ?? "0"} {m("wei")}
+              </p>
               <code className="calldata">{review.intent.data}</code>
             </details>
             <p role="status" className="status-line">
               {status}
             </p>
-            {error && (
-              <p role="alert" className="error">
-                {error}
-              </p>
-            )}
+            {error && <ErrorNotice error={error} />}
             {hash && (
               <p>
                 <a
@@ -289,22 +333,39 @@ export function TransactionProvider({
                   target="_blank"
                   rel="noreferrer"
                 >
-                  View transaction ↗
+                  {m("View transaction ↗")}
                 </a>
               </p>
             )}
+            {review.intent.validUntil &&
+              now >= review.intent.validUntil &&
+              !hash && (
+                <p role="alert" className="error">
+                  {m(
+                    "The preview expired. Close this review and get a fresh preview.",
+                  )}
+                </p>
+              )}
+            {!hash &&
+              (address !== review.account || chainId !== config.chainId) && (
+                <p role="alert" className="error">
+                  {m("Wallet or network changed. Review the operation again.")}
+                </p>
+              )}
             {!hash && (
               <button
                 className="button primary full"
                 disabled={
                   busy ||
+                  (!!review.intent.validUntil &&
+                    now >= review.intent.validUntil) ||
                   address !== review.account ||
                   chainId !== config.chainId ||
                   (review.batch?.ok === false && !acknowledged)
                 }
                 onClick={() => void sign()}
               >
-                {busy ? "Please wait…" : "Confirm in wallet"}
+                {busy ? m("Please wait…") : m("Confirm in wallet")}
               </button>
             )}
           </>

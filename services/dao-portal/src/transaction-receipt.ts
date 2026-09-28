@@ -1,3 +1,4 @@
+import { m } from "./i18n";
 import type {
   Hex,
   TransactionReceipt,
@@ -23,17 +24,18 @@ export async function waitForOperation(
     replacement,
   ) => {
     if (replacement.reason === "cancelled")
-      replacementError = "The transaction was canceled in your wallet.";
+      replacementError = m("The transaction was canceled in your wallet.");
     else if (replacement.reason === "replaced")
-      replacementError =
-        "The transaction was replaced by a different operation. The reviewed operation is not confirmed.";
+      replacementError = m(
+        "The transaction was replaced by a different operation. The reviewed operation is not confirmed.",
+      );
     onProgress({ hash: replacement.transaction.hash, phase: "replaced" });
   };
   const check = (receipt: TransactionReceipt) => {
     if (replacementError) throw new Error(replacementError);
     if (receipt.status !== "success")
       throw new Error(
-        "The transaction reverted. No contract changes were applied.",
+        m("The transaction reverted. No contract changes were applied."),
       );
   };
   const included = await client.waitForTransactionReceipt({

@@ -26,6 +26,10 @@ Without configured deployments or RPC providers, the public UI works in clearly 
 - Bounded D1 event indexing, two-provider verification, lease fencing, deduplication, reorg recovery and public OpenAPI.
 - Eight archived Snapshot proposals, isolated Telegram integration, deployment/verification/recovery scripts.
 
+## Visual and UX review
+
+The portal uses the official Mythical visual identity, persistent system/light/dark themes, a four-step proposal wizard and accessible transaction reviews. [Visual implementation and validation](docs/VISUAL_UX_REVIEW.md) includes captures, asset provenance and the latest UI test results. The [source plan](docs/VISUAL_PLAN.md) records the scope.
+
 ## Verify
 
 ```sh

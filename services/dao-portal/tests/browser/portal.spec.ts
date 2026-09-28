@@ -1,26 +1,25 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 test.beforeEach(async ({ page }) => {
-  await page.route(/tally\.xyz|snapshot\.org|charmverse\.io/, (route) =>
-    route.abort(),
+  await page.route(
+    /tally\.xyz|snapshot\.org|charmverse\.io|fonts\.googleapis\.com|fonts\.gstatic\.com/,
+    (route) => route.abort(),
   );
 });
-test("public routes render without governance platforms or horizontal overflow", async ({
+test("public routes render without governance platforms, fonts or horizontal overflow", async ({
   page,
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: "A shared world. A collective future." }),
-  ).toBeVisible();
   for (const [route, heading] of [
+    ["overview", "Help shape the world of Mythical Beings."],
     ["governance", "Governance"],
-    ["treasury", "The treasury"],
-    ["delegation", "Your voice. Your choice."],
-    ["ragequit", "Leave on your own terms."],
+    ["treasury", "Treasury"],
+    ["delegation", "Delegation"],
+    ["ragequit", "Exit DAO"],
     ["history", "Governance history"],
     ["create", "Create a proposal"],
+    ["guide", "How governance works"],
   ]) {
     await page.goto("/#" + route);
     await expect(
@@ -31,10 +30,11 @@ test("public routes render without governance platforms or horizontal overflow",
         () => document.documentElement.scrollWidth <= window.innerWidth,
       ),
     ).toBe(true);
+    await expect(page.locator("main")).not.toContainText(/undefined|NaN/);
   }
   expect(errors).toEqual([]);
 });
-test("drafts persist locally; disconnected users cannot publish", async ({
+test("old drafts and multi-step edits persist without a wallet", async ({
   page,
 }) => {
   await page.goto("/#create");
@@ -43,28 +43,39 @@ test("drafts persist locally; disconnected users cannot publish", async ({
     .getByLabel("Problem", { exact: true })
     .fill("We need a shared home.");
   await page.getByRole("button", { name: "Save draft", exact: true }).click();
-  await expect(
-    page.getByRole("status").filter({ hasText: "Draft saved" }),
-  ).toBeVisible();
   await page.reload();
   await expect(page.getByLabel("Proposal title")).toHaveValue(
     "A community habitat",
   );
-  await expect(
-    page.getByRole("button", { name: "Simulate & review publication" }),
-  ).toBeDisabled();
   await page
     .getByRole("button", { name: "Community ballot", exact: true })
     .click();
-  await expect(
-    page.getByRole("textbox", { name: "Alternative 1", exact: true }),
-  ).toBeVisible();
+  await page.getByRole("button", { name: "3 Choices" }).click();
+  await page
+    .getByRole("textbox", { name: "Alternative 1", exact: true })
+    .fill("Forest");
   await page
     .getByRole("button", { name: "+ Add alternative", exact: true })
     .click();
+  await expect(page.getByLabel("Alternative 3", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "1 Decision" }).click();
+  await expect(page.getByLabel("Problem", { exact: true })).toHaveValue(
+    "We need a shared home.",
+  );
+  await page.getByRole("button", { name: "4 Review" }).click();
   await expect(
-    page.getByRole("textbox", { name: "Alternative 3", exact: true }),
-  ).toBeVisible();
+    page.getByRole("button", { name: "Simulate & review publication" }),
+  ).toBeDisabled();
+  await expect(page.locator("#exact-text")).toContainText(
+    "We need a shared home.",
+  );
+  await page
+    .getByRole("button", {
+      name: "Complete Decision before publication.",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByLabel("Decision", { exact: true })).toBeFocused();
 });
 test("overview meets automated accessibility checks", async ({ page }) => {
   await page.goto("/");

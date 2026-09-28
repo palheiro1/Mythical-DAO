@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 import {
   encodeFunctionData,
@@ -9,17 +9,20 @@ import {
 } from "viem";
 import { tokenAbi, vaultAbi } from "../shared/abis";
 import type { PortalConfig } from "../shared/domain";
+import type { Member, ListResponse } from "./data-types";
 import { api, useApi } from "./api";
-import { amount, AddressLink, Empty } from "./components";
+import { amount, AddressLink } from "./components";
 import { useTransaction } from "./Transaction";
-import { t } from "./i18n";
-interface Member {
-  balance: string;
-  votes: string;
-  delegate: Address;
-  supply: string;
-  allowance: string;
-}
+import { t, m } from "./i18n";
+import {
+  PageHeading,
+  AssetIcon,
+  Notice,
+  DataState,
+  ActionAvailability,
+  DateStamp,
+} from "./ui";
+import { percentToBps, previewLifetime, assertCurrentExit } from "./exit-model";
 export function Delegation({
   config,
   canSign,
@@ -28,17 +31,16 @@ export function Delegation({
   canSign: boolean;
 }) {
   const { address } = useAccount(),
-    { data: member } = useApi<Member>("members/" + address, !!address);
-  const { data, error } = useApi<{
-    items: { address: Address; votes: string }[];
-    limitedTo: number;
-  }>("delegates");
+    memberQuery = useApi<Member>("members/" + address, !!address),
+    member = memberQuery.data;
+  const delegates =
+    useApi<ListResponse<{ address: Address; votes: string }>>("delegates");
   const [delegate, setDelegate] = useState(""),
     [message, setMessage] = useState(""),
     tx = useTransaction();
   async function review(to: string) {
     if (!isAddress(to) || to === zeroAddress) {
-      setMessage("Enter a valid representative address.");
+      setMessage(m("Enter a valid representative address."));
       return;
     }
     const mana = config.contracts.mana?.address;
@@ -46,88 +48,108 @@ export function Delegation({
     await tx.review({
       title:
         to.toLowerCase() === address?.toLowerCase()
-          ? "Vote in your own name"
-          : "Delegate voting power",
+          ? m("Vote in your own name")
+          : m("Delegate voting power"),
       to: mana,
       data: encodeFunctionData({
         abi: tokenAbi,
         functionName: "delegate",
         args: [to],
       }),
-      effect:
-        "Delegation changes future voting power. Your MANA stays in your wallet, and only you can redeem it. Existing snapshots remain unchanged.",
+      effect: m(
+        "Delegation changes future voting power. Your MANA stays in your wallet. Representatives cannot spend or redeem your tokens. Existing snapshots remain unchanged.",
+      ),
       details: [
-        { label: "Representative", value: to },
+        { label: m("Representative"), value: to },
         {
-          label: "MANA balance",
-          value: member ? amount(member.balance) : "Unavailable",
+          label: m("MANA balance"),
+          value: member ? amount(member.balance) : m("Unavailable"),
         },
       ],
     });
   }
   return (
     <>
-      <div className="page-heading">
-        <span className="eyebrow">Representation, on your terms</span>
-        <h1>Your voice. Your choice.</h1>
-        <p>
-          Vote for yourself or delegate to someone you trust. Ownership stays
-          with you.
-        </p>
-      </div>
+      <PageHeading
+        title={m("Delegation")}
+        description={m(
+          "Activate your voting power or choose someone to represent you.",
+        )}
+      />
       <div className="metric-grid">
         <div className="metric">
-          <span>Your MANA balance</span>
+          <span>
+            <AssetIcon symbol="MANA" />
+            {m("Your MANA balance")}
+          </span>
           <strong>{member ? amount(member.balance) : "—"}</strong>
+          <p>{m("Tokens held in your wallet")}</p>
         </div>
         <div className="metric">
-          <span>Voting power received</span>
+          <span>{m("Voting power received")}</span>
           <strong>{member ? amount(member.votes) : "—"}</strong>
+          <p>{m("Delegated power for future snapshots")}</p>
         </div>
         <div className="metric">
-          <span>Chosen representative</span>
+          <span>{m("Chosen representative")}</span>
           <strong className="small-value">
             {member && member.delegate !== zeroAddress ? (
               <AddressLink address={member.delegate} />
             ) : member ? (
-              "Not delegated"
+              m("Not delegated")
+            ) : address ? (
+              m("Data unavailable")
             ) : (
-              "Connect wallet"
+              m("Wallet disconnected")
             )}
           </strong>
+          <p>{m("Delegation does not transfer MANA")}</p>
         </div>
       </div>
+      {memberQuery.error && (
+        <Notice tone="warning">
+          {m(
+            "Your latest membership data could not be verified. Previously retrieved values may be out of date.",
+          )}
+        </Notice>
+      )}
       <div className="split-layout">
         <section className="panel">
-          <h2>Choose your representative</h2>
+          <h2>{m("Choose your representative")}</h2>
           <p>
-            Delegates can vote with your delegated power. They cannot spend or
-            redeem your tokens.
+            {m(
+              "Delegates can vote with your delegated power. They cannot spend or redeem your tokens.",
+            )}
+          </p>
+          <button
+            className="button primary full"
+            disabled={!canSign || tx.busy || !address}
+            onClick={() => void review(address!)}
+          >
+            {m("Delegate to myself")}
+          </button>
+          <p className="field-help">
+            {m("Choose yourself to vote directly with your MANA.")}
           </p>
           <label>
-            Representative address
+            {m("Representative address")}
             <input
               value={delegate}
-              onChange={(e) => setDelegate(e.target.value)}
+              onChange={(e) => {
+                setDelegate(e.target.value);
+                setMessage("");
+              }}
               placeholder="0x…"
             />
           </label>
-          <div className="button-row">
-            <button
-              className="button primary"
-              disabled={!canSign || tx.busy}
-              onClick={() => void review(delegate)}
-            >
-              Review delegation →
-            </button>
-            <button
-              className="button"
-              disabled={!canSign || tx.busy || !address}
-              onClick={() => void review(address!)}
-            >
-              Delegate to myself
-            </button>
-          </div>
+          <button
+            className="button full"
+            disabled={!canSign || tx.busy}
+            onClick={() => void review(delegate)}
+          >
+            {m("Review delegation")}
+          </button>
+          <ActionAvailability />
           {message && (
             <p role="alert" className="error">
               {message}
@@ -135,38 +157,46 @@ export function Delegation({
           )}
         </section>
         <section className="panel">
-          <span className="eyebrow">On-chain representatives</span>
-          <h2>Delegates</h2>
-          {error ? (
-            <p role="alert">{error.message}</p>
-          ) : data?.items.length ? (
-            <>
-              <p className="muted">
-                Up to {data.limitedTo} indexed addresses. Voting power is read
-                from the contract.
-              </p>
-              {data.items.map((d) => (
-                <div className="table-row" key={d.address}>
-                  <AddressLink address={d.address} />
-                  <span>{amount(d.votes)} MANA</span>
-                  <button
-                    aria-label={"Choose " + d.address}
-                    onClick={() => setDelegate(d.address)}
-                  >
-                    Choose ↗
-                  </button>
-                </div>
-              ))}
-            </>
-          ) : (
-            <Empty title="No delegates indexed yet">
-              Representatives will appear as the MANA history is indexed.
-            </Empty>
-          )}
+          <h2>{m("Delegates")}</h2>
+          <p className="muted">
+            {m(
+              "Voting power is read from the contract. The list covers up to {count} indexed addresses.",
+              { count: delegates.data?.limitedTo ?? 100 },
+            )}
+          </p>
+          <DataState
+            loading={delegates.isPending}
+            error={delegates.error}
+            unavailable={delegates.data?.unavailable}
+            empty={!delegates.data?.items.length}
+            retry={() => void delegates.refetch()}
+          >
+            {delegates.data?.items.map((d) => (
+              <div className="table-row" key={d.address}>
+                <AddressLink address={d.address} />
+                <span>{amount(d.votes)} MANA</span>
+                <button
+                  aria-label={m("Choose {address}", { address: d.address })}
+                  onClick={() => setDelegate(d.address)}
+                >
+                  {m("Choose")}
+                </button>
+              </div>
+            ))}
+          </DataState>
         </section>
       </div>
     </>
   );
+}
+interface Quote {
+  amounts: string[];
+  supply: string;
+  amount: string;
+  block: string;
+  time: number;
+  owner: string;
+  chain: number;
 }
 export function Ragequit({
   config,
@@ -175,124 +205,181 @@ export function Ragequit({
   config: PortalConfig;
   canSign: boolean;
 }) {
-  const { address } = useAccount(),
-    { data: member } = useApi<Member>("members/" + address, !!address),
+  const { address, chainId } = useAccount(),
+    memberQuery = useApi<Member>("members/" + address, !!address),
+    member = memberQuery.data,
     tx = useTransaction();
   const [input, setInput] = useState(""),
     [recipient, setRecipient] = useState(""),
-    [slippage, setSlippage] = useState("50"),
+    [customRecipient, setCustomRecipient] = useState(false),
+    [tolerance, setTolerance] = useState("0.5"),
     [error, setError] = useState("");
-  const [quote, setQuote] = useState<{
-    amounts: string[];
-    supply: string;
-    amount: string;
-    block: string;
-    time: number;
-  } | null>(null);
-  const [quoting, setQuoting] = useState(false),
-    [ack, setAck] = useState(false);
-  const vault = config.contracts.vault?.address,
-    mana = config.contracts.mana?.address;
+  const [quote, setQuote] = useState<Quote | null>(null),
+    [quoting, setQuoting] = useState(false),
+    [ackFor, setAckFor] = useState<string | null>(null),
+    [now, setNow] = useState(Date.now());
+  const current = useRef(""),
+    requestId = useRef(0),
+    vault = config.contracts.vault?.address,
+    mana = config.contracts.mana?.address,
+    to = customRecipient ? recipient : (address ?? "");
   let units = 0n;
   try {
-    units = parseUnits(input, 18);
+    if (/^\d+(\.\d{1,18})?$/.test(input)) units = parseUnits(input, 18);
   } catch {
-    /* Invalid input is handled before preview. */
+    /* Invalid inputs remain disabled. */
   }
-  const validQuote =
-    !!quote &&
-    quote.amount === units.toString() &&
-    Date.now() - quote.time < 120000;
-  const allowance = BigInt(member?.allowance ?? "0");
-  const bps = Number(slippage),
-    validBps = Number.isInteger(bps) && bps >= 0 && bps <= 500;
-  const minimums =
-    quote && validBps
-      ? quote.amounts.map((a) =>
-          ((BigInt(a) * BigInt(10000 - bps)) / 10000n).toString(),
-        )
-      : [];
+  const bps = percentToBps(tolerance),
+    validQuote =
+      !!quote &&
+      quote.amount === units.toString() &&
+      quote.owner === address &&
+      quote.chain === chainId &&
+      now < quote.time + previewLifetime;
+  const fingerprint = [
+    units,
+    to.toLowerCase(),
+    bps,
+    address,
+    chainId,
+    quote?.time,
+  ].join(":");
+  current.current = fingerprint;
+  const ack = ackFor === fingerprint && validQuote;
+  const allowance = BigInt(member?.allowance ?? "0"),
+    minimums =
+      quote && bps !== null
+        ? quote.amounts.map((a) =>
+            ((BigInt(a) * BigInt(10000 - bps)) / 10000n).toString(),
+          )
+        : [];
+  const validRecipient =
+    isAddress(to) &&
+    to !== zeroAddress &&
+    to.toLowerCase() !== vault?.toLowerCase();
+  useEffect(() => {
+    if (!quote) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [quote]);
+  function resetAmount(value: string) {
+    requestId.current++;
+    setInput(value);
+    setQuote(null);
+    setAckFor(null);
+    setError("");
+  }
   async function preview() {
+    const id = ++requestId.current;
     setError("");
     setQuote(null);
+    setAckFor(null);
     setQuoting(true);
     try {
+      if (!canSign || !address || !chainId)
+        throw Error(
+          m("Connect to the correct network and wait for verified data."),
+        );
       if (units <= 0n || units > BigInt(member?.balance ?? 0))
-        throw new Error("Choose a positive amount within your MANA balance.");
-      if (!vault) throw new Error("The new treasury is not deployed.");
+        throw Error(m("Choose a positive amount within your MANA balance."));
+      if (!vault) throw Error(m("The V2 treasury is not available yet."));
       const q = await api<{ amounts: string[]; supply: string; block: string }>(
         "redeem-preview?amount=" + units,
       );
-      if (q.amounts.every((a) => BigInt(a) === 0n))
-        throw new Error("This amount produces no payout.");
-      setQuote({ ...q, amount: units.toString(), time: Date.now() });
+      if (q.amounts.length !== 3 || q.amounts.every((a) => BigInt(a) === 0n))
+        throw Error(m("This amount produces no payout."));
+      if (id !== requestId.current) return;
+      const time = Date.now();
+      setNow(time);
+      setQuote({
+        ...q,
+        amount: units.toString(),
+        time,
+        owner: address,
+        chain: chainId,
+      });
     } catch (e) {
-      setError((e as Error).message);
+      if (id === requestId.current) setError((e as Error).message);
     } finally {
       setQuoting(false);
     }
   }
   async function approve() {
-    if (!vault || !mana || units <= 0n) return;
+    if (!vault || !mana || !validQuote || !quote) return;
+    const expected = fingerprint,
+      validUntil = quote.time + previewLifetime;
     await tx.review({
-      title: "Authorize the exact MANA amount",
+      title: m("Authorize the exact MANA amount"),
       to: mana,
       data: encodeFunctionData({
         abi: tokenAbi,
         functionName: "approve",
         args: [vault, units],
       }),
-      effect:
+      effect: m(
         "Authorize only the MANA you selected. This approval does not burn tokens or perform your exit.",
+      ),
       details: [
-        { label: "Allowance", value: amount(units) + " MANA" },
-        { label: "Spender", value: vault },
+        { label: m("Allowance"), value: amount(units) + " MANA" },
+        { label: m("Spender"), value: vault },
       ],
+      validUntil,
+      assertCurrent: () =>
+        assertCurrentExit(expected, current.current, validUntil),
     });
   }
   async function redeem() {
     try {
-      const to = recipient || address;
-      if (
-        !to ||
-        !isAddress(to) ||
-        to === zeroAddress ||
-        to.toLowerCase() === vault?.toLowerCase()
-      )
-        throw new Error("Choose a valid payout recipient.");
-      if (!vault || !validQuote || !validBps || !ack)
-        throw new Error(
-          "Refresh the preview and acknowledge the permanent burn.",
+      if (!validRecipient) throw Error(m("Choose a valid payout recipient."));
+      if (!vault || !validQuote || bps === null || !ack || !quote)
+        throw Error(
+          m("Refresh the preview and acknowledge the permanent burn."),
         );
-      const deadline = BigInt(Math.floor(Date.now() / 1000) + 900);
+      const deadline = BigInt(Math.floor(Date.now() / 1000) + 900),
+        expected = fingerprint,
+        validUntil = quote.time + previewLifetime;
       await tx.review({
-        title: "Burn MANA and exit the DAO",
+        title: m("Review MANA burn and assets to receive"),
         to: vault,
         data: encodeFunctionData({
           abi: vaultAbi,
           functionName: "redeem",
           args: [
             units,
-            to,
+            to as Address,
             minimums.map(BigInt) as [bigint, bigint, bigint],
             deadline,
           ],
         }),
         effect:
           t("exitNotice") +
-          " If any payout fails, the entire transaction reverts, including the burn.",
+          " " +
+          m(
+            "If any payout fails, the entire transaction reverts, including the burn.",
+          ),
         details: [
-          { label: "Permanent burn", value: amount(units) + " MANA" },
-          { label: "Recipient", value: to },
+          { label: m("Permanent burn"), value: amount(units) + " MANA" },
+          { label: m("Recipient"), value: to },
+          ...quote.amounts.map((v, i) => ({
+            label: m("Expected {asset}", {
+              asset: ["POL", "WETH", "USDC.e"][i],
+            }),
+            value: amount(v, i === 2 ? 6 : 18),
+          })),
           ...minimums.map((v, i) => ({
-            label: "Minimum " + ["POL", "WETH", "USDC.e"][i],
+            label: m("Minimum {asset}", {
+              asset: ["POL", "WETH", "USDC.e"][i],
+            }),
             value: amount(v, i === 2 ? 6 : 18),
           })),
           {
-            label: "Expires",
-            value: new Date(Number(deadline) * 1000).toLocaleString(),
+            label: m("Transaction expiry (UTC)"),
+            value: new Date(Number(deadline) * 1000).toISOString(),
           },
         ],
+        validUntil,
+        assertCurrent: () =>
+          assertCurrentExit(expected, current.current, validUntil),
       });
     } catch (e) {
       setError((e as Error).message);
@@ -300,153 +387,239 @@ export function Ragequit({
   }
   return (
     <>
-      <div className="page-heading">
-        <span className="eyebrow">An open door, always</span>
-        <h1>Leave on your own terms.</h1>
-        <p>Redeem your share of the treasury by permanently burning MANA.</p>
+      <PageHeading
+        title={m("Exit DAO")}
+        eyebrow={m("V2 treasury feature")}
+        description={m(
+          "Preview the assets available for permanently burning your MANA. Availability depends on the V2 vault and successful transfers.",
+        )}
+      />
+      <div className="exit-steps">
+        <strong>{m("1. Choose an amount")}</strong>
+        <span>{m("2. Preview assets")}</span>
+        <span>{m("3. Authorize and review")}</span>
       </div>
       <div className="split-layout">
         <section className="panel">
-          <h2>Your exit</h2>
+          <h2>{m("Amount and recipient")}</h2>
           <p>{t("exitNotice")}</p>
-          <label>
-            MANA to burn
-            <div className="input-suffix">
+          <label htmlFor="burn-amount">{m("MANA to burn")}</label>
+          <div className="input-suffix">
+            <input
+              id="burn-amount"
+              inputMode="decimal"
+              value={input}
+              onChange={(e) => resetAmount(e.target.value)}
+              placeholder="0.00"
+            />
+            <button
+              disabled={!member}
+              onClick={() => resetAmount(amount(member!.balance))}
+            >
+              {m("Max")}
+            </button>
+          </div>
+          <p className="field-help">
+            {member
+              ? m("Available: {amount} MANA", {
+                  amount: amount(member.balance),
+                })
+              : m("Connect your wallet to check your available MANA.")}
+          </p>
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={customRecipient}
+              onChange={(e) => {
+                setCustomRecipient(e.target.checked);
+                setAckFor(null);
+              }}
+            />
+            <span>{m("Send assets to another address")}</span>
+          </label>
+          {customRecipient ? (
+            <label>
+              {m("Payout recipient")}
               <input
-                inputMode="decimal"
-                value={input}
+                value={recipient}
                 onChange={(e) => {
-                  setInput(e.target.value);
-                  setQuote(null);
-                  setAck(false);
+                  setRecipient(e.target.value);
+                  setAckFor(null);
                 }}
-                placeholder="0.00"
+                placeholder="0x…"
               />
-              <button
-                disabled={!member}
-                onClick={() => {
-                  setInput(amount(member!.balance));
-                  setQuote(null);
-                }}
-              >
-                Max
-              </button>
-            </div>
-          </label>
-          <p className="muted">
-            Available:{" "}
-            {member ? amount(member.balance) + " MANA" : "Connect your wallet"}
-          </p>
+            </label>
+          ) : (
+            <p className="muted">
+              {m("Recipient")}:{" "}
+              {address ? (
+                <AddressLink address={address} />
+              ) : (
+                m("Your connected wallet")
+              )}
+            </p>
+          )}
           <label>
-            Payout recipient
+            {m("Maximum decrease from preview (%)")}
             <input
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              placeholder={address ?? "Your wallet address"}
+              inputMode="decimal"
+              aria-label={m("Maximum decrease from preview (%)")}
+              value={tolerance}
+              onChange={(e) => {
+                setTolerance(e.target.value);
+                setAckFor(null);
+              }}
+              aria-invalid={bps === null}
             />
+            <span className="field-help">
+              {m(
+                "Default 0.5%. Choose 0–5%, with up to two decimal places. Each asset has its own minimum.",
+              )}
+            </span>
           </label>
-          <label>
-            Maximum decrease from preview (basis points)
-            <input
-              type="number"
-              min={0}
-              max={500}
-              value={slippage}
-              onChange={(e) => setSlippage(e.target.value)}
-            />
-          </label>
-          <p className="muted">
-            50 basis points = 0.5%. Each asset has its own minimum. Your
-            transaction expires in 15 minutes.
-          </p>
           <button
-            className="button full"
-            disabled={!address || quoting || !vault}
+            className="button primary full"
+            disabled={!canSign || quoting || !vault || bps === null}
             onClick={() => void preview()}
           >
-            {quoting ? "Reading current treasury…" : "Preview my exit"}
+            {quoting ? m("Reading current treasury…") : m("Preview my exit")}
           </button>
+          <ActionAvailability />
           {error && (
             <p role="alert" className="error">
               {error}
             </p>
           )}
         </section>
-        <aside className="stack">
-          <section className="panel">
-            <span className="eyebrow">Your proportional share</span>
-            <h2>You receive</h2>
-            {["POL", "WETH", "USDC.e"].map((a, i) => (
-              <div className="asset-row" key={a}>
-                <span className="asset-icon">{["P", "Ξ", "$"][i]}</span>
-                <span>{a}</span>
-                <strong>
-                  {quote ? amount(quote.amounts[i], i === 2 ? 6 : 18) : "—"}
-                </strong>
+        <section className="panel">
+          <h2>{m("Assets to receive")}</h2>
+          <p className="muted">
+            {m(
+              "Expected amounts are a preview. Only the minimums are protected by the transaction.",
+            )}
+          </p>
+          {["POL", "WETH", "USDC.e"].map((symbol, i) => (
+            <div className="asset-row" key={symbol}>
+              <AssetIcon symbol={symbol} />
+              <div>
+                {symbol}
+                <p className="muted">
+                  {m("Minimum")}:{" "}
+                  {minimums[i] !== undefined
+                    ? amount(minimums[i], i === 2 ? 6 : 18)
+                    : "—"}
+                </p>
               </div>
-            ))}
-            <p className="muted">
-              Rounded down per asset. Total MANA supply includes tokens held by
-              the treasury.
-            </p>
-            {quote && (
-              <p className="muted">
-                Supply: {amount(quote.supply)} MANA · Preview block{" "}
-                {quote.block}
+              <strong>
+                {quote ? amount(quote.amounts[i], i === 2 ? 6 : 18) : "—"}
+              </strong>
+            </div>
+          ))}
+          {quote && (
+            <>
+              <p className="field-help">
+                {m("Preview block {block} · total supply {supply} MANA", {
+                  block: quote.block,
+                  supply: amount(quote.supply),
+                })}
               </p>
-            )}
-            <p className="notice">{t("fundingNotice")}</p>
-            <label className="checkbox">
-              <input
-                type="checkbox"
-                checked={ack}
-                onChange={(e) => setAck(e.target.checked)}
-              />
-              I understand that my MANA will be permanently burned.
-            </label>
-            {allowance !== units && (
-              <button
-                className="button full"
-                disabled={!canSign || !validQuote || !validBps || tx.busy}
-                onClick={() => void approve()}
+              <p
+                className={validQuote ? "muted" : "quote-invalid"}
+                role="status"
               >
-                1. Authorize {input || "0"} MANA
-              </button>
-            )}
+                {validQuote ? (
+                  <>
+                    {m("Preview valid until")}{" "}
+                    <DateStamp
+                      value={new Date(
+                        quote.time + previewLifetime,
+                      ).toISOString()}
+                    />
+                  </>
+                ) : (
+                  m("Preview expired or changed. Refresh it before continuing.")
+                )}
+              </p>
+            </>
+          )}
+          <Notice>{t("fundingNotice")}</Notice>
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={ack}
+              disabled={!validQuote}
+              onChange={(e) => setAckFor(e.target.checked ? fingerprint : null)}
+            />
+            <span>
+              {m("I understand that my MANA will be permanently burned.")}
+            </span>
+          </label>
+          {allowance !== units && (
             <button
-              className="button primary full"
-              disabled={
-                !canSign ||
-                !validQuote ||
-                allowance !== units ||
-                !validBps ||
-                !ack ||
-                tx.busy
-              }
-              onClick={() => void redeem()}
+              className="button full"
+              disabled={!canSign || !validQuote || bps === null || tx.busy}
+              onClick={() => void approve()}
             >
-              Review permanent exit →
+              {m("1. Authorize {amount} MANA", { amount: input || "0" })}
             </button>
-            <p className="muted">
-              A paused or incompatible basket token can prevent an exit. Failed
-              atomic transactions preserve your MANA.
-            </p>
-          </section>
-          <section className="panel soft">
-            <h3>Independent of this portal</h3>
+          )}
+          <button
+            className="button primary full"
+            disabled={
+              !canSign ||
+              !validQuote ||
+              allowance !== units ||
+              bps === null ||
+              !ack ||
+              tx.busy ||
+              !validRecipient
+            }
+            onClick={() => void redeem()}
+          >
+            {m("Review permanent exit")}
+          </button>
+          <ActionAvailability
+            extra={
+              !validQuote
+                ? m(
+                    "Get a fresh preview before authorizing or reviewing an exit.",
+                  )
+                : !validRecipient
+                  ? m("Choose a valid payout recipient.")
+                  : allowance !== units
+                    ? m("Authorize exactly the selected amount of MANA first.")
+                    : !ack
+                      ? m("Acknowledge the permanent burn before continuing.")
+                      : null
+            }
+          />
+          <p className="field-help">
+            {m(
+              "The transaction expires 15 minutes after review. A paused or incompatible basket token can prevent an exit; failed atomic transactions preserve your MANA.",
+            )}
+          </p>
+          <details>
+            <summary>{m("Calculation and contract details")}</summary>
             <p>
-              You can call <code>previewRedeem</code> and <code>redeem</code>{" "}
-              directly on the verified treasury contract.
+              {m(
+                "Each payout is rounded down: asset balance × MANA burned ÷ total supply before burn. Supply includes MANA held by the treasury.",
+              )}
+            </p>
+            <p>
+              {m("Tolerance in basis points")}: {bps ?? "—"}
+            </p>
+            <p>
+              {m(
+                "You can call previewRedeem and redeem directly on the verified V2 vault, independently of this portal.",
+              )}
             </p>
             {vault ? (
               <AddressLink address={vault} />
             ) : (
-              <span className="muted">
-                Treasury address available after deployment.
-              </span>
+              <p>{m("Treasury address available after deployment.")}</p>
             )}
-          </section>
-        </aside>
+          </details>
+        </section>
       </div>
     </>
   );

@@ -12,10 +12,15 @@ const roles = [
 ] as const;
 async function setup(
   page: Page,
-  { wrongNetwork = false, preflightFails = false, revert = false } = {},
+  {
+    wrongNetwork = false,
+    preflightFails = false,
+    revert = false,
+    confirm = false,
+  } = {},
 ) {
   await page.addInitScript(
-    ({ member, wrongNetwork, revert }) => {
+    ({ member, wrongNetwork, revert, confirm }) => {
       let chain = wrongNetwork ? "0x1" : "0x89";
       const listeners: Record<string, ((value: unknown) => void)[]> = {};
       Object.defineProperty(window, "ethereum", {
@@ -43,7 +48,7 @@ async function setup(
             if (method === "eth_sendTransaction") {
               (window as Window & { testSubmitted?: boolean }).testSubmitted =
                 true;
-              if (revert) return "0x" + "a".repeat(64);
+              if (revert || confirm) return "0x" + "a".repeat(64);
               throw Object.assign(new Error("User rejected the request."), {
                 code: 4001,
               });
@@ -60,7 +65,7 @@ async function setup(
         },
       });
     },
-    { member, wrongNetwork, revert },
+    { member, wrongNetwork, revert, confirm },
   );
   await page.route("**/api/**", async (route) => {
     const url = new URL(route.request().url());
@@ -129,7 +134,7 @@ async function setup(
             contractAddress: null,
             logs: [],
             logsBloom: "0x" + "0".repeat(512),
-            status: "0x0",
+            status: confirm ? "0x1" : "0x0",
             effectiveGasPrice: "0x3b9aca00",
             type: "0x2",
           };
@@ -189,4 +194,14 @@ test("reverted receipts are never shown as successful", async ({ page }) => {
   await expect(page.getByText("Confirmed · operation completed")).toHaveCount(
     0,
   );
+});
+
+test("a successful receipt completes only after the confirmation window", async ({
+  page,
+}) => {
+  await setup(page, { confirm: true });
+  await page.getByLabel("Representative address").fill(representative);
+  await page.getByRole("button", { name: "Review delegation" }).click();
+  await page.getByRole("button", { name: "Confirm in wallet" }).click();
+  await expect(page.getByText("Confirmed · operation completed")).toBeVisible();
 });

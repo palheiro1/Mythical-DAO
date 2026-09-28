@@ -1,3 +1,4 @@
+import { m } from "./i18n";
 import { validateActions, type Action } from "../shared/domain";
 export const fields = [
   "Problem",
@@ -32,7 +33,8 @@ export function newDraft(): Draft {
   };
 }
 export function validateDraft(raw: unknown): Draft {
-  if (!raw || typeof raw !== "object") throw new Error("Invalid draft file.");
+  if (!raw || typeof raw !== "object")
+    throw new Error(m("Invalid draft file."));
   const d = raw as Draft;
   if (
     d.version !== 1 ||
@@ -47,10 +49,10 @@ export function validateDraft(raw: unknown): Draft {
     d.options.length > 20 ||
     !Array.isArray(d.actions)
   )
-    throw new Error("Draft format is invalid.");
+    throw new Error(m("Draft format is invalid."));
   if (d.actions.length) validateActions(d.actions);
   if (JSON.stringify(d).length > 100_000)
-    throw new Error("Draft is too large.");
+    throw new Error(m("Draft is too large."));
   return d;
 }
 export function description(d: Draft) {

@@ -6,9 +6,11 @@ import {
   useConnectors,
 } from "wagmi";
 import { formatUnits, type Address } from "viem";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Health, PortalConfig, Proposal } from "../shared/domain";
-import { t } from "./i18n";
+import { t, m } from "./i18n";
+import { Icon, StateBadge, usePortal } from "./ui";
+import { paymentFor, proposalActions } from "./action-view";
 export const short = (value: string) =>
   value.length > 16 ? value.slice(0, 6) + "…" + value.slice(-4) : value;
 export function amount(value: string | bigint, decimals = 18) {
@@ -20,76 +22,111 @@ export function Wallet({ config }: { config: PortalConfig }) {
     connectors = useConnectors();
   const { mutate: disconnect } = useDisconnect(),
     { mutate: switchChain } = useSwitchChain();
-  const [open, setOpen] = useState(false);
-  if (address)
-    return (
-      <div className="wallet">
-        {chainId !== config.chainId && (
-          <button
-            className="button small"
-            onClick={() => switchChain({ chainId: config.chainId })}
-          >
-            Switch network
-          </button>
-        )}
-        <button
-          className="button wallet-button"
-          title="Disconnect wallet"
-          onClick={() => disconnect()}
-        >
-          {short(address)} ↗
-        </button>
-      </div>
-    );
+  const [open, setOpen] = useState(false),
+    root = useRef<HTMLDivElement>(null),
+    trigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: PointerEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        trigger.current?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [open]);
   return (
-    <div className="wallet">
+    <div className="wallet" ref={root}>
+      {address && chainId !== config.chainId && (
+        <button
+          className="button small"
+          onClick={() => switchChain({ chainId: config.chainId })}
+        >
+          {m("Switch network")}
+        </button>
+      )}
       <button
-        className="button primary small"
+        ref={trigger}
+        className={"button small " + (address ? "" : "primary")}
         aria-expanded={open}
+        aria-controls="wallet-options"
         onClick={() => setOpen(!open)}
       >
-        {t("connect")}
+        {address ? short(address) : t("connect")}
+        {address && <span aria-hidden="true">⌄</span>}
       </button>
       {open && (
-        <div className="wallet-menu">
-          {connectors.map((connector) => (
-            <button
-              key={connector.uid}
-              disabled={isPending}
-              onClick={() =>
-                connect({ connector }, { onSuccess: () => setOpen(false) })
-              }
-            >
-              {connector.name}
-            </button>
-          ))}
-          <p>
-            Choose an installed wallet
-            {import.meta.env.VITE_WALLETCONNECT_PROJECT_ID
-              ? " or scan with WalletConnect."
-              : ". WalletConnect needs a configured project ID."}
-          </p>
-          {error && <p role="alert">{error.message.slice(0, 140)}</p>}
+        <div id="wallet-options" className="wallet-menu">
+          {address ? (
+            <>
+              <p className="eyebrow">{m("Connected Polygon wallet")}</p>
+              <p className="break-word">{address}</p>
+              <a href="#delegation" onClick={() => setOpen(false)}>
+                {m("Manage delegation")}
+              </a>
+              <button
+                className="button full"
+                onClick={() => {
+                  disconnect();
+                  setOpen(false);
+                }}
+              >
+                {m("Disconnect")}
+              </button>
+            </>
+          ) : (
+            <>
+              <p>
+                {m("Choose your Polygon wallet. The game login is separate.")}
+              </p>
+              {connectors.map((connector) => (
+                <button
+                  className="button full"
+                  key={connector.uid}
+                  disabled={isPending}
+                  onClick={() =>
+                    connect({ connector }, { onSuccess: () => setOpen(false) })
+                  }
+                >
+                  {connector.name}
+                </button>
+              ))}
+              {!connectors.length && (
+                <p>{m("No supported wallet was detected in this browser.")}</p>
+              )}
+              {error && (
+                <p role="alert">
+                  {m("The wallet could not connect. Try again in your wallet.")}
+                </p>
+              )}
+            </>
+          )}
         </div>
       )}
     </div>
   );
 }
 export function Status({ health }: { health?: Health }) {
+  const labels = {
+    ok: m("Data verified"),
+    setup: m("V2 in preparation"),
+    syncing: m("Synchronizing"),
+    degraded: m("Data unavailable"),
+  };
   return (
     <span
       className={"network-status " + (health?.status === "ok" ? "live" : "")}
     >
-      <i />
-      {health?.status === "ok"
-        ? "Index verified"
-        : health?.status === "setup"
-          ? "Setup mode"
-          : health?.status === "syncing"
-            ? "Index syncing"
-            : health?.status === "degraded"
-              ? "Data unavailable"
-              : "Checking network"}
+      <span aria-hidden="true" className="status-dot" />
+      {health ? labels[health.status] : m("Checking data")}
     </span>
   );
 }
@@ -102,15 +139,19 @@ export function Empty({
 }) {
   return (
     <div className="empty">
-      <span aria-hidden="true" className="empty-symbol">
-        ◇
-      </span>
+      <Icon name="info" />
       <h3>{title}</h3>
-      <p>{children}</p>
+      <div>{children}</div>
     </div>
   );
 }
-export function AddressLink({ address }: { address: Address }) {
+export function AddressLink({
+  address,
+  full = false,
+}: {
+  address: Address;
+  full?: boolean;
+}) {
   return (
     <a
       className="address"
@@ -119,37 +160,49 @@ export function AddressLink({ address }: { address: Address }) {
       rel="noreferrer"
       title={address}
     >
-      {short(address)} ↗
+      {full ? address : short(address)} <span aria-hidden="true">↗</span>
     </a>
   );
 }
 export function ProposalCard({ p }: { p: Proposal }) {
+  const { config } = usePortal(),
+    payments = proposalActions(p)
+      .map((a) => paymentFor(a, config))
+      .filter(Boolean);
   return (
     <a className="proposal-card" href={"#proposal/" + p.contract + "/" + p.id}>
       <div className="section-top">
         <span className="eyebrow">
           {p.kind === "community"
-            ? "Community ballot"
+            ? m("Community ballot")
             : p.kind === "legacy"
-              ? "Legacy governance"
-              : "Executable proposal"}
+              ? m("Original Governor")
+              : m("Executable proposal")}
         </span>
-        <span className={"badge " + p.state.toLowerCase()}>{p.state}</span>
+        <StateBadge state={p.state} />
       </div>
       <h3>
         {p.description.split("\n")[0].replace(/^#+\s*/, "") ||
-          "Untitled proposal"}
+          m("Untitled proposal")}
       </h3>
       <p>
         {p.kind === "community"
-          ? p.options.length + " alternatives · advisory result"
-          : p.targets.length +
-            " on-chain action" +
-            (p.targets.length === 1 ? "" : "s")}
+          ? m("{count} alternatives · advisory result", {
+              count: p.options.length,
+            })
+          : payments.length
+            ? payments.map((a) => a!.quantity + " " + a!.symbol).join(" + ") +
+              m(" · treasury payment")
+            : m("{count} on-chain actions", { count: p.targets.length })}
+      </p>
+      <p className="muted">
+        {m("Publication block {block}", { block: p.blockNumber })}
       </p>
       <div className="card-bottom">
-        <span>By {short(p.proposer)}</span>
-        <span>View proposal ↗</span>
+        <span>{m("By {author}", { author: short(p.proposer) })}</span>
+        <span>
+          {m("View proposal")} <Icon name="arrow" />
+        </span>
       </div>
     </a>
   );

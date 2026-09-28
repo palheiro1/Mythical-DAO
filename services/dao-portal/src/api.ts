@@ -1,3 +1,4 @@
+import { m } from "./i18n";
 import { useQuery } from "@tanstack/react-query";
 export async function api<T>(path: string, body?: unknown): Promise<T> {
   const response = await fetch(
@@ -12,7 +13,7 @@ export async function api<T>(path: string, body?: unknown): Promise<T> {
   );
   const data = (await response.json()) as T & { error?: string };
   if (!response.ok)
-    throw new Error(data.error ?? "The request could not be completed.");
+    throw new Error(data.error ?? m("The request could not be completed."));
   return data;
 }
 export function useApi<T>(path: string, enabled = true, interval = 30_000) {

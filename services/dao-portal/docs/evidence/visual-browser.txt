@@ -1,0 +1,65 @@
+> @mythical/dao-portal@0.1.0 test:browser
+> playwright test
+
+
+Running 56 tests using 1 worker
+
+  ✓   1 [desktop] › tests/browser/flows.spec.ts:14:1 › verified treasury identifies payments and preserves exact balances (435ms)
+  ✓   2 [desktop] › tests/browser/flows.spec.ts:31:1 › unavailable, syncing, empty and stale data stay distinct (623ms)
+  ✓   3 [desktop] › tests/browser/flows.spec.ts:73:1 › history keeps the original date separate from import provenance (439ms)
+  ✓   4 [desktop] › tests/browser/flows.spec.ts:97:1 › proposal detail separates approval, timelock and advisory results (920ms)
+  ✓   5 [desktop] › tests/browser/flows.spec.ts:129:1 › draft import, export and reviewed text keep the existing format (385ms)
+  ✓   6 [desktop] › tests/browser/flows.spec.ts:158:1 › wallet menu avoids accidental disconnect and account changes invalidate a review (520ms)
+  ✓   7 [desktop] › tests/browser/flows.spec.ts:195:1 › exit edits and expiration invalidate burn acknowledgment and transaction review (744ms)
+  ✓   8 [desktop] › tests/browser/flows.spec.ts:242:1 › reviewed proposal text and choices reach the wallet unchanged (573ms)
+  ✓   9 [desktop] › tests/browser/flows.spec.ts:291:1 › failed final simulation prevents a wallet submission (537ms)
+  ✓  10 [desktop] › tests/browser/portal.spec.ts:9:1 › public routes render without governance platforms, fonts or horizontal overflow (414ms)
+  ✓  11 [desktop] › tests/browser/portal.spec.ts:37:1 › old drafts and multi-step edits persist without a wallet (733ms)
+  ✓  12 [desktop] › tests/browser/portal.spec.ts:80:1 › overview meets automated accessibility checks (675ms)
+  ✓  13 [desktop] › tests/browser/visual.spec.ts:23:3 › visual acceptance matrix › active proposal details and completed wizard steps in both themes at all widths (19.8s)
+  ✓  14 [desktop] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › light at 390 px: routes, contrast and local assets (3.6s)
+  ✓  15 [desktop] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › light at 768 px: routes, contrast and local assets (3.4s)
+  ✓  16 [desktop] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › light at 1440 px: routes, contrast and local assets (3.5s)
+  ✓  17 [desktop] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › dark at 390 px: routes, contrast and local assets (3.9s)
+  ✓  18 [desktop] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › dark at 768 px: routes, contrast and local assets (3.8s)
+  ✓  19 [desktop] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › dark at 1440 px: routes, contrast and local assets (3.9s)
+  ✓  20 [desktop] › tests/browser/visual.spec.ts:179:3 › visual acceptance matrix › connected exit preview and signing dialog stay accessible in both themes (6.7s)
+  ✓  21 [desktop] › tests/browser/visual.spec.ts:245:3 › visual acceptance matrix › 320 px and 200% zoom reflow without clipping (731ms)
+  ✓  22 [desktop] › tests/browser/visual.spec.ts:277:3 › visual acceptance matrix › system theme follows device changes, manual choice persists before app load (470ms)
+  ✓  23 [desktop] › tests/browser/visual.spec.ts:292:3 › visual acceptance matrix › mobile navigation supports keyboard, escape and direct proposal routes (443ms)
+  ✓  24 [desktop] › tests/browser/wallet.spec.ts:156:1 › wrong network requires switching before a review (411ms)
+  ✓  25 [desktop] › tests/browser/wallet.spec.ts:166:1 › RPC disagreement never opens a signing prompt (481ms)
+  ✓  26 [desktop] › tests/browser/wallet.spec.ts:177:1 › a declined signature leaves a clear recoverable review (532ms)
+  ✓  27 [desktop] › tests/browser/wallet.spec.ts:188:1 › reverted receipts are never shown as successful (530ms)
+  ✓  28 [desktop] › tests/browser/wallet.spec.ts:199:1 › a successful receipt completes only after the confirmation window (548ms)
+  ✓  29 [mobile] › tests/browser/flows.spec.ts:14:1 › verified treasury identifies payments and preserves exact balances (390ms)
+  ✓  30 [mobile] › tests/browser/flows.spec.ts:31:1 › unavailable, syncing, empty and stale data stay distinct (629ms)
+  ✓  31 [mobile] › tests/browser/flows.spec.ts:73:1 › history keeps the original date separate from import provenance (430ms)
+  ✓  32 [mobile] › tests/browser/flows.spec.ts:97:1 › proposal detail separates approval, timelock and advisory results (936ms)
+  ✓  33 [mobile] › tests/browser/flows.spec.ts:129:1 › draft import, export and reviewed text keep the existing format (402ms)
+  ✓  34 [mobile] › tests/browser/flows.spec.ts:158:1 › wallet menu avoids accidental disconnect and account changes invalidate a review (499ms)
+  ✓  35 [mobile] › tests/browser/flows.spec.ts:195:1 › exit edits and expiration invalidate burn acknowledgment and transaction review (742ms)
+  ✓  36 [mobile] › tests/browser/flows.spec.ts:242:1 › reviewed proposal text and choices reach the wallet unchanged (575ms)
+  ✓  37 [mobile] › tests/browser/flows.spec.ts:291:1 › failed final simulation prevents a wallet submission (524ms)
+  ✓  38 [mobile] › tests/browser/portal.spec.ts:9:1 › public routes render without governance platforms, fonts or horizontal overflow (378ms)
+  ✓  39 [mobile] › tests/browser/portal.spec.ts:37:1 › old drafts and multi-step edits persist without a wallet (687ms)
+  ✓  40 [mobile] › tests/browser/portal.spec.ts:80:1 › overview meets automated accessibility checks (705ms)
+  -  41 [mobile] › tests/browser/visual.spec.ts:23:3 › visual acceptance matrix › active proposal details and completed wizard steps in both themes at all widths
+  -  42 [mobile] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › light at 390 px: routes, contrast and local assets
+  -  43 [mobile] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › light at 768 px: routes, contrast and local assets
+  -  44 [mobile] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › light at 1440 px: routes, contrast and local assets
+  -  45 [mobile] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › dark at 390 px: routes, contrast and local assets
+  -  46 [mobile] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › dark at 768 px: routes, contrast and local assets
+  -  47 [mobile] › tests/browser/visual.spec.ts:112:7 › visual acceptance matrix › dark at 1440 px: routes, contrast and local assets
+  -  48 [mobile] › tests/browser/visual.spec.ts:179:3 › visual acceptance matrix › connected exit preview and signing dialog stay accessible in both themes
+  -  49 [mobile] › tests/browser/visual.spec.ts:245:3 › visual acceptance matrix › 320 px and 200% zoom reflow without clipping
+  -  50 [mobile] › tests/browser/visual.spec.ts:277:3 › visual acceptance matrix › system theme follows device changes, manual choice persists before app load
+  -  51 [mobile] › tests/browser/visual.spec.ts:292:3 › visual acceptance matrix › mobile navigation supports keyboard, escape and direct proposal routes
+  ✓  52 [mobile] › tests/browser/wallet.spec.ts:156:1 › wrong network requires switching before a review (413ms)
+  ✓  53 [mobile] › tests/browser/wallet.spec.ts:166:1 › RPC disagreement never opens a signing prompt (454ms)
+  ✓  54 [mobile] › tests/browser/wallet.spec.ts:177:1 › a declined signature leaves a clear recoverable review (477ms)
+  ✓  55 [mobile] › tests/browser/wallet.spec.ts:188:1 › reverted receipts are never shown as successful (618ms)
+  ✓  56 [mobile] › tests/browser/wallet.spec.ts:199:1 › a successful receipt completes only after the confirmation window (532ms)
+
+  11 skipped
+  45 passed (1.2m)

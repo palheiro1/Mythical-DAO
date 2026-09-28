@@ -1,3 +1,4 @@
+import { messages } from "./messages.en";
 export const en = {
   brand: "Mythical DAO",
   overview: "Overview",
@@ -20,4 +21,13 @@ export const en = {
 export type MessageKey = keyof typeof en;
 export function t(key: MessageKey) {
   return en[key];
+}
+
+export function m(
+  message: keyof typeof messages,
+  values: Record<string, string | number | bigint> = {},
+): string {
+  return messages[message].replace(/\{(\w+)\}/g, (match, key: string) =>
+    key in values ? String(values[key]) : match,
+  );
 }

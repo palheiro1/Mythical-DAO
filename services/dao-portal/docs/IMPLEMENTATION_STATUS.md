@@ -12,6 +12,8 @@ The local software implementation is delivered for review. **The production laun
 | Notifications | Existing bot source preserved; isolated copy adapted with portal mode, composite identity and silent seed | Staging channel validation and approved single-publisher cutover |
 | Review/launch | 93 passing automated tests, complete local governance/exit rehearsal, local D1 export/restore, migration payload preparation, release gates | Independent review, DAO approval, exact old-system fork rehearsal, asset/revenue reconciliation, real small exit, domain activation |
 
+The subsequent [visual and UX refresh](VISUAL_UX_REVIEW.md) is also delivered locally, with official assets, light/dark themes, revised governance flows and updated browser evidence. It does not change the public release requirements above.
+
 No start-block guess is presented as confirmed evidence: the MANA deployment block remains 0 (safe complete replay) because the tested public RPC lacked deep historical state. The known legacy Governor start block is sourced from the existing bot.
 
 The portal marks absent configuration as setup mode and keeps signing disabled until the real deployment and current indexed chain agree. These pending external steps cannot be replaced by mock results or the implementer's tests.
