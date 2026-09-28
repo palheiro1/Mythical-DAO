@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "chainId": 137,
+  "environment": "production",
+  "enabled": false,
+  "portalUrl": "https://dao.mythicalbeings.io",
+  "confirmations": 64,
+  "contracts": {
+    "mana": {
+      "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+      "startBlock": "0"
+    },
+    "legacyGovernor": {
+      "address": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
+      "startBlock": "48674443"
+    },
+    "weth": {
+      "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+      "startBlock": "48674443"
+    },
+    "usdc": {
+      "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "startBlock": "48674443"
+    }
+  },
+  "release": {
+    "independentReview": null,
+    "daoApproval": null,
+    "migration": null,
+    "revenuesReconciled": false,
+    "permissionsVerified": false
+  }
+}

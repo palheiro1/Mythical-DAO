@@ -1,0 +1,78 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "mythical-dao-portal",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-28",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "observability": {
+    "enabled": true
+  },
+  "triggers": {
+    "crons": [
+      "* * * * *"
+    ]
+  },
+  "vars": {
+    "ENVIRONMENT": "local",
+    "DEPLOYMENT_MANIFEST": "",
+    "INDEX_BATCH_BLOCKS": "1000"
+  },
+  "secrets": {
+    "required": [
+      "RPC_PRIMARY_URL",
+      "RPC_SECONDARY_URL"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DAO_DB",
+      "database_name": "mythical-dao-portal-local",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "env": {
+    "staging": {
+      "name": "mythical-dao-portal-staging",
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "DEPLOYMENT_MANIFEST": "",
+        "INDEX_BATCH_BLOCKS": "1000"
+      },
+      "d1_databases": [
+        {
+          "binding": "DAO_DB",
+          "database_name": "mythical-dao-portal-staging",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "migrations"
+        }
+      ]
+    },
+    "production": {
+      "name": "mythical-dao-portal-production",
+      "vars": {
+        "ENVIRONMENT": "production",
+        "DEPLOYMENT_MANIFEST": "",
+        "INDEX_BATCH_BLOCKS": "1000"
+      },
+      "d1_databases": [
+        {
+          "binding": "DAO_DB",
+          "database_name": "mythical-dao-portal-production",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "migrations"
+        }
+      ]
+    }
+  }
+}

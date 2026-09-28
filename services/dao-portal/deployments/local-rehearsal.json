@@ -1,0 +1,179 @@
+{
+  "network": "Ephemeral local Anvil, chain 31337",
+  "checkedAt": "2026-09-28T12:42:51.153Z",
+  "contracts": {
+    "mana": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+    "weth": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+    "usdc": "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
+    "timelock": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+    "governor": "0xdc64a140aa3e981100a9beca4e685f962f0cf6c9",
+    "vault": "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707",
+    "ballots": "0x0165878a594ca255338adfa4d48449f69242eb8f"
+  },
+  "checks": {
+    "proposeVoteQueueExitExecute": true,
+    "earlyExecutionRejected": true,
+    "insufficientPaymentRejected": true,
+    "permanentBurn": true,
+    "communityWinner": true
+  },
+  "finalSupply": "700000000000000000000",
+  "finalVaultPOL": "50000000000000000000",
+  "receipts": [
+    {
+      "hash": "0x05135c25f6db71710b97610efa2da27853d3e0c5ad64e3737efba4a914aa04ae",
+      "block": "1",
+      "gasUsed": "1637821"
+    },
+    {
+      "hash": "0x7f0075d29747cf3ca149822699181334a9438c3436dade2364aff35dc2967a22",
+      "block": "2",
+      "gasUsed": "599868"
+    },
+    {
+      "hash": "0xebaef74998fe8af70cad2463f125819ee3e8b0ecd603e1402571eb8caf3e3b0b",
+      "block": "3",
+      "gasUsed": "599868"
+    },
+    {
+      "hash": "0x47e9197fb143c80640e6e6eda8ef0a0cd8b190ac646c9d23f2f34ff02d74c66f",
+      "block": "4",
+      "gasUsed": "1688340"
+    },
+    {
+      "hash": "0x283a9fce38f57397d28b4c2da9ec8fa317a76a6d14d4a2a99b2c93430dacf4f0",
+      "block": "5",
+      "gasUsed": "3968527"
+    },
+    {
+      "hash": "0x8d0d2520a9dda28c888b916243c2c8952b439cf1f7154278ab4dbe1dcbbc3eb8",
+      "block": "6",
+      "gasUsed": "1365317"
+    },
+    {
+      "hash": "0xcc14f2710678c4864f822cf652986d9c1ddd7cc5038121b2ebf06c67fa07e509",
+      "block": "7",
+      "gasUsed": "1215491"
+    },
+    {
+      "hash": "0xae6b2b4ff014e58dfae694922f920d0e214b10e73043dd520aca3ce7405f759a",
+      "block": "8",
+      "gasUsed": "125313"
+    },
+    {
+      "hash": "0xbed27c17487db1d06d2b749c6414afd3a28dca6e738e545c9eefac18ba8bc477",
+      "block": "9",
+      "gasUsed": "118610"
+    },
+    {
+      "hash": "0xb6b4de266504c73fb42daff5162230dc0d18d927652ef6507907cae681d9fe61",
+      "block": "10",
+      "gasUsed": "95666"
+    },
+    {
+      "hash": "0xfaa53f896957f6d21b9a5c2a1802e50af0cf22d58e48b918c9e501065b911b96",
+      "block": "11",
+      "gasUsed": "87095"
+    },
+    {
+      "hash": "0x7145d6c7203e1180027328dfc363ab129adc59c704236c94620004a5d4aa9d31",
+      "block": "12",
+      "gasUsed": "95666"
+    },
+    {
+      "hash": "0x10a3bfbbc2afa3226ce474a33411753f1392fe00c2ba36f334dafe64b62c4072",
+      "block": "13",
+      "gasUsed": "87083"
+    },
+    {
+      "hash": "0x0185bfb2fb35bb0a90a5c013e8f6db6b681d9b97264e0e9e3963abba64ad26a9",
+      "block": "14",
+      "gasUsed": "95654"
+    },
+    {
+      "hash": "0x3271b9c40c8c46e36ba9a7177e7eb208753dbd800737adf3f543ef3110008434",
+      "block": "15",
+      "gasUsed": "68516"
+    },
+    {
+      "hash": "0x0c7ab1083ab513dc37489a59ee6feeb10a29a440b562df08f44095d9161912e4",
+      "block": "16",
+      "gasUsed": "68468"
+    },
+    {
+      "hash": "0xa97319bf311e1ee2f4da744973ee431e76a566d0e574e58e9265c5b588d1db60",
+      "block": "17",
+      "gasUsed": "22491"
+    },
+    {
+      "hash": "0xce0974bac119eb04ca8b87aa8c14b45c8377f8467060d53965f25d712e958aaf",
+      "block": "18",
+      "gasUsed": "76233"
+    },
+    {
+      "hash": "0x0879ec9aae92746e2a508948fd74a29e8279ec1c139fb66afdc8fee70fa6a767",
+      "block": "19",
+      "gasUsed": "76221"
+    },
+    {
+      "hash": "0x36cbead366550add5443fbe94eec23bc1b81ebf1ed89a310e75329e6fbeb94ba",
+      "block": "20",
+      "gasUsed": "118636"
+    },
+    {
+      "hash": "0x5e9206e1ddd34bfac91e2d7c4080622c78f14bef7a1560338aade986c4c6d0b2",
+      "block": "41168",
+      "gasUsed": "83354"
+    },
+    {
+      "hash": "0xdfdecbd603d4997e631d9133ee106ff4e0a66812bfb50d40c6169f1fc082b238",
+      "block": "41169",
+      "gasUsed": "83310"
+    },
+    {
+      "hash": "0xc557050d701a9f6b739d1fb5409907b65b91ce7611596481ea6dd94bde0613ab",
+      "block": "41170",
+      "gasUsed": "83366"
+    },
+    {
+      "hash": "0xf8aa860a25f08aa1f30b046bc78b0fd9ea98510b7fb4fc48584bcca632757dcf",
+      "block": "41171",
+      "gasUsed": "83322"
+    },
+    {
+      "hash": "0x6950a6367dbd210855e10be44312764a3408625cf2277379ff01d59e9e39aba9",
+      "block": "41172",
+      "gasUsed": "104776"
+    },
+    {
+      "hash": "0x5e13b13c991aebdc630cdac7f2cf11c97206744623a8c04f39cda002e0c7097b",
+      "block": "41173",
+      "gasUsed": "87676"
+    },
+    {
+      "hash": "0x778913743ae09051bde93618269430e81db90c98494378673b133b99c17b5d01",
+      "block": "329168",
+      "gasUsed": "148408"
+    },
+    {
+      "hash": "0xde546565d8b582a4a9d2113c7b68878fc50066a5c3f2630ac545e722a4d54aa2",
+      "block": "329169",
+      "gasUsed": "148372"
+    },
+    {
+      "hash": "0x19b950abe30b7e6835fac874550b3c53b53f1e871a6ffa40b70d51b074dd217d",
+      "block": "329170",
+      "gasUsed": "46401"
+    },
+    {
+      "hash": "0xdc2cedd6ad27b3eb8959f3a2b403e773a16c3fdf806afe5bc532b284542e1336",
+      "block": "329171",
+      "gasUsed": "201436"
+    },
+    {
+      "hash": "0x67f88ac3e9896f03285223cc887dcec6bd2aa6a2c271b282188ecfa0953b9267",
+      "block": "329173",
+      "gasUsed": "102148"
+    }
+  ]
+}

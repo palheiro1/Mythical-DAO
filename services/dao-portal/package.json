@@ -1,0 +1,51 @@
+{
+  "name": "@mythical/dao-portal",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "dev:api": "wrangler dev --port 8787 --test-scheduled",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "types": "wrangler types --strict-vars=false",
+    "test": "vitest run",
+    "test:contracts": "forge test",
+    "contracts:build": "forge build && node scripts/export-abis.mjs",
+    "db:local": "wrangler d1 migrations apply DAO_DB --local",
+    "deploy:check": "npm run build && wrangler deploy --dry-run",
+    "check": "npm run typecheck && npm test && forge test && npm run build",
+    "test:browser": "playwright test",
+    "rehearse": "forge build && node scripts/local-rehearsal.mjs",
+    "format": "prettier --write src worker shared tests scripts *.json *.ts *.html",
+    "test:recovery": "node scripts/verify-local-recovery.mjs"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.0",
+    "@wagmi/connectors": "^8.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "viem": "^2.47.0",
+    "wagmi": "^3.7.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@cloudflare/workers-types": "latest",
+    "@openzeppelin/contracts": "5.6.1",
+    "@playwright/test": "latest",
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "latest",
+    "agent-browser": "^0.27.0",
+    "miniflare": "^5.20260926.0-alpha",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.0",
+    "vite": "^8.3.1",
+    "vitest": "latest",
+    "wrangler": "^4.142.0"
+  }
+}

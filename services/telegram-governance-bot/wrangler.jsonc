@@ -1,0 +1,142 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "mythical-dao-telegram-v2-rehearsal",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-18",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "head_sampling_rate": 1
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.05
+    }
+  },
+  "vars": {
+    "ENVIRONMENT": "local",
+    "SNAPSHOT_SPACE": "mythicalbeings.eth",
+    "SNAPSHOT_API_URL": "https://hub.snapshot.org/graphql",
+    "SNAPSHOT_WEB_BASE_URL": "https://snapshot.org/#/s:",
+    "POLYGON_CHAIN_ID": "137",
+    "GOVERNOR_ADDRESS": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
+    "GOVERNOR_DEPLOYMENT_BLOCK": "48674443",
+    "POLYGON_CONFIRMATIONS": "64",
+    "POLYGON_LOG_CHUNK_SIZE": "10000",
+    "POLYGON_HISTORY_CHUNKS_PER_RUN": "30",
+    "POLYGON_RECENT_SEED_BLOCKS": "300000",
+    "POLYGON_BLOCK_TIME_SECONDS": "2",
+    "TALLY_PROPOSAL_BASE_URL": "https://www.tally.xyz/gov/mythical-dao/proposal/",
+    "POLYGONSCAN_TX_BASE_URL": "https://polygonscan.com/tx/",
+    "GOVERNANCE_MODE": "legacy",
+    "PORTAL_URL": "https://dao.mythicalbeings.io"
+  },
+  "secrets": {
+    "required": [
+      "TELEGRAM_BOT_TOKEN",
+      "TELEGRAM_CHANNEL_ID",
+      "ADMIN_CHAT_ID",
+      "POLYGON_RPC_URL",
+      "ADMIN_API_TOKEN"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mythical-dao-telegram-local",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "env": {
+    "staging": {
+      "name": "mythical-dao-telegram-staging-v2-rehearsal",
+      "triggers": {
+        "crons": [
+          "*/15 * * * *"
+        ]
+      },
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "SNAPSHOT_SPACE": "mythicalbeings.eth",
+        "SNAPSHOT_API_URL": "https://hub.snapshot.org/graphql",
+        "SNAPSHOT_WEB_BASE_URL": "https://snapshot.org/#/s:",
+        "POLYGON_CHAIN_ID": "137",
+        "GOVERNOR_ADDRESS": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
+        "GOVERNOR_DEPLOYMENT_BLOCK": "48674443",
+        "POLYGON_CONFIRMATIONS": "64",
+        "POLYGON_LOG_CHUNK_SIZE": "10000",
+        "POLYGON_HISTORY_CHUNKS_PER_RUN": "30",
+        "POLYGON_RECENT_SEED_BLOCKS": "300000",
+        "POLYGON_BLOCK_TIME_SECONDS": "2",
+        "TALLY_PROPOSAL_BASE_URL": "https://www.tally.xyz/gov/mythical-dao/proposal/",
+        "POLYGONSCAN_TX_BASE_URL": "https://polygonscan.com/tx/",
+        "GOVERNANCE_MODE": "legacy",
+        "PORTAL_URL": "https://dao.mythicalbeings.io"
+      },
+      "secrets": {
+        "required": [
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_CHANNEL_ID",
+          "ADMIN_CHAT_ID",
+          "POLYGON_RPC_URL",
+          "ADMIN_API_TOKEN"
+        ]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "mythical-dao-telegram-staging",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "migrations"
+        }
+      ]
+    },
+    "production": {
+      "name": "mythical-dao-telegram-production-v2-rehearsal",
+      "triggers": {
+        "crons": [
+          "*/15 * * * *"
+        ]
+      },
+      "vars": {
+        "ENVIRONMENT": "production",
+        "SNAPSHOT_SPACE": "mythicalbeings.eth",
+        "SNAPSHOT_API_URL": "https://hub.snapshot.org/graphql",
+        "SNAPSHOT_WEB_BASE_URL": "https://snapshot.org/#/s:",
+        "POLYGON_CHAIN_ID": "137",
+        "GOVERNOR_ADDRESS": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
+        "GOVERNOR_DEPLOYMENT_BLOCK": "48674443",
+        "POLYGON_CONFIRMATIONS": "64",
+        "POLYGON_LOG_CHUNK_SIZE": "10000",
+        "POLYGON_HISTORY_CHUNKS_PER_RUN": "30",
+        "POLYGON_RECENT_SEED_BLOCKS": "300000",
+        "POLYGON_BLOCK_TIME_SECONDS": "2",
+        "TALLY_PROPOSAL_BASE_URL": "https://www.tally.xyz/gov/mythical-dao/proposal/",
+        "POLYGONSCAN_TX_BASE_URL": "https://polygonscan.com/tx/",
+        "GOVERNANCE_MODE": "legacy",
+        "PORTAL_URL": "https://dao.mythicalbeings.io"
+      },
+      "secrets": {
+        "required": [
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_CHANNEL_ID",
+          "ADMIN_CHAT_ID",
+          "POLYGON_RPC_URL",
+          "ADMIN_API_TOKEN"
+        ]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "mythical-dao-telegram-production",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "migrations"
+        }
+      ]
+    }
+  }
+}

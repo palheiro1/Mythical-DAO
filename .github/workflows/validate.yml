@@ -1,0 +1,51 @@
+name: Validate DAO implementation
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  portal:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/dao-portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22'
+          cache: npm
+          cache-dependency-path: services/dao-portal/package-lock.json
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.3.5
+      - run: npm ci
+      - run: npm run types
+      - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run db:local
+      - run: npx wrangler d1 execute DAO_DB --local --file archives/snapshot.sql
+      - run: npm run test:recovery
+      - run: npm run dev:api > /tmp/dao-worker.log 2>&1 &
+      - run: |
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8787/api/config > /dev/null; then break; fi
+            sleep 1
+          done
+          npm run test:browser
+      - run: npx wrangler deploy --dry-run --env staging
+  telegram:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/telegram-governance-bot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22'
+          cache: npm
+          cache-dependency-path: services/telegram-governance-bot/package-lock.json
+      - run: npm ci
+      - run: npm run check

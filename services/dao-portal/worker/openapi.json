@@ -1,0 +1,445 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Mythical DAO public API",
+    "version": "0.1.0",
+    "description": "Read-only governance data; transactions are signed and submitted by members. Token quantities and proposal identifiers are decimal strings. Events retain chain, contract, block/hash and transaction identity."
+  },
+  "servers": [
+    {
+      "url": "https://dao.mythicalbeings.io"
+    }
+  ],
+  "paths": {
+    "/api/config": {
+      "get": {
+        "summary": "Deployed contracts and activation status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "RPC agreement and index freshness; signingAllowed fails closed",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/proposals": {
+      "get": {
+        "summary": "Executable and historical Governor proposals",
+        "parameters": [
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exclusive composite block.logIndex.contract cursor returned by the previous page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/ballots": {
+      "get": {
+        "summary": "On-chain community ballots",
+        "parameters": [
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exclusive composite block.logIndex.contract cursor returned by the previous page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/proposals/{contract}/{id}": {
+      "get": {
+        "summary": "Proposal with exact content, all actions and confirmed state",
+        "parameters": [
+          {
+            "name": "contract",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[0-9a-fA-F]{40}$"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/delegates": {
+      "get": {
+        "summary": "Delegates and verified voting weights",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/members/{address}": {
+      "get": {
+        "summary": "MANA balance, delegated power, representative, allowance and supply",
+        "parameters": [
+          {
+            "name": "address",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/treasury": {
+      "get": {
+        "summary": "Fixed basket balances and residual legacy assets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "get": {
+        "summary": "Confirmed event history",
+        "parameters": [
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exclusive composite block.logIndex.contract cursor returned by the previous page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/history/snapshot": {
+      "get": {
+        "summary": "Read-only imported Snapshot archive",
+        "parameters": [
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exclusive block number (Snapshot: created timestamp) cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified data or explicit unavailable/setup state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RPC, index or configuration unavailable"
+          }
+        }
+      }
+    },
+    "/api/preflight": {
+      "post": {
+        "summary": "Simulate the exact wallet transaction on two independent RPCs at the same current block",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["account", "to", "data", "value"],
+                "properties": {
+                  "account": {
+                    "type": "string"
+                  },
+                  "to": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string",
+                    "pattern": "^[0-9]+$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gas and estimatedFee decimal strings, block, checkedAt"
+          },
+          "409": {
+            "description": "Signing disabled"
+          },
+          "503": {
+            "description": "Simulation failed or RPC divergence"
+          }
+        }
+      }
+    },
+    "/api/simulate-actions": {
+      "post": {
+        "summary": "Sequential eth_simulateV1 batch from the timelock; unsupported providers fail closed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["actions"],
+                "properties": {
+                  "actions": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 20,
+                    "items": {
+                      "type": "object",
+                      "required": ["target", "value", "data"],
+                      "properties": {
+                        "target": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        },
+                        "data": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sequential simulation result: ok flag, every call result, block and warning. Current-state reverts are visible and require acknowledgement before proposal publication; RPC failure blocks signing."
+          },
+          "503": {
+            "description": "RPC failure or unsupported simulation"
+          }
+        }
+      }
+    },
+    "/api/notification-feed": {
+      "get": {
+        "summary": "Verified V2 proposal feed ordered by block, log index and contract; resumable after cursor",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "items and nextCursor"
+          },
+          "409": {
+            "description": "Index not verified"
+          }
+        }
+      }
+    },
+    "/api/redeem-preview": {
+      "get": {
+        "summary": "Live proportional exit amounts in basket order, total supply and read block",
+        "parameters": [
+          {
+            "name": "amount",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "amounts, supply and block as decimal strings"
+          },
+          "400": {
+            "description": "Invalid amount or missing deployment"
+          }
+        }
+      }
+    },
+    "/api/overview": {
+      "get": {
+        "summary": "Complete indexed active/queued totals, independent of proposal page size",
+        "responses": {
+          "200": {
+            "description": "activeVotes, queuedExecutions, complete and asOfBlock"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Uint256": {
+        "type": "string",
+        "pattern": "^[0-9]+$"
+      },
+      "Hash": {
+        "type": "string",
+        "pattern": "^0x[0-9a-fA-F]{64}$"
+      }
+    }
+  }
+}

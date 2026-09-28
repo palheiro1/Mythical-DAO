@@ -1,0 +1,2 @@
+RPC_PRIMARY_URL=https://your-first-provider.example
+RPC_SECONDARY_URL=https://your-independent-provider.example
