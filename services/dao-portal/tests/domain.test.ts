@@ -101,12 +101,19 @@ describe("portable drafts", () => {
   });
 });
 describe("release gates", () => {
-  it("starts read-only with known MANA and legacy addresses", () => {
+  it("activates the existing Governor independently of the missing exit module", () => {
     const cfg = config({
       ENVIRONMENT: "local",
       DEPLOYMENT_MANIFEST: "",
     } as Env);
-    expect(cfg.enabled).toBe(false);
+    expect(cfg.enabled).toBe(true);
+    expect(cfg.contracts.governor?.address).toBe(
+      cfg.contracts.treasury?.address,
+    );
+    expect(cfg.capabilities?.ragequit).toBe(false);
+    expect(cfg.contracts.usdcNative?.address).not.toBe(
+      cfg.contracts.usdcBridged?.address,
+    );
     expect(cfg.chainId).toBe(137);
   });
   it("rejects lowering finality in production", () =>

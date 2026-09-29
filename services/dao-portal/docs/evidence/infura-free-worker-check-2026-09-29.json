@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-09-29T12:00:00.913Z",
+  "status": 200,
+  "durationMs": 1185,
+  "result": {
+    "skipped": true
+  },
+  "scope": "One authenticated remote-preview indexChain run using the staging D1; no production HTTP trigger added."
+}

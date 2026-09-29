@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "status": "review-template-module-address-pending",
+  "chainId": 137,
+  "governor": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
+  "title": "Authorize the immutable Mythical DAO ragequit module",
+  "module": "<verified-deployed-module-address>",
+  "description": "Grant continuous maximum allowances for GEM, WETH and native USDC to the reviewed immutable module. Members burn their own MANA for proportional payments from the existing treasury. Governance can spend funds or revoke allowances. No mandatory exit window, migration, delegation changes or governance rule changes. POL, WPOL, USDC.e, MANA and NFTs are excluded.",
+  "actions": [
+    {
+      "asset": "GEM",
+      "target": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+      "value": "0",
+      "function": "approve(address,uint256)",
+      "arguments": [
+        "<verified-deployed-module-address>",
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      ]
+    },
+    {
+      "asset": "WETH",
+      "target": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+      "value": "0",
+      "function": "approve(address,uint256)",
+      "arguments": [
+        "<verified-deployed-module-address>",
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      ]
+    },
+    {
+      "asset": "USDC native",
+      "target": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+      "value": "0",
+      "function": "approve(address,uint256)",
+      "arguments": [
+        "<verified-deployed-module-address>",
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      ]
+    }
+  ],
+  "revocation": "Same three targets, approve(module,0), through a new Governor proposal/vote/execute cycle.",
+  "materialize": "node scripts/ragequit-proposal.mjs MODULE deployments/authorize-ragequit.json authorize",
+  "verification": "node scripts/verify-ragequit.mjs deployments/polygon.json deployments/allowances-authorized.json authorized"
+}

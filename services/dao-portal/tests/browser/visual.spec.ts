@@ -51,6 +51,7 @@ test.describe("visual acceptance matrix", () => {
             })),
             name,
           ).toEqual([]);
+          await page.locator("#main-content").focus();
           await page.screenshot({
             path:
               "docs/evidence/visual/controlled-" +
@@ -216,6 +217,10 @@ test.describe("visual acceptance matrix", () => {
           ).toEqual([]);
           if (name === "exit-review")
             await page.getByRole("button", { name: "Close review" }).focus();
+          else {
+            await page.locator("#main-content").focus();
+            await page.evaluate(() => window.scrollTo(0, 0));
+          }
           await page.screenshot({
             path:
               "docs/evidence/visual/controlled-" +

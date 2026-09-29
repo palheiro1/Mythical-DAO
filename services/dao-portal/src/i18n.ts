@@ -12,11 +12,11 @@ export const en = {
   network: "Polygon",
   skip: "Skip to content",
   fundingNotice:
-    "Approved payments do not reserve funds. Assets remain available for member exits until paid. If funds become insufficient, execution reverts in full.",
+    "Approved payments do not reserve funds. Exit quotes depend on current basket balances and treasury allowances. The DAO can spend assets or revoke allowances.",
   advisoryNotice:
-    "Community ballots express a collective preference. They cannot move treasury funds.",
+    "Snapshot advisory votes express a collective preference. They cannot move treasury funds.",
   exitNotice:
-    "Your MANA is permanently burned. You receive your proportional share of POL, WETH and USDC.e held by the new treasury. Tokens and assets held elsewhere are excluded.",
+    "Your MANA is permanently burned. You receive your proportional share of GEM, WETH and native USDC paid directly from the DAO treasury, subject to available allowances. POL, WPOL, USDC.e, MANA and NFTs are excluded.",
 } as const;
 export type MessageKey = keyof typeof en;
 export function t(key: MessageKey) {

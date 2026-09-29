@@ -1,0 +1,121 @@
+{
+  "status": "degraded",
+  "signingAllowed": true,
+  "historyComplete": false,
+  "head": "94662736",
+  "confirmedHead": "94662672",
+  "checkedAt": "2026-09-29T16:27:23.885Z",
+  "sources": [
+    {
+      "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+      "block": "48774442",
+      "updatedAt": 1790698758209
+    },
+    {
+      "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+      "block": "46045115",
+      "updatedAt": 1790699229026
+    },
+    {
+      "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+      "block": "48774442",
+      "updatedAt": 1790698737573
+    },
+    {
+      "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+      "block": "48779442",
+      "updatedAt": 1790698863121
+    },
+    {
+      "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "block": "49039442",
+      "updatedAt": 1790699219510
+    },
+    {
+      "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "block": "48774442",
+      "updatedAt": 1790698848267
+    }
+  ],
+  "sync": {
+    "percent": 0.36,
+    "governancePercent": 0.65,
+    "targetBlock": "94662672",
+    "updatedAt": 1790699229026,
+    "sources": [
+      {
+        "key": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "label": "Governor / treasury",
+        "governance": true,
+        "startBlock": "48674443",
+        "indexedBlock": "49039442",
+        "targetBlock": "94662672",
+        "updatedAt": 1790699219510,
+        "checkedBlocks": "365000",
+        "totalBlocks": "45988230",
+        "percent": 0.79
+      },
+      {
+        "key": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "label": "GEM",
+        "governance": false,
+        "startBlock": "48674443",
+        "indexedBlock": "48779442",
+        "targetBlock": "94662672",
+        "updatedAt": 1790698863121,
+        "checkedBlocks": "105000",
+        "totalBlocks": "45988230",
+        "percent": 0.22
+      },
+      {
+        "key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "label": "USDC",
+        "governance": false,
+        "startBlock": "48674443",
+        "indexedBlock": "48774442",
+        "targetBlock": "94662672",
+        "updatedAt": 1790698737573,
+        "checkedBlocks": "100000",
+        "totalBlocks": "45988230",
+        "percent": 0.21
+      },
+      {
+        "key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "label": "USDC.e",
+        "governance": false,
+        "startBlock": "48674443",
+        "indexedBlock": "48774442",
+        "targetBlock": "94662672",
+        "updatedAt": 1790698758209,
+        "checkedBlocks": "100000",
+        "totalBlocks": "45988230",
+        "percent": 0.21
+      },
+      {
+        "key": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "label": "MANA",
+        "governance": true,
+        "startBlock": "45785116",
+        "indexedBlock": "46045115",
+        "targetBlock": "94662672",
+        "updatedAt": 1790699229026,
+        "checkedBlocks": "260000",
+        "totalBlocks": "48877557",
+        "percent": 0.53
+      },
+      {
+        "key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "label": "WETH",
+        "governance": false,
+        "startBlock": "48674443",
+        "indexedBlock": "48774442",
+        "targetBlock": "94662672",
+        "updatedAt": 1790698848267,
+        "checkedBlocks": "100000",
+        "totalBlocks": "45988230",
+        "percent": 0.21
+      }
+    ]
+  },
+  "reason": "RPC_SECONDARY_TIMEOUT"
+}

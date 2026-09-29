@@ -1,0 +1,18 @@
+{
+  "verifiedAt": "2026-09-28T20:04:50.301Z",
+  "verification": "Matching canonical block hashes and event logs from two independent RPC providers. No completeness assertion or cursor advancement.",
+  "events": [
+    {
+      "hash": "0x862d1b68152e8c4b67d4db87cd892977a12eed1350a216d776ade0fc52737570",
+      "event": "ProposalCreated",
+      "block": "58427770",
+      "blockHash": "0x08dd1dc5fc9342768b345daa70a081a88e8acbe5335d62edbe95510e8ffd3eb9"
+    },
+    {
+      "hash": "0x0add41071906a617dc7b43807fc1f1196648eab86d00c89dfb4ec351623fa605",
+      "event": "ProposalCreated",
+      "block": "89169940",
+      "blockHash": "0x1cdfec3e95dc88c84e3710ffefe9a3a2d0e45053fa174ad6c41e4c84b1f6b31d"
+    }
+  ]
+}

@@ -7,9 +7,10 @@ import {
   ballot,
   config,
   recipient,
+  payment,
 } from "./fixtures";
 import { decodeFunctionData } from "viem";
-import { ballotsAbi } from "../../shared/abis";
+import { governorAbi } from "../../shared/abis";
 import { newDraft, description } from "../../src/drafts";
 test("verified treasury identifies payments and preserves exact balances", async ({
   page,
@@ -17,10 +18,10 @@ test("verified treasury identifies payments and preserves exact balances", async
   await controlledPortal(page);
   await page.goto("/#treasury");
   await expect(
-    page.getByRole("heading", { name: "V2 treasury", exact: true }),
+    page.getByRole("heading", { name: "DAO treasury", exact: true }),
   ).toBeVisible();
   await expect(page.getByText("1.23", { exact: true })).toBeVisible();
-  await expect(page.getByText("Balances verified at block 936")).toHaveCount(2);
+  await expect(page.getByText("Balances verified at block 936")).toHaveCount(1);
   const pending = page.locator("section").filter({
     has: page.getByRole("heading", { name: "Identified pending payments" }),
   });
@@ -39,7 +40,7 @@ test("unavailable, syncing, empty and stale data stay distinct", async ({
     "Balances verified at block",
   );
   await expect(page.locator(".treasury-panel").first()).toContainText(
-    "V2 is being prepared",
+    "The portal is being prepared",
   );
   state.health = "syncing";
   await page.reload();
@@ -47,6 +48,11 @@ test("unavailable, syncing, empty and stale data stay distinct", async ({
     "History is synchronizing",
   );
   state.unavailable = false;
+  await page.reload();
+  await expect(page.getByText("Balances verified at block 936")).toBeVisible();
+  await expect(page.locator(".treasury-panel")).not.toContainText(
+    "Showing previously retrieved data",
+  );
   state.health = "ok";
   state.empty = true;
   await page.goto("/#governance");
@@ -64,11 +70,67 @@ test("unavailable, syncing, empty and stale data stay distinct", async ({
     page
       .locator("main")
       .getByText(
-        "Showing previously retrieved data. It may be out of date; signing remains unavailable.",
+        "Historical records may be incomplete or out of date. Each wallet operation is verified directly before signing.",
       )
       .first(),
   ).toBeVisible();
   await expect(page.getByText("1.23", { exact: true })).toBeVisible();
+});
+test("live membership stays visible while history syncs and can recover after an RPC failure", async ({
+  page,
+}) => {
+  const state = await controlledPortal(page);
+  state.health = "syncing";
+  await injectWallet(page);
+  await page.clock.install();
+  await page.goto("/#delegation");
+  await page
+    .getByRole("button", { name: "Connect wallet", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Injected", exact: true }).click();
+  await expect(
+    page.locator(".metric-grid").getByText("500", { exact: true }),
+  ).toHaveCount(2);
+  await expect(
+    page.getByText("Membership verified at block 1000"),
+  ).toBeVisible();
+  await expect(page.locator(".setup-banner")).toContainText(
+    "Wallet and treasury balances are read directly from the network",
+  );
+  await expect(
+    page.getByRole("button", { name: "Delegate to myself", exact: true }),
+  ).toBeEnabled();
+
+  state.fail = true;
+  await page.clock.fastForward(31000);
+  await page.clock.fastForward(2000);
+  const retry = page.getByRole("button", {
+    name: "Retry membership data",
+    exact: true,
+  });
+  await expect(retry).toBeVisible();
+  await expect(page.getByText("Membership verified at block 1000")).toHaveCount(
+    0,
+  );
+  await expect(
+    page.locator(".metric-grid").getByText("500", { exact: true }),
+  ).toHaveCount(2);
+  state.fail = false;
+  await retry.click();
+  await expect(
+    page.getByText("Membership verified at block 1000"),
+  ).toBeVisible();
+  await expect(retry).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Delegate to myself", exact: true }),
+  ).toBeDisabled();
+  await page
+    .locator(".setup-banner")
+    .getByRole("button", { name: "Try again" })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Delegate to myself", exact: true }),
+  ).toBeEnabled();
 });
 test("history keeps the original date separate from import provenance", async ({
   page,
@@ -94,7 +156,7 @@ test("history keeps the original date separate from import provenance", async ({
     "Results and signatures have not been independently verified",
   );
 });
-test("proposal detail separates approval, timelock and advisory results", async ({
+test("proposal detail presents direct execution and preserved advisory results", async ({
   page,
 }) => {
   await controlledPortal(page);
@@ -102,7 +164,7 @@ test("proposal detail separates approval, timelock and advisory results", async 
     "/#proposal/" + paymentProposal.contract + "/" + paymentProposal.id,
   );
   await expect(
-    page.getByText("Timelock · waiting", { exact: true }),
+    page.getByRole("button", { name: "Review execution →", exact: true }),
   ).toBeVisible();
   await expect(page.getByText("Pay 10 POL to " + recipient)).toBeVisible();
   await expect(page.locator("main")).toContainText("(estimated)");
@@ -245,7 +307,8 @@ test("reviewed proposal text and choices reach the wallet unchanged", async ({
   await controlledPortal(page);
   await injectWallet(page);
   const draft = newDraft();
-  draft.kind = "community";
+  draft.kind = "executable";
+  draft.actions = [payment];
   draft.title = "Exact text → no rewrite";
   draft.options = ["Forest", "Ocean"];
   for (const field of Object.keys(draft.sections))
@@ -264,6 +327,9 @@ test("reviewed proposal text and choices reach the wallet unchanged", async ({
   const reviewed = await page.locator("#exact-text").textContent();
   expect(reviewed).toBe(description(draft));
   await page
+    .getByRole("checkbox", { name: /I checked that the written budget/ })
+    .check();
+  await page
     .getByRole("button", { name: "Simulate & review publication" })
     .click();
   await expect(page.getByRole("dialog")).toBeVisible();
@@ -278,14 +344,19 @@ test("reviewed proposal text and choices reach the wallet unchanged", async ({
       ).testTransaction,
   );
   expect(transaction?.to.toLowerCase()).toBe(
-    config.contracts.ballots!.address.toLowerCase(),
+    config.contracts.governor!.address.toLowerCase(),
   );
   const decoded = decodeFunctionData({
-    abi: ballotsAbi,
+    abi: governorAbi,
     data: transaction!.data,
   });
-  expect(decoded.functionName).toBe("createBallot");
-  expect(decoded.args).toEqual([reviewed, draft.options]);
+  expect(decoded.functionName).toBe("propose");
+  expect(decoded.args).toEqual([
+    [payment.target],
+    [BigInt(payment.value)],
+    [payment.data],
+    reviewed,
+  ]);
 });
 
 test("failed final simulation prevents a wallet submission", async ({

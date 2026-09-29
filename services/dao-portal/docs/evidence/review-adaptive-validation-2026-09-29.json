@@ -1,0 +1,74 @@
+{
+  "date": "2026-09-29",
+  "validation": {
+    "dataAndScripts": {
+      "fullSuitePassed": 94,
+      "subsequentAffectedSuitePassed": 28,
+      "newDistinctTests": 1,
+      "totalDistinctPassed": 95
+    },
+    "solidity": {
+      "passed": 15,
+      "fuzzRuns": 2048
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "frontendBundle": "index-C9tIGjEp.js"
+  },
+  "preservation": {
+    "events": 18,
+    "snapshotRows": 8,
+    "sourceCount": 6,
+    "advances": [
+      {
+        "source": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "before": 48774442,
+        "after": 48779442,
+        "advanced": 5000
+      },
+      {
+        "source": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "before": 46040115,
+        "after": 46050115,
+        "advanced": 10000
+      },
+      {
+        "source": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "before": 48774442,
+        "after": 48779442,
+        "advanced": 5000
+      },
+      {
+        "source": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "before": 48779442,
+        "after": 48784442,
+        "advanced": 5000
+      },
+      {
+        "source": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "before": 49029442,
+        "after": 49041942,
+        "advanced": 12500
+      },
+      {
+        "source": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "before": 48774442,
+        "after": 48779442,
+        "advanced": 5000
+      }
+    ]
+  },
+  "note": "No Polygon transaction broadcast. Contract source and init code unchanged. D1 received an additive tuning table. Counts and cursor progress observed; not a full database export.",
+  "deployment": {
+    "workerVersion": "72f71cdc-5af2-43fd-b85d-13b8c9732cbf",
+    "migration": "0003_index_adaptive.sql",
+    "url": "https://dao-preview.mythicalbeings.io",
+    "frontendChanged": false
+  },
+  "finalHealth": {
+    "signingAllowed": true,
+    "historyComplete": false,
+    "syncPercent": 0.39,
+    "checkedAt": "2026-09-29T16:34:31.618Z"
+  }
+}

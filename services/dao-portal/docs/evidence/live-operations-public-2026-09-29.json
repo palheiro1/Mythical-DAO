@@ -1,0 +1,270 @@
+{
+  "checkedAt": "2026-09-29T15:43:53.648Z",
+  "health": {
+    "checkedAt": "2026-09-29T16:03:42.524Z",
+    "status": 200,
+    "data": {
+      "status": "degraded",
+      "signingAllowed": true,
+      "historyComplete": false,
+      "head": "94661787",
+      "confirmedHead": "94661723",
+      "checkedAt": "2026-09-29T16:03:41.798Z",
+      "sources": [
+        {
+          "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+          "block": "48754442",
+          "updatedAt": 1790697239112
+        },
+        {
+          "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+          "block": "45990115",
+          "updatedAt": 1790697355610
+        },
+        {
+          "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+          "block": "48759442",
+          "updatedAt": 1790697426735
+        },
+        {
+          "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+          "block": "48759442",
+          "updatedAt": 1790697379469
+        },
+        {
+          "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+          "block": "48979442",
+          "updatedAt": 1790697714333
+        },
+        {
+          "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+          "block": "48754442",
+          "updatedAt": 1790697262537
+        }
+      ],
+      "sync": {
+        "percent": 0.3,
+        "governancePercent": 0.53,
+        "targetBlock": "94661723",
+        "updatedAt": 1790697714333,
+        "sources": [
+          {
+            "key": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+            "label": "Governor / treasury",
+            "governance": true,
+            "startBlock": "48674443",
+            "indexedBlock": "48979442",
+            "targetBlock": "94661723",
+            "updatedAt": 1790697714333,
+            "checkedBlocks": "305000",
+            "totalBlocks": "45987281",
+            "percent": 0.66
+          },
+          {
+            "key": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+            "label": "GEM",
+            "governance": false,
+            "startBlock": "48674443",
+            "indexedBlock": "48759442",
+            "targetBlock": "94661723",
+            "updatedAt": 1790697379469,
+            "checkedBlocks": "85000",
+            "totalBlocks": "45987281",
+            "percent": 0.18
+          },
+          {
+            "key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+            "label": "USDC",
+            "governance": false,
+            "startBlock": "48674443",
+            "indexedBlock": "48759442",
+            "targetBlock": "94661723",
+            "updatedAt": 1790697426735,
+            "checkedBlocks": "85000",
+            "totalBlocks": "45987281",
+            "percent": 0.18
+          },
+          {
+            "key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+            "label": "USDC.e",
+            "governance": false,
+            "startBlock": "48674443",
+            "indexedBlock": "48754442",
+            "targetBlock": "94661723",
+            "updatedAt": 1790697239112,
+            "checkedBlocks": "80000",
+            "totalBlocks": "45987281",
+            "percent": 0.17
+          },
+          {
+            "key": "0x2cacca1266653bb090d3fb511456ebca33150562",
+            "label": "MANA",
+            "governance": true,
+            "startBlock": "45785116",
+            "indexedBlock": "45990115",
+            "targetBlock": "94661723",
+            "updatedAt": 1790697355610,
+            "checkedBlocks": "205000",
+            "totalBlocks": "48876608",
+            "percent": 0.41
+          },
+          {
+            "key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+            "label": "WETH",
+            "governance": false,
+            "startBlock": "48674443",
+            "indexedBlock": "48754442",
+            "targetBlock": "94661723",
+            "updatedAt": 1790697262537,
+            "checkedBlocks": "80000",
+            "totalBlocks": "45987281",
+            "percent": 0.17
+          }
+        ]
+      },
+      "reason": "RPC_SECONDARY_TIMEOUT"
+    }
+  },
+  "overview": {
+    "status": 200,
+    "data": {
+      "activeVotes": 0,
+      "queuedExecutions": 0,
+      "readyForExecution": 0,
+      "complete": false,
+      "asOfBlock": "94660932"
+    }
+  },
+  "feed": {
+    "status": 409,
+    "data": {
+      "error": "Index is not verified"
+    }
+  },
+  "member": {
+    "status": 200,
+    "data": {
+      "balance": "33670936971428589697113",
+      "votes": "33670936971428589697113",
+      "delegate": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+      "supply": "1000000000000000000000000",
+      "allowance": "0",
+      "asOfBlock": "94660998"
+    }
+  },
+  "delegate": {
+    "checkedAt": "2026-09-29T16:04:25.516Z",
+    "status": 200,
+    "data": {
+      "block": "94661816",
+      "blockHash": "0x73df7e708be2186f569aec849bc3038c99ce7bbdd6c6653a96fc8f329c8f3ba7",
+      "chainId": 137,
+      "account": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+      "verification": {
+        "operation": "delegate",
+        "balance": "33670936971428589697113",
+        "representative": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9"
+      },
+      "gas": "35995",
+      "estimatedFee": "10216907553349250",
+      "checkedAt": "2026-09-29T16:04:25.339Z"
+    }
+  },
+  "actions": {
+    "checkedAt": "2026-09-29T16:03:43.543Z",
+    "status": 200,
+    "data": {
+      "ok": true,
+      "complete": true,
+      "block": "94661787",
+      "calls": [
+        {
+          "status": "0x1",
+          "returnData": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "gasUsed": "0xe25b",
+          "logs": [
+            {
+              "address": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+              "data": "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+              "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                "0x0000000000000000000000007b9e327748462f1038c9d081c98d189b22c60a27",
+                "0x000000000000000000000000c4ccc6a11329558582c2da79c18a9aeac00f59f9"
+              ]
+            }
+          ]
+        }
+      ],
+      "warning": "The single action was verified from the Governor by both data providers. Future balances and state may change."
+    }
+  },
+  "propose": {
+    "checkedAt": "2026-09-29T16:04:26.802Z",
+    "status": 200,
+    "data": {
+      "block": "94661817",
+      "blockHash": "0xb67572cf93651c1c06bfa0833ebf668d5d60b64af63b9b288beb9eb2558a11de",
+      "chainId": 137,
+      "account": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+      "verification": {
+        "operation": "propose",
+        "votes": "33670936971428589697113",
+        "threshold": "0"
+      },
+      "gas": "143277",
+      "estimatedFee": "40365134925202911",
+      "checkedAt": "2026-09-29T16:04:26.571Z"
+    }
+  },
+  "batch": {
+    "checkedAt": "2026-09-29T16:03:45.155Z",
+    "status": 200,
+    "data": {
+      "ok": false,
+      "complete": false,
+      "block": "94661789",
+      "calls": [
+        {
+          "status": "0x1",
+          "returnData": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "gasUsed": "0xe25b",
+          "logs": [
+            {
+              "address": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+              "data": "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+              "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                "0x0000000000000000000000007b9e327748462f1038c9d081c98d189b22c60a27",
+                "0x000000000000000000000000c4ccc6a11329558582c2da79c18a9aeac00f59f9"
+              ]
+            }
+          ]
+        },
+        {
+          "status": "0x1",
+          "returnData": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "gasUsed": "0xe25b",
+          "logs": [
+            {
+              "address": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+              "data": "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+              "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                "0x0000000000000000000000007b9e327748462f1038c9d081c98d189b22c60a27",
+                "0x000000000000000000000000c4ccc6a11329558582c2da79c18a9aeac00f59f9"
+              ]
+            }
+          ]
+        }
+      ],
+      "warning": "The combined actions could not be verified by both data providers. Review every action carefully. Publication does not guarantee execution; execution must pass a separate simulation."
+    }
+  },
+  "deployment": {
+    "workerVersion": "35d075fa-1eb1-4e03-bd13-1d3deb06271d",
+    "vercel": "dpl_EWr14SWLDvAr5uFeNe5bjPXknWPg",
+    "frontend": "index-C9tIGjEp.js",
+    "url": "https://dao-preview.mythicalbeings.io"
+  },
+  "note": "Only read-only contract calls and simulations; no public-chain transactions signed or broadcast. Each check has its own timestamp. Historical archive remains incomplete."
+}

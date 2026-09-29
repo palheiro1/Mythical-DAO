@@ -577,6 +577,73 @@ nav a.current {
 .setup-banner .icon {
   margin-top: 2px;
 }
+.sync-status {
+  margin: 12px 32px 8px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--panel-radius);
+  font-size: 14px;
+}
+.sync-heading,
+.sync-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.sync-percent {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.sync-progress {
+  display: block;
+  width: 100%;
+  height: 8px;
+  margin: 12px 0;
+  border: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  appearance: none;
+  background: var(--surface-soft);
+  accent-color: var(--accent);
+}
+.sync-progress::-webkit-progress-bar {
+  background: var(--surface-soft);
+}
+.sync-progress::-webkit-progress-value {
+  background: var(--accent);
+}
+.sync-progress::-moz-progress-bar {
+  background: var(--accent);
+}
+.sync-error {
+  color: var(--warning);
+}
+.sync-status details {
+  margin-top: 8px;
+}
+.sync-status summary {
+  width: fit-content;
+}
+.sync-status p {
+  margin: 12px 0;
+}
+.sync-sources {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sync-sources li {
+  border-top: 1px solid var(--border);
+  padding: 10px 0;
+}
+.sync-sources small {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
 main {
   padding: 24px 32px 40px;
   max-width: 1440px;
@@ -1417,7 +1484,8 @@ dialog h2 {
   .network-bar {
     margin-inline: 48px;
   }
-  .setup-banner {
+  .setup-banner,
+  .sync-status {
     margin-inline: 48px;
   }
 }
@@ -1494,6 +1562,9 @@ dialog h2 {
   .setup-banner {
     margin: 0 20px 4px;
     flex-wrap: wrap;
+  }
+  .sync-status {
+    margin-inline: 20px;
   }
   .setup-banner details {
     width: 100%;

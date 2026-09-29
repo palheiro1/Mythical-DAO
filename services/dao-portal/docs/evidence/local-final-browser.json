@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-09-29T07:14:56.237Z",
+  "metrics": "Your MANA balance\n33670.936971428589697113\n\nTokens held in your wallet\n\nVoting power received\n33670.936971428589697113\n\nDelegated power for future snapshots\n\nChosen representative\n0xc4CC…59F9 ↗\n\nDelegation does not transfer MANA",
+  "block": "Membership verified at block 94640637",
+  "methods": [
+    "wallet_requestPermissions",
+    "eth_accounts",
+    "eth_chainId",
+    "eth_accounts",
+    "eth_chainId",
+    "eth_chainId"
+  ],
+  "responses": [
+    {
+      "path": "/api/config",
+      "status": 200
+    },
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/api/delegates",
+      "status": 200
+    },
+    {
+      "path": "/api/members/0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+      "status": 200
+    }
+  ],
+  "errors": []
+}

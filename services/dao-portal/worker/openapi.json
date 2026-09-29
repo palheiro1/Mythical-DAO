@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Mythical DAO public API",
-    "version": "0.1.0",
-    "description": "Read-only governance data; transactions are signed and submitted by members. Token quantities and proposal identifiers are decimal strings. Events retain chain, contract, block/hash and transaction identity."
+    "version": "0.3.0",
+    "description": "Existing Governor and treasury on Polygon; optional immutable ragequit module. Snapshot advisory votes stay external. Quantities and identifiers are decimal strings. No timelock or migration."
   },
   "servers": [
     {
@@ -13,7 +13,7 @@
   "paths": {
     "/api/config": {
       "get": {
-        "summary": "Deployed contracts and activation status",
+        "summary": "Version 2 manifest: explicit treasury/module/GEM/native USDC/historical USDC.e and independent capabilities",
         "parameters": [],
         "responses": {
           "200": {
@@ -34,7 +34,7 @@
     },
     "/api/health": {
       "get": {
-        "summary": "RPC agreement and index freshness; signingAllowed fails closed",
+        "summary": "Live RPC and Governor/MANA identity verification (signingAllowed), separate from Governor/MANA historical completeness (historyComplete) and sync progress",
         "parameters": [],
         "responses": {
           "200": {
@@ -85,7 +85,7 @@
     },
     "/api/ballots": {
       "get": {
-        "summary": "On-chain community ballots",
+        "summary": "Historical on-chain ballot archive; new advisory votes use external Snapshot",
         "parameters": [
           {
             "name": "before",
@@ -287,7 +287,7 @@
     },
     "/api/preflight": {
       "post": {
-        "summary": "Simulate the exact wallet transaction on two independent RPCs at the same current block",
+        "summary": "Allowlisted per-operation eligibility reads and actual-caller simulation at the same current block through both RPC providers; rechecked before signature; independent of archive progress",
         "requestBody": {
           "required": true,
           "content": {
@@ -329,7 +329,7 @@
     },
     "/api/simulate-actions": {
       "post": {
-        "summary": "Sequential eth_simulateV1 batch from the timelock; unsupported providers fail closed",
+        "summary": "Review future actions from the current Governor, independently of historical sync",
         "requestBody": {
           "required": true,
           "content": {
@@ -365,10 +365,10 @@
         },
         "responses": {
           "200": {
-            "description": "Sequential simulation result: ok flag, every call result, block and warning. Current-state reverts are visible and require acknowledgement before proposal publication; RPC failure blocks signing."
+            "description": "Returns ok, complete, calls, block and warning. A single action can fall back to matching eth_call results from both providers when one lacks eth_simulateV1. An unsupported combined simulation returns complete=false, ok=false and requires explicit acknowledgement to publish for voting. This never replaces the separate two-provider preflight for propose or execute. Current-state reverts require acknowledgement; genuine RPC failures and divergence block review."
           },
           "503": {
-            "description": "RPC failure or unsupported simulation"
+            "description": "RPC failure, invalid response or provider divergence"
           }
         }
       }
@@ -397,7 +397,7 @@
     },
     "/api/redeem-preview": {
       "get": {
-        "summary": "Live proportional exit amounts in basket order, total supply and read block",
+        "summary": "GEM/WETH/native USDC quote, module and basket identity, current balances, treasury allowances, pre-burn supply, block and explicit unavailable reasons",
         "parameters": [
           {
             "name": "amount",
@@ -411,7 +411,59 @@
         ],
         "responses": {
           "200": {
-            "description": "amounts, supply and block as decimal strings"
+            "description": "amounts, supply and block as decimal strings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "module",
+                    "treasury",
+                    "mana",
+                    "basket",
+                    "amounts",
+                    "supply",
+                    "block",
+                    "available",
+                    "reasons"
+                  ],
+                  "properties": {
+                    "module": {
+                      "type": ["string", "null"]
+                    },
+                    "basket": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "description": "Fixed order GEM, WETH, native USDC; each has address, decimals, balance, allowance, amount"
+                    },
+                    "amounts": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "supply": {
+                      "type": "string"
+                    },
+                    "block": {
+                      "type": "string"
+                    },
+                    "available": {
+                      "type": "boolean"
+                    },
+                    "reasons": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid amount or missing deployment"
@@ -425,6 +477,49 @@
         "responses": {
           "200": {
             "description": "activeVotes, queuedExecutions, complete and asOfBlock"
+          }
+        }
+      }
+    },
+    "/api/governance-parameters": {
+      "get": {
+        "summary": "Confirmed existing Governor delay, period, threshold, quorum fraction and counting mode; no timelock",
+        "responses": {
+          "200": {
+            "description": "On-chain parameters and confirmed block"
+          },
+          "503": {
+            "description": "RPC agreement unavailable"
+          }
+        }
+      }
+    },
+    "/api/proposals/resolve": {
+      "post": {
+        "summary": "Recover a proposal from a canonical confirmed Governor receipt, without changing historical cursors",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["transactionHash"],
+                "properties": {
+                  "transactionHash": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{64}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical proposal with current state"
+          },
+          "503": {
+            "description": "Missing, unconfirmed, divergent or noncanonical receipt"
           }
         }
       }

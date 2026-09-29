@@ -1,8 +1,32 @@
+import { knownAsset } from "./assets";
 import { m } from "../src/i18n";
 import { decodeFunctionData, formatUnits } from "viem";
-import { vaultAbi, governorAbi, ballotsAbi, timelockAbi } from "./abis";
+import {
+  tokenAbi,
+  vaultAbi,
+  governorAbi,
+  ballotsAbi,
+  timelockAbi,
+} from "./abis";
 import type { Action, PortalConfig } from "./domain";
 export function actionSummary(action: Action, config: PortalConfig): string {
+  if (action.data === "0x" && BigInt(action.value) > 0n)
+    return `Pay ${formatUnits(BigInt(action.value), 18)} POL to ${action.target}`;
+  try {
+    const call = decodeFunctionData({ abi: tokenAbi, data: action.data });
+    if (call.functionName === "transfer" || call.functionName === "approve") {
+      const asset = knownAsset(action.target, config);
+      const value = asset
+        ? formatUnits(call.args[1], asset.decimals)
+        : String(call.args[1]);
+      const symbol = asset?.symbol ?? `base units of ${action.target}`;
+      return call.functionName === "transfer"
+        ? `Pay ${value} ${symbol} to ${call.args[0]}`
+        : `Authorize ${call.args[1] === 2n ** 256n - 1n ? "unlimited" : value} ${symbol} spending by ${call.args[0]}. This grants an allowance; it is not a payment.`;
+    }
+  } catch {
+    /* Decode historical or governance calls below. */
+  }
   try {
     if (
       action.target.toLowerCase() ===

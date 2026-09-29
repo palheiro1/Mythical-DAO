@@ -1,0 +1,117 @@
+{
+  "checkedAt": "2026-09-29T09:03:31.358Z",
+  "providers": [
+    "https://polygon.drpc.org",
+    "https://tenderly.rpc.polygon.community"
+  ],
+  "rounds": [
+    {
+      "round": 0,
+      "results": [
+        {
+          "path": "health",
+          "status": 200,
+          "ms": 742,
+          "reason": "INDEX_READ_FAILED",
+          "head": "94644978"
+        },
+        {
+          "path": "treasury",
+          "status": 200,
+          "ms": 919,
+          "block": "94644914"
+        },
+        {
+          "path": "proposals",
+          "status": 200,
+          "ms": 1658,
+          "block": "94644914"
+        },
+        {
+          "path": "members/0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+          "status": 200,
+          "ms": 988,
+          "block": "94644978",
+          "balance": "33670936971428589697113"
+        },
+        {
+          "path": "governance-parameters",
+          "status": 200,
+          "ms": 1914
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "results": [
+        {
+          "path": "health",
+          "status": 200,
+          "ms": 547,
+          "reason": "INDEX_READ_FAILED",
+          "head": "94644979"
+        },
+        {
+          "path": "treasury",
+          "status": 200,
+          "ms": 624,
+          "block": "94644915"
+        },
+        {
+          "path": "proposals",
+          "status": 200,
+          "ms": 1256,
+          "block": "94644915"
+        },
+        {
+          "path": "members/0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+          "status": 200,
+          "ms": 780,
+          "block": "94644979",
+          "balance": "33670936971428589697113"
+        },
+        {
+          "path": "governance-parameters",
+          "status": 200,
+          "ms": 791
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "results": [
+        {
+          "path": "health",
+          "status": 200,
+          "ms": 503,
+          "reason": "INDEX_READ_FAILED",
+          "head": "94644979"
+        },
+        {
+          "path": "treasury",
+          "status": 200,
+          "ms": 846,
+          "block": "94644916"
+        },
+        {
+          "path": "proposals",
+          "status": 200,
+          "ms": 1254,
+          "block": "94644915"
+        },
+        {
+          "path": "members/0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+          "status": 200,
+          "ms": 543,
+          "block": "94644979",
+          "balance": "33670936971428589697113"
+        },
+        {
+          "path": "governance-parameters",
+          "status": 200,
+          "ms": 820
+        }
+      ]
+    }
+  ]
+}

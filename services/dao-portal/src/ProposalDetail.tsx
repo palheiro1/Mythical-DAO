@@ -91,13 +91,15 @@ export function ProposalDetail({
     intact = false;
   }
   const advisory = p.kind === "community",
-    legacy = p.kind === "legacy";
+    legacy =
+      p.contract.toLowerCase() !==
+      config.contracts.governor?.address.toLowerCase();
   const votes = p.votes ?? [],
     total = votes.reduce((a, v) => a + BigInt(v), 0n);
   const choices = advisory
     ? [m("Abstain"), ...p.options]
     : [m("Against"), m("For"), m("Abstain")];
-  const action = async (operation: "vote" | "queue" | "execute" | "cancel") => {
+  const action = async (operation: "vote" | "execute" | "cancel") => {
     try {
       if (!intact)
         throw new Error(m("The proposal content failed its integrity check."));
@@ -129,11 +131,9 @@ export function ProposalDetail({
         title:
           operation === "vote"
             ? m("Cast your vote")
-            : operation === "queue"
-              ? m("Schedule execution")
-              : operation === "execute"
-                ? m("Execute approved actions")
-                : m("Cancel proposal"),
+            : operation === "execute"
+              ? m("Execute approved actions")
+              : m("Cancel proposal"),
         to: p.contract,
         data,
         effect:
@@ -141,15 +141,11 @@ export function ProposalDetail({
             ? advisory
               ? t("advisoryNotice")
               : t("fundingNotice")
-            : operation === "queue"
+            : operation === "execute"
               ? m(
-                  "Start the timelock. Members retain the right to exit during the wait.",
+                  "Execute every approved action atomically. Any failure reverts the entire batch.",
                 )
-              : operation === "execute"
-                ? m(
-                    "Execute every approved action atomically. Any failure reverts the entire batch.",
-                  )
-                : m("Cancel this pending proposal."),
+              : m("Cancel this pending proposal."),
         displayActions: !advisory ? proposalActions(p) : undefined,
         details: [
           { label: "Proposal", value: p.description.split("\n")[0] },
@@ -201,7 +197,7 @@ export function ProposalDetail({
       {legacy && (
         <p className="notice">
           {m(
-            "This proposal belongs to the old Governor. It has not been converted into a V2 proposal. This archive is read-only.",
+            "This record belongs to a historical contract. Its original content is preserved; it cannot be signed through the active Governor.",
           )}
         </p>
       )}
@@ -214,7 +210,7 @@ export function ProposalDetail({
               )
             : p.state === "Succeeded"
               ? m(
-                  "Voting approved this proposal. Its actions have not been executed; scheduling and the timelock come next.",
+                  "Voting approved this proposal. Its actions can now be executed directly through the Governor.",
                 )
               : p.state === "Queued"
                 ? m(
@@ -302,7 +298,7 @@ export function ProposalDetail({
                   ? amount(p.quorum) + m(" MANA")
                   : m("Available after snapshot")}
                 {m(
-                  ". For + abstain count. At least ⅔ of directional votes must be for.",
+                  ". The Governor determines the outcome under its current rules.",
                 )}
               </p>
             )}
@@ -357,20 +353,6 @@ export function ProposalDetail({
               <button
                 className="button primary full"
                 disabled={!canSign || !intact || tx.busy}
-                onClick={() => void action("queue")}
-              >
-                {m("Schedule · 72h minimum →")}
-              </button>
-            )}
-            {!legacy && !advisory && p.state === "Queued" && (
-              <button
-                className="button primary full"
-                disabled={
-                  !canSign ||
-                  !intact ||
-                  tx.busy ||
-                  Number(p.eta ?? 0) > Date.now() / 1000
-                }
                 onClick={() => void action("execute")}
               >
                 {m("Review execution →")}

@@ -1,0 +1,135 @@
+{
+  "checkedAt": "2026-09-29T12:40:28.672Z",
+  "url": "https://dao-preview.mythicalbeings.io/#overview",
+  "health": {
+    "status": "degraded",
+    "signingAllowed": false,
+    "head": "94653658",
+    "confirmedHead": "94653594",
+    "checkedAt": "2026-09-29T12:40:27.549Z",
+    "sources": [
+      {
+        "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "block": "48699442",
+        "updatedAt": 1790685581927
+      },
+      {
+        "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "block": "45840115",
+        "updatedAt": 1790685562033
+      },
+      {
+        "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "block": "48699442",
+        "updatedAt": 1790685152463
+      },
+      {
+        "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "block": "48699442",
+        "updatedAt": 1790685139476
+      },
+      {
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block": "48729442",
+        "updatedAt": 1790685465185
+      },
+      {
+        "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "block": "48694442",
+        "updatedAt": 1790685032872
+      }
+    ],
+    "sync": {
+      "percent": 0.07,
+      "governancePercent": 0.11,
+      "targetBlock": "94653594",
+      "updatedAt": 1790685581927,
+      "sources": [
+        {
+          "key": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+          "label": "Governor / treasury",
+          "governance": true,
+          "startBlock": "48674443",
+          "indexedBlock": "48729442",
+          "targetBlock": "94653594",
+          "updatedAt": 1790685465185,
+          "checkedBlocks": "55000",
+          "totalBlocks": "45979152",
+          "percent": 0.11
+        },
+        {
+          "key": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+          "label": "GEM",
+          "governance": false,
+          "startBlock": "48674443",
+          "indexedBlock": "48699442",
+          "targetBlock": "94653594",
+          "updatedAt": 1790685139476,
+          "checkedBlocks": "25000",
+          "totalBlocks": "45979152",
+          "percent": 0.05
+        },
+        {
+          "key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+          "label": "USDC",
+          "governance": false,
+          "startBlock": "48674443",
+          "indexedBlock": "48699442",
+          "targetBlock": "94653594",
+          "updatedAt": 1790685152463,
+          "checkedBlocks": "25000",
+          "totalBlocks": "45979152",
+          "percent": 0.05
+        },
+        {
+          "key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+          "label": "USDC.e",
+          "governance": false,
+          "startBlock": "48674443",
+          "indexedBlock": "48699442",
+          "targetBlock": "94653594",
+          "updatedAt": 1790685581927,
+          "checkedBlocks": "25000",
+          "totalBlocks": "45979152",
+          "percent": 0.05
+        },
+        {
+          "key": "0x2cacca1266653bb090d3fb511456ebca33150562",
+          "label": "MANA",
+          "governance": true,
+          "startBlock": "45785116",
+          "indexedBlock": "45840115",
+          "targetBlock": "94653594",
+          "updatedAt": 1790685562033,
+          "checkedBlocks": "55000",
+          "totalBlocks": "48868479",
+          "percent": 0.11
+        },
+        {
+          "key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+          "label": "WETH",
+          "governance": false,
+          "startBlock": "48674443",
+          "indexedBlock": "48694442",
+          "targetBlock": "94653594",
+          "updatedAt": 1790685032872,
+          "checkedBlocks": "20000",
+          "totalBlocks": "45979152",
+          "percent": 0.04
+        }
+      ]
+    },
+    "reason": "INDEX_READ_FAILED"
+  },
+  "errors": [],
+  "zoomReflow": true,
+  "detail": "History sync\n0.07%\nRetrying after an error\nLast index update 29/09/2026, 14:39:41\nSync details\n\nPercentage of historical block ranges checked across all sources, from each contract’s start to the latest confirmed block. This is not an estimate of time remaining.\n\nGovernance history: 0.11%\n\nGovernor / treasury\n0.11%\nIndexed through block 48,729,442 · Target 94,653,594\nGEM\n0.05%\nIndexed through block 48,699,442 · Target 94,653,594\nUSDC\n0.05%\nIndexed through block 48,699,442 · Target 94,653,594\nUSDC.e\n0.05%\nIndexed through block 48,699,442 · Target 94,653,594\nMANA\n0.11%\nIndexed through block 45,840,115 · Target 94,653,594\nWETH\n0.04%\nIndexed through block 48,694,442 · Target 94,653,594\n\nThe latest verification failed. Saved progress is preserved; the scheduled service will retry.\n\nRuns on the server. You can close this page or turn off your computer.",
+  "paths": [
+    "docs/evidence/visual/sync-light-390-2026-09-29.png",
+    "docs/evidence/visual/sync-light-768-2026-09-29.png",
+    "docs/evidence/visual/sync-light-1440-2026-09-29.png",
+    "docs/evidence/visual/sync-dark-390-2026-09-29.png",
+    "docs/evidence/visual/sync-dark-768-2026-09-29.png",
+    "docs/evidence/visual/sync-dark-1440-2026-09-29.png"
+  ]
+}

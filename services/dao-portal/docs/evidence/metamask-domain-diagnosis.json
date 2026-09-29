@@ -1,0 +1,66 @@
+{
+  "checkedAt": "2026-09-29T06:42:20.473Z",
+  "url": "https://mythical-dao-preview.vercel.app",
+  "classification": {
+    "mythical-dao-preview.vercel.app": {
+      "endpoint": "https://dapp-scanning.api.cx.metamask.io/v2/scan?url=mythical-dao-preview.vercel.app",
+      "status": 200,
+      "response": {
+        "hostname": "mythical-dao-preview.vercel.app",
+        "recommendedAction": "BLOCK"
+      }
+    },
+    "vercel.app": {
+      "endpoint": "https://dapp-scanning.api.cx.metamask.io/v2/scan?url=vercel.app",
+      "status": 200,
+      "response": {
+        "hostname": "vercel.app",
+        "recommendedAction": "NONE"
+      }
+    },
+    "dao.mythicalbeings.io": {
+      "endpoint": "https://dapp-scanning.api.cx.metamask.io/v2/scan?url=dao.mythicalbeings.io",
+      "status": 200,
+      "response": {
+        "hostname": "dao.mythicalbeings.io",
+        "recommendedAction": "NONE"
+      }
+    }
+  },
+  "files": [
+    {
+      "path": "/theme-init.js",
+      "sha256": "64ad9c49b117a52f4a5006246e75555d9ac49e2aa77ef0c2860db009ebfbd88c",
+      "matchesLocal": true
+    },
+    {
+      "path": "/assets/index-BDm6vslD.js",
+      "sha256": "906dc33f0cd1a477c6b8aeac798d4ef9b4037857cff8d30135ede15953c4a9c6",
+      "matchesLocal": true
+    },
+    {
+      "path": "/assets/index-DgSxLaIV.css",
+      "sha256": "4a88b28c4533bdc0b3537c8230e7906211803a2d44e03de401a9f4f75a751e74",
+      "matchesLocal": true
+    }
+  ],
+  "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https: wss:; frame-ancestors 'none'; base-uri 'self'; object-src 'none';",
+  "scope": "Remote domain classification and comparison of entry assets against the local build; not a full security audit. No changes to site, wallet settings or external reports.",
+  "comparison": {
+    "checkedAt": "2026-09-29T06:47:18.709644+00:00",
+    "method": "GET /v2/scan?url=<hostname> on the MetaMask dapp-scanning service; all responses HTTP 200",
+    "results": {
+      "mythical-dao-preview.vercel.app": "BLOCK",
+      "mythical-monitor.vercel.app": "BLOCK",
+      "mythical-sdk.vercel.app": "BLOCK",
+      "react-tweet.vercel.app": "BLOCK",
+      "next-learn-starter.vercel.app": "BLOCK",
+      "logaliza.vercel.app": "BLOCK",
+      "vercel.app": "NONE",
+      "dao.mythicalbeings.io": "NONE",
+      "example.com": "NONE"
+    },
+    "controls": "react-tweet.vercel.app and next-learn-starter.vercel.app also independently returned HTTP 200 with their expected documentation/sample content.",
+    "inference": "The sample strongly suggests a broad classification affecting vercel.app subdomains, rather than an isolated finding about this preview. The API does not expose the exact rule; a universal or permanent policy is not proven. NONE is not a security guarantee."
+  }
+}

@@ -1,3 +1,5 @@
+> Relatório histórico da V2. A validação atual da arquitetura sem migração está em [IMPLEMENTATION_STATUS.md](../IMPLEMENTATION_STATUS.md).
+
 # Validation evidence — 2026-09-28
 
 Executed locally against this implementation. These results are implementation evidence, not an independent contract audit or a production acceptance sign-off.

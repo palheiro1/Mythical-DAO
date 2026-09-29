@@ -1,0 +1,16 @@
+No files changed, compilation skipped
+2026-09-29T08:46:32.145315Z  WARN traces::etherscan: etherscan config not found
+
+Ran 1 test for contracts/test/ExistingGovernorFork.t.sol:ExistingGovernorForkTest
+[PASS] testRealGovernorAuthorizationCycleAndRealTokenExits() (gas: 2092885)
+Logs:
+  forkBlock: 94644170
+  authorizationProposalId: 42025674299262238454911801013384323776021419080982163517128137391436940384556
+  module: 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
+  firstExitGem: 657100440000000000
+  firstExitWeth: 80000000
+  firstExitNativeUsdc: 0
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 15.93s (15.92s CPU time)
+
+Ran 1 test suite in 15.94s (15.93s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)

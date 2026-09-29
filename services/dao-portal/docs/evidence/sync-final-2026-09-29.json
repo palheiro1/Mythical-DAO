@@ -1,0 +1,131 @@
+{
+  "checkedAt": "2026-09-29T12:51:16.617Z",
+  "url": "https://dao-preview.mythicalbeings.io",
+  "workerVersion": "e21f43bf-fcc0-4025-92cc-776f9b9d715b",
+  "vercelDeployment": "dpl_GJDdPat8duv3xwLGPtgkPunZsh6y",
+  "httpStatus": 200,
+  "healthStatus": 200,
+  "bundleMatchesLocalBuild": true,
+  "bundle": "/assets/index-BcExHloN.js",
+  "health": {
+    "status": "degraded",
+    "signingAllowed": false,
+    "head": "94654091",
+    "confirmedHead": "94654027",
+    "checkedAt": "2026-09-29T12:51:16.236Z",
+    "sources": [
+      {
+        "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "block": "48704442",
+        "updatedAt": 1790686124745
+      },
+      {
+        "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "block": "45860115",
+        "updatedAt": 1790686217853
+      },
+      {
+        "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "block": "48704442",
+        "updatedAt": 1790686084900
+      },
+      {
+        "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "block": "48704442",
+        "updatedAt": 1790685734921
+      },
+      {
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block": "48749442",
+        "updatedAt": 1790686182890
+      },
+      {
+        "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "block": "48699442",
+        "updatedAt": 1790685727600
+      }
+    ],
+    "sync": {
+      "percent": 0.09,
+      "governancePercent": 0.15,
+      "targetBlock": "94654027",
+      "updatedAt": 1790686217853,
+      "sources": [
+        {
+          "key": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+          "label": "Governor / treasury",
+          "governance": true,
+          "startBlock": "48674443",
+          "indexedBlock": "48749442",
+          "targetBlock": "94654027",
+          "updatedAt": 1790686182890,
+          "checkedBlocks": "75000",
+          "totalBlocks": "45979585",
+          "percent": 0.16
+        },
+        {
+          "key": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+          "label": "GEM",
+          "governance": false,
+          "startBlock": "48674443",
+          "indexedBlock": "48704442",
+          "targetBlock": "94654027",
+          "updatedAt": 1790685734921,
+          "checkedBlocks": "30000",
+          "totalBlocks": "45979585",
+          "percent": 0.06
+        },
+        {
+          "key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+          "label": "USDC",
+          "governance": false,
+          "startBlock": "48674443",
+          "indexedBlock": "48704442",
+          "targetBlock": "94654027",
+          "updatedAt": 1790686084900,
+          "checkedBlocks": "30000",
+          "totalBlocks": "45979585",
+          "percent": 0.06
+        },
+        {
+          "key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+          "label": "USDC.e",
+          "governance": false,
+          "startBlock": "48674443",
+          "indexedBlock": "48704442",
+          "targetBlock": "94654027",
+          "updatedAt": 1790686124745,
+          "checkedBlocks": "30000",
+          "totalBlocks": "45979585",
+          "percent": 0.06
+        },
+        {
+          "key": "0x2cacca1266653bb090d3fb511456ebca33150562",
+          "label": "MANA",
+          "governance": true,
+          "startBlock": "45785116",
+          "indexedBlock": "45860115",
+          "targetBlock": "94654027",
+          "updatedAt": 1790686217853,
+          "checkedBlocks": "75000",
+          "totalBlocks": "48868912",
+          "percent": 0.15
+        },
+        {
+          "key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+          "label": "WETH",
+          "governance": false,
+          "startBlock": "48674443",
+          "indexedBlock": "48699442",
+          "targetBlock": "94654027",
+          "updatedAt": 1790685727600,
+          "checkedBlocks": "25000",
+          "totalBlocks": "45979585",
+          "percent": 0.05
+        }
+      ]
+    },
+    "reason": "RPC_SECONDARY_TIMEOUT"
+  },
+  "browserVerification": "Final live browser attempt blocked by local ERR_NETWORK_CHANGED on two attempts. Earlier live captures and local tests passed."
+}

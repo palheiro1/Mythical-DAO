@@ -1,87 +1,68 @@
-# Operation, deployment, and recovery
+# Operação — Governor atual, sem migração
 
-## Local setup
+A arquitetura ativa é `deployments/polygon.json`, `schemaVersion: 2`, `architecture: existing-governor`. Governor e tesouraria continuam em `0x7B9e327748462F1038c9D081c98d189b22C60A27`. Apenas `MythicalRagequitModule` é um contrato novo. Os documentos e contratos V2 permanecem como histórico e não fazem parte desta ativação.
 
-Use Node >=22.12, Foundry (tested 1.3.5), Solidity 0.8.30 and the committed npm lockfile. Observe the parent disk budget before installation/builds; the implementation session budgeted 2 GB and reused the Telegram dependencies and installed Chromium.
+## 1. Publicar o portal com a governação existente
 
-```sh
-cd services/dao-portal
-npm ci
-npm run types
-npm run db:local
-npx wrangler d1 execute DAO_DB --local --file archives/snapshot.sql
-npm run build
-npm run dev:api
-```
+O domínio de teste já está publicado e a ligação real foi confirmada pelo utilizador. Para desbloquear a próxima etapa, usar o [preflight dos RPCs e procedimento de indexação histórica](ARCHIVE_INDEXING.md).
 
-The built portal is served at http://127.0.0.1:8787. For frontend hot reload, also run `npm run dev`; Vite proxies /api to the Worker. Setup mode works without RPC secrets and never fabricates live data.
+O staging usa agora [Infura Core Free para indexação](INFURA_FREE.md), com Tenderly como segunda fonte, enquanto as leituras atuais permanecem em dRPC/Tenderly. A migration `0002_infura_quota.sql` é aditiva. Os limites e procedimentos de recuperação desse modo estão documentados no guia próprio; não reutilizar a chave da wallet nem publicar a chave Infura no frontend.
 
-`.dev.vars.example` lists the two server-side RPC settings; create an ignored `.dev.vars` with actual providers. Use archive-capable RPCs for historical blocks/logs and providers supporting `eth_simulateV1` for sequential proposal previews. Public RPC availability alone does not establish archive or simulation support. A public endpoint tested during implementation did not retain old historical code, so the MANA scan start conservatively remains block 0 pending independently verified deployment evidence.
+Reutilizar `node_modules`. Antes de instalações, builds ou cópias substanciais, aplicar o `disk-guard` conforme as instruções do repositório; reservar 40 GB. Não materializar outra cópia do projeto.
 
-Optional WalletConnect: set the public `VITE_WALLETCONNECT_PROJECT_ID` from a domain-restricted WalletConnect project before building. No wallet private key belongs in this app.
+1. Configurar os IDs reais de D1 nos ambientes `staging`/`production` de `wrangler.jsonc`, domínio e duas ligações RPC independentes em secrets `RPC_PRIMARY_URL`/`RPC_SECONDARY_URL`. Ambos devem suportar leituras históricas, logs e `eth_simulateV1` com chamadas sequenciais. Nunca colocar chaves privadas no Worker.
+2. Aplicar as migrations de forma aditiva. Reutilizar a D1 existente; não apagar `events`, `cursors`, `checkpoints` ou `snapshot_archive`. A nova versão não exige alterações destrutivas de schema.
+3. Verificar manifesto e contratos com `npm run contracts:build` e `node scripts/verify-ragequit.mjs deployments/polygon.json docs/evidence/pre-release.json`. As duas URLs são fornecidas pelo ambiente. O módulo pode estar ausente nesta etapa.
+4. Fazer catch-up da indexação e verificar `/api/health`. `signingAllowed` depende do acordo atual dos RPCs e da identidade Governor/MANA; cada operação passa ainda pelas suas leituras de elegibilidade e simulação no bloco atual. `historyComplete` mantém a exigência de cursores Governor/MANA canónicos e recentes para métricas e notificações. Não depende da existência do módulo, dos seus saldos ou das suas autorizações. A primeira sincronização desde os blocos de implantação pode ser demorada; manter a indicação de sincronização até terminar. `INDEX_BATCH_BLOCKS` define o teto 1–5000; o tamanho efetivo é ajustado por fonte segundo a [política adaptativa](ADAPTIVE_INDEXING.md). Não fabricar cursores no head para contornar a sincronização.
+5. Executar `npm run check`, os testes de navegador, o ensaio de fork e `npm run deploy:check`. Publicar/validar primeiro staging, depois o portal em produção, mantendo o módulo ausente.
 
-## Validation
+O campo histórico `usdc` conserva USDC.e; novos consumidores usam `usdcNative` e `usdcBridged`. Governor/treasury/legacyGovernor apontam ao mesmo endereço, indexado uma única vez. As fontes de Approval têm chaves próprias `token:approval:module` em `cursors` e `checkpoints`, desde o bloco de implantação do módulo, para recuperar autorizações anteriores à sua configuração no portal. Os eventos continuam a guardar o endereço real do token. Reorgs removem apenas eventos órfãos da fonte afetada e os reprocessam; não são uma limpeza do histórico.
 
-```sh
-npm run check
-npm run test:browser
-npm run test:recovery
-POLYGON_FORK_RPC=https://your-archive-provider.example forge test --match-contract PolygonCompatibilityTest
-npm run rehearse
-npm run deploy:check
-```
+O bot Telegram existente continua a seguir Governor e Snapshot. Não mudar automaticamente o seu modo, não publicar notificações de teste e não executar uma troca de serviço.
 
-Browser tests require the local Worker at 8787 and a compatible Chromium. Set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to an existing installation to avoid downloading another browser. Wallet tests inject a test provider and intercept RPCs; they never use real wallets. `rehearse` starts its own Anvil process on 18545 and stops only that process. It uses publicly known unlocked local accounts, an in-memory chain without historical state caching (token vote checkpoints remain on-chain), and writes transaction evidence to `deployments/local-rehearsal.json`.
+## 2. Rever e implantar apenas o módulo
 
-`test:recovery` exports the small local public fixture, restores it into an isolated temporary D1 database, compares every row and removes only that temporary copy. It writes a checksum and table counts into `docs/evidence/local-recovery.json`; this does not replace a production recovery drill.
-
-The optional fork test is skipped unless POLYGON_FORK_RPC is provided. Local mocks do not validate all properties of the deployed assets.
-
-## Contract deployment
-
-First rehearse on local Anvil, then deploy to Polygon Amoy with **test versions** of MANA/WETH/USDC.e. Supply their addresses explicitly. Production uses the existing Polygon MANA and fixed basket addresses from the plan.
+Revisão independente do contrato, dos tokens externos e do relatório de ensaio é uma condição de lançamento do ragequit. Os testes locais não substituem essa revisão.
 
 ```sh
-forge script contracts/script/Deploy.s.sol:Deploy --rpc-url <rpc> --account <encrypted-keystore-name>
+npm run contracts:build
+POLYGON_FORK_RPC=<archive-polygon-rpc> npm run rehearse
+DEPLOYER_ADDRESS=<deployer> forge script contracts/script/DeployRagequit.s.sol:DeployRagequit --rpc-url <polygon-rpc> --account <encrypted-keystore>
 ```
 
-Export DEPLOYER_ADDRESS and the appropriate MANA_ADDRESS, WETH_ADDRESS and USDC_ADDRESS securely. Dry-run first. Add `--broadcast --verify` only for an authorized deployment with funded signing credentials. Never pass a private key through the portal or commit one. The script removes its bootstrap privileges.
+O último comando simula, sem `--broadcast`. Depois da revisão, a implantação real usa o mesmo script, explicitamente com `--broadcast`. Ele fixa a rede 137 e os cinco endereços aprovados; implanta apenas o módulo e não autoriza nem move fundos. Não usar o antigo `Deploy.s.sol`, que pertence à arquitetura V2.
 
-Turn the deployment output into a **complete** manifest with network, all addresses, exact deployment/start blocks, receipt hashes, source commit, compiler/OZ version, code hashes and permissions. Keep `enabled:false` until release conditions are met. Run `scripts/verify-deployment.mjs` with two RPC URLs in the environment; reconcile all role events and verified source independently.
+Registar o endereço real, transação, bloco, compilador 0.8.30, optimizer 200, EVM Cancun e hash do código revisto. Verificar o código-fonte no explorador com os argumentos de construção na ordem `treasury, MANA, GEM, WETH, USDC nativo`. Acrescentar ao manifesto `contracts.ragequitModule: { address, startBlock }`, usando o bloco real, sem substituir os restantes endereços. O script exige correspondência com o pacote revisto e hashes atuais das fontes, verifica todas as cópias internas de cada imutável e compara o restante runtime. Os getters confirmam a associação de cada endereço. Requer dois hosts HTTPS distintos, heads recentes e hash canónico antes/depois. [Achados e correções da revisão técnica](RAGEQUIT_REVIEW.md).
 
-The checked-in Polygon manifest intentionally omits undeployed V2 addresses. New deployments are not proxies. Never replace addresses in an existing active manifest casually; a changed contract generation requires governed migration.
+## 3. Autorizar pela DAO
 
-## Cloudflare release
+[Proposta parametrizada para revisão](../deployments/ragequit-authorization.template.json). O endereço de implantação real é a única substituição pendente; nunca usar um endereço fictício para submeter a proposta.
 
-Create separate staging/production D1 databases and replace the explicit zero UUID placeholders. Set RPC_PRIMARY_URL / RPC_SECONDARY_URL using `wrangler secret put --env staging|production`. Put the appropriate reviewed manifest JSON into DEPLOYMENT_MANIFEST for each environment; INDEX_BATCH_BLOCKS bounds the replay range.
+```sh
+node scripts/ragequit-proposal.mjs <module-address> deployments/authorize-ragequit.json authorize
+node scripts/ragequit-proposal.mjs <module-address> deployments/revoke-ragequit.json revoke
+```
 
-Apply migrations, build, run `wrangler deploy --dry-run --env staging`, deploy staging, and verify every path. Only after independent review, DAO approval and asset/revenue reconciliation may production activation evidence be completed. Configure the authorized custom domain dao.mythicalbeings.io during production release. Domain ownership and Cloudflare account permissions have not been assumed or changed.
+Cada ficheiro contém o texto exato, hash da descrição, três ações ERC-20, calldata `propose` e `execute`, e as autorizações esperadas. Conferir todos os destinos: GEM, WETH, USDC nativo, nesta ordem; `value=0`; `approve(module,uint256.max)` na autorização. Os scripts só escrevem ficheiros.
 
-Cron runs every minute. If RPC log ranges fail or exceed the bounded event count, reduce INDEX_BATCH_BLOCKS. Initial backfill may take substantial time; monitor every cursor, never force signingAllowed. /api/health reports provider/data problems without RPC credentials.
+Submeter `propose` ao Governor atual, esperar a votação, votar e executar apenas em `Succeeded`. Não há chamada `queue` nem espera adicional de timelock. Guardar o ID e as transações. O portal também permite construir/rever as ações pelo modo avançado, sem reescrever os bytes dos rascunhos importados.
 
-## Migration
+```sh
+node scripts/verify-ragequit.mjs deployments/polygon.json deployments/allowances-authorized.json authorized
+```
 
-1. Independently verify code and all permissions before depositing assets.
-2. Publish read-only portal and submit adoption through the actual old system.
-3. `scripts/rehearse-migration.mjs` prepares exact candidate POL/WETH/USDC.e payloads from current balances, with a concrete new vault address.
-4. Simulate the **old Governor's real execution route** on a Polygon fork. The candidate payload tool does not claim to prove that route.
-5. Resolve ongoing legacy proposals explicitly; execute only with required approvals.
-6. Identify each revenue source, its Tarasca/system owner and exact authorized configuration update. No inventory was supplied; this remains an external release dependency.
-7. Reconcile balances and receipts; perform the approved small real ragequit.
-8. Keep legacy residual funds/history visible and retire old notification sources only after successful cutover.
+Este comando deve confirmar as três autorizações **efetivas** iguais a `uint256.max`, no mesmo bloco confirmado, em dois RPCs. A autorização individual do membro é distinta: `MANA.approve(module, amount)` pelo valor exato da saída escolhida.
 
-## Telegram cutover
+## 4. Validar uma pequena saída real
 
-The sibling telegram-governance-bot is an isolated source copy of the user's existing bot. Original files were preserved. Rehearsal names and zero database IDs prevent accidental reuse of production resources. Default GOVERNANCE_MODE remains legacy.
+Depois da revisão e autorização, validar uma pequena saída consentida por um membro: saldo anterior, oferta, destinatário, mínimos GEM/WETH/USDC, aprovação exata de MANA, evento `RagequitExecuted`, recibo e saldos finais. Guardar evidência da queima e das três diferenças de saldo. Um saldo confirmado de USDC zero é permitido; nunca substituir por USDC.e. Anunciar disponibilidade geral só depois desta etapa. Não foi realizada uma saída real nesta implementação.
 
-After staging validation, configure GOVERNANCE_MODE=portal and PORTAL_URL. The adapter reads the independently verified portal feed, uses chain:contract:id identities, silently imports history before its seed watermark, and retains delivery leases/retries. It does not call Snapshot or Tally in portal mode. No messages were sent during implementation.
+## Revogação e incidentes
 
-Never run both old and new live publishers against the same channel during cutover. First activate the isolated staging channel using the existing bot procedure; then use one publisher with a documented watermark. Existing Telegram secrets need not and must not enter the portal Worker.
+O procedimento é uma proposta no mesmo Governor com as três chamadas `approve(module,0)`, usando o gerador em modo `revoke`. Após votação e execução, verificar com `node scripts/verify-ragequit.mjs deployments/polygon.json deployments/allowances-revoked.json revoked`. A revogação exige o ciclo normal da DAO; não existe pausa administrativa instantânea. A DAO pode gastar fundos enquanto as autorizações estão ativas. Ocultar a interface não revoga autorizações nem desativa chamadas diretas ao contrato.
 
-## Backup and rebuild
+Uma pré-visualização vale dois minutos na web. O `deadline` on-chain vale quinze minutos desde a revisão. Alterações de carteira, rede, módulo, cesta, montante, destinatário ou mínimos invalidam a confirmação; saldos e autorizações podem mudar até à inclusão. A simulação final e os mínimos verificam o estado, mas não reservam fundos. Se um pagamento positivo falhar, toda a operação reverte.
 
-The chain is authoritative; D1 is replaceable. Export D1 using `scripts/export-recovery.sh` to suitable existing external storage, record/check the SHA-256, and test recovery into an isolated empty D1 database. Encrypt any operational backup containing sensitive configuration. The public index/export does not require bot secrets.
+Para recuperação de D1, usar o procedimento de backup existente, validar o backup e ensaiar a restauração numa base isolada; preservar cursores, eventos e proveniência Snapshot. `scripts/verify-local-recovery.mjs` continua disponível. Não restaurar dados por cima da produção nem executar resync destrutivo. Backups sensíveis devem permanecer cifrados em armazenamento externo.
 
-To reconstruct: create a fresh database, apply migrations, import the retained Snapshot SQL, configure the exact same manifest and resume cron from each source's start block. Never mutate a live cursor without retaining evidence. Validate counts, hashes, exact proposal identities and RPC health before routing reads to the restored database.
-
-A schema-preserving app rollback uses the previous Cloudflare Worker version. Take an export and test forward recovery before any future destructive migration. Contract rollback is impossible: incompatible changes require a new deployment and DAO-approved migration.
+Consultar [governação durante o sync e ensaio web em fork](LIVE_GOVERNANCE.md) para a separação entre disponibilidade operacional e histórico.

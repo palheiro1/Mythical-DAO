@@ -1,0 +1,219 @@
+[
+  {
+    "results": [
+      {
+        "chain_id": 137,
+        "source_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "span": 5000,
+        "successes": 1,
+        "failures": 0,
+        "last_duration_ms": 5918,
+        "last_reason": null,
+        "updated_at": 1790699260302
+      },
+      {
+        "chain_id": 137,
+        "source_key": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "span": 2500,
+        "successes": 0,
+        "failures": 0,
+        "last_duration_ms": 38659,
+        "last_reason": null,
+        "updated_at": 1790699356147
+      },
+      {
+        "chain_id": 137,
+        "source_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "span": 2500,
+        "successes": 0,
+        "failures": 0,
+        "last_duration_ms": 17994,
+        "last_reason": null,
+        "updated_at": 1790699250683
+      },
+      {
+        "chain_id": 137,
+        "source_key": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "span": 5000,
+        "successes": 1,
+        "failures": 0,
+        "last_duration_ms": 7787,
+        "last_reason": null,
+        "updated_at": 1790699379531
+      },
+      {
+        "chain_id": 137,
+        "source_key": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "span": 2500,
+        "successes": 0,
+        "failures": 0,
+        "last_duration_ms": 8470,
+        "last_reason": null,
+        "updated_at": 1790699313825
+      },
+      {
+        "chain_id": 137,
+        "source_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "span": 5000,
+        "successes": 0,
+        "failures": 0,
+        "last_duration_ms": 8285,
+        "last_reason": null,
+        "updated_at": 1790699368085
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.2366
+      },
+      "duration": 0.2366,
+      "changes": 0,
+      "last_row_id": 8,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 12,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "block_number": 48779442,
+        "block_hash": "0xe0edfe287543ad1003946d5429b100616a466238090566ecf1f6e695e0c0271e",
+        "updated_at": 1790699260302
+      },
+      {
+        "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "block_number": 46050115,
+        "block_hash": "0xf6906c5977eddcaf98eaeef53d2c560ed177afe4b2b352445cca5408331f57cf",
+        "updated_at": 1790699356147
+      },
+      {
+        "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "block_number": 48779442,
+        "block_hash": "0xe0edfe287543ad1003946d5429b100616a466238090566ecf1f6e695e0c0271e",
+        "updated_at": 1790699250683
+      },
+      {
+        "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "block_number": 48784442,
+        "block_hash": "0xed56fd7de5ea57f351e2469e029499b179fa3bb658b827f4c2451b75d87ad188",
+        "updated_at": 1790699379531
+      },
+      {
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 49041942,
+        "block_hash": "0xdd39a3d6019a16906cb253ee0b8ac00122bbcd7f16e6b7a7de630cab2825b4fa",
+        "updated_at": 1790699313825
+      },
+      {
+        "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "block_number": 48779442,
+        "block_hash": "0xe0edfe287543ad1003946d5429b100616a466238090566ecf1f6e695e0c0271e",
+        "updated_at": 1790699368085
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1058
+      },
+      "duration": 0.1058,
+      "changes": 0,
+      "last_row_id": 8,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 12,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "events": 18
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.0661
+      },
+      "duration": 0.0661,
+      "changes": 0,
+      "last_row_id": 8,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 18,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "snapshot_rows": 8
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.048
+      },
+      "duration": 0.048,
+      "changes": 0,
+      "last_row_id": 8,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 8,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "status": "degraded",
+        "reason": "INFURA_REQUEST_FAILED",
+        "checked_at": 1790699274376
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.0779
+      },
+      "duration": 0.0779,
+      "changes": 0,
+      "last_row_id": 8,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 1,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  }
+]

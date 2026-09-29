@@ -1,39 +1,24 @@
-# Threat model and contract specification
+# Modelo de ameaças — módulo sem migração
 
-The immutable contracts are an initial implementation, **not independently audited**. No production deployment or real asset migration has been performed.
+## Autoridade e ativos
 
-## Trust and permissions
+O Governor atual é também a tesouraria. Conserva a autoridade de gastar ativos e aprovar/revogar autorizações. O novo módulo não tem proprietário operacional, atualização, pausa, executor arbitrário nem função de custódia. Imutáveis: tesouraria, MANA, GEM, WETH, USDC nativo. A ABI expõe `basket()` na ordem fixa GEM/WETH/USDC. A implantação usa os endereços aprovados da Polygon; símbolos não determinam identidade.
 
-- MANA remains the existing Polygon token, with 18 decimals. V2 uses its historical votes and total supply. The fork compatibility test exercised the deployed ABI; the original verified source and all economically relevant behavior still require independent review.
-- Governor threshold: 250 × 10^18 at the previous block. Initial delay: 41,143 blocks. Initial period: 288,000 blocks.
-- Quorum is **ceil(historical total supply × numerator / 100)**. Governor quorum counts for + abstain. Exact 2/3 passes, zero for votes never passes. For votes / 2 >= against avoids overflow.
-- Timelock minimum: 259,200 seconds. One-time initializeGovernor grants Governor proposer/canceller, opens executor to address zero and revokes the initializing administrator. Subsequent grants cannot introduce an EOA administrator/proposer/canceller. Governor timelock replacement is disabled.
-- The deployment procedure must verify **all** role history; a hostile bootstrap administrator could grant another administrator before initialization. Do not fund before reconciliation and revocation of all unexpected roles. The reproducible deployment script makes no such grants.
-- Vault immutable timelock can pay native/ERC20 assets and transfer excluded NFTs. No general-purpose arbitrary execution, upgrade, privileged withdrawal or pause.
-- Community contract has no treasury permissions. Rules freeze per ballot. 0 is abstention; 1..20 are the alternatives. Snapshot itself is Pending; voting is active from snapshot + 1 through deadline inclusive.
+O membro concede autorização exata sobre o seu MANA ao módulo. `burnFrom(msg.sender, amount)` nunca queima o saldo de um delegado. Delegação altera votos, não propriedade. Cada quota é `floor(balanceOf(treasury) * amount / totalSupplyBeforeBurn)`, incluindo o MANA da tesouraria na oferta. `Math.mulDiv` evita overflow intermédio. Mínimos individuais, deadline, destinatário válido e proteção contra reentrância são obrigatórios. Destinatários nulo/tesouraria/módulo são recusados. Três quotas zero são recusadas; quotas individuais zero são permitidas e não são transferidas.
 
-## Exit economics
+Os pagamentos usam `SafeERC20.safeTransferFrom(treasury, recipient, quota)` e são seguidos de verificações exatas de diferenças de saldo de todas as contas relevantes e da oferta/saldo MANA. Tokens com taxa, rebase durante a operação, bloqueio, retorno falso ou comportamento incompatível fazem reverter toda a transação, incluindo queima e pagamentos anteriores. O módulo não reduz quotas para caber em autorizações.
 
-For each of POL, WETH, USDC.e: floor(balance × burned MANA / supply before burn). Include MANA held by the vault in supply. No reservation for outstanding proposals. Independent minimums and an absolute deadline protect the quote. Recipient must be nonzero and not the vault.
+## Limites económicos e operacionais
 
-BurnFrom is called against the member; supply and member balance deltas must equal the requested burn. SafeERC20 plus exact vault/recipient deltas reject fee and incompatible transfers. All payouts and burn share one reverting transaction under a reentrancy guard. A zero basket payout reverts. A paused external token can prevent the entire basket from redeeming; MANA remains intact.
+- As autorizações máximas da tesouraria são contínuas e revogáveis por governação; não se confundem com a autorização exata do membro.
+- Não há reserva de fundos, janela obrigatória de saída, prioridade de inclusão ou proteção contra uma despesa da DAO que preceda uma saída. Os mínimos protegem apenas a transação que for incluída dentro do prazo.
+- Os tokens externos mantêm as suas próprias permissões, proxies, pausas e bloqueios. O módulo imutável não pode corrigir uma mudança incompatível nesses tokens. Pausa de USDC foi ensaiada no fork real com reversão integral.
+- POL, WPOL, USDC.e, MANA e NFTs ficam fora da cesta; entradas acidentais no módulo não fazem parte do saldo resgatável e não têm resgate administrativo.
+- O Governor mantém as regras existentes; o portal lê parâmetros e `state()` e não presume regras V2. A simulação de ações parte do Governor; publicação não garante execução futura.
+- Uma revisão de dois minutos e um prazo de transação de quinze minutos são controlos distintos. O contrato não consegue impedir uma carteira de retransmitir calldata ainda válido depois do prazo da interface.
+- Dados verificam dois RPCs no mesmo bloco. A governação depende apenas dos seus índices canónicos de Governor/MANA. O ragequit requer também identidade e leituras diretas do módulo/cesta; RPC indisponível nunca se apresenta como saldo zero.
+- D1 não assina nem guarda chave de gastos. Cursores conservam o histórico; filtros Approval usam owner/spender e cursores separados. Snapshot e o bot existente continuam independentes.
 
-Tokens held by a representative do not include the delegator's token ownership. Historical checkpoints preserve voting weights after burning, transferring, or redelegating.
+## Evidência e revisão
 
-## Data and transaction threats
-
-| Threat | Mitigation / limit |
-|---|---|
-| RPC outage or disagreement | Independent HTTPS hosts, chain ID/head/hash checks, agreement on reads and exact call simulation; signing fails closed. Separate operators must actually be independent, which hostname checking alone cannot prove. |
-| Index lag / stale RPC / fork | 64 confirmations in nonlocal environments; age/lag checks and anchor validation; atomic event+cursor batches; lease fencing; rewind to common checkpoints, or complete source replay. |
-| SQL precision loss | uint256 values are decimal strings in event JSON and HTTP. No SQL REAL vote accounting. Snapshot archive is explicitly unverified off-chain evidence. |
-| Altered executable proposal | Keccak ABI identifier recomputed from all targets, values, calldata and exact UTF-8 description. Raw events preserve signatures and complete identity. |
-| Future state differs | Re-read and simulate exact wallet call before review and again before signing. Proposed actions are simulated sequentially via eth_simulateV1. A current-state revert is displayed and requires acknowledgement before publication; governance-only calls may require the approved execution context. RPC failure/divergence cannot be acknowledged away. Execute itself must simulate successfully. |
-| Approval overreach | Portal requests the exact selected MANA amount and shows spender. No unlimited allowance UI. |
-| XSS / misleading text | React text rendering, HTTPS discussion links, CSP, plaintext proposal content. No stored HTML injection. Raw/unknown calls remain explicit. |
-| Wallet rejected/replaced/reverted | Separate pending, included, confirmed states. Wallet rejection is recoverable, replacement hash tracked, reverted receipt never reported successful. |
-| Telegram unavailable | Separate Worker/database; deterministic identities and event deduplication. Portal has no dependency on Telegram. Telegram's residual delivery ambiguity after remote acceptance is documented in the bot README. |
-
-## Independent review scope
-
-Review all four contracts, compiler/OZ versions, initialization, role grants before sealing, exact burn behavior on the existing MANA, token transfer corner cases, snapshot and supermajority boundaries, front-running/slippage, cross-call reentrancy, batch simulation semantics, and the old Governor's actual authorization path. Tests and this author review are not substitutes for the independent review required by the plan.
+Ver [relatório atual](IMPLEMENTATION_STATUS.md), [fork reproduzível](evidence/existing-governor-fork.txt) e testes em `contracts/test/RagequitModule.t.sol`, `ExistingGovernorFork.t.sol`. O fork usa impersonação somente para criar saldos/votos de teste e pausar o token; autorizações e revogação passam por propostas, votos e execução reais do Governor. Não foram publicadas transações. A revisão independente e a pequena saída real continuam necessárias antes da disponibilidade geral.

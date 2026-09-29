@@ -1,14 +1,14 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "chainId": 137,
   "environment": "production",
-  "enabled": false,
+  "enabled": true,
   "portalUrl": "https://dao.mythicalbeings.io",
   "confirmations": 64,
   "contracts": {
     "mana": {
       "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
-      "startBlock": "0"
+      "startBlock": "45785116"
     },
     "legacyGovernor": {
       "address": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
@@ -21,13 +21,36 @@
     "usdc": {
       "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
       "startBlock": "48674443"
+    },
+    "governor": {
+      "address": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
+      "startBlock": "48674443"
+    },
+    "treasury": {
+      "address": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
+      "startBlock": "48674443"
+    },
+    "usdcBridged": {
+      "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      "startBlock": "48674443"
+    },
+    "gem": {
+      "address": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+      "startBlock": "48674443"
+    },
+    "usdcNative": {
+      "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+      "startBlock": "48674443"
     }
   },
   "release": {
-    "independentReview": null,
-    "daoApproval": null,
-    "migration": null,
-    "revenuesReconciled": false,
-    "permissionsVerified": false
-  }
+    "portalVerification": null,
+    "moduleReview": null,
+    "moduleDeployment": null,
+    "authorizationProposal": null,
+    "allowancesVerified": false,
+    "smallExitVerified": false
+  },
+  "architecture": "existing-governor",
+  "snapshotUrl": "https://snapshot.box/#/s:mythicalbeings.eth"
 }

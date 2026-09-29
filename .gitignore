@@ -16,3 +16,4 @@ playwright-report/
 dist-worker/
 .dev.vars.*
 !.dev.vars.example
+.vercel/

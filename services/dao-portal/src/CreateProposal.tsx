@@ -7,7 +7,7 @@ import {
   zeroAddress,
   type Address,
 } from "viem";
-import { ballotsAbi, governorAbi, vaultAbi } from "../shared/abis";
+import { governorAbi, tokenAbi } from "../shared/abis";
 import {
   safeExternalUrl,
   validateActions,
@@ -22,6 +22,9 @@ import {
   validateDraft,
   type Draft,
 } from "./drafts";
+import { treasuryAssets } from "../shared/assets";
+import { useApi } from "./api";
+import type { GovernanceParameters } from "./data-types";
 import { useTransaction } from "./Transaction";
 import { t, m } from "./i18n";
 import { PageHeading, Notice, Icon, ActionAvailability } from "./ui";
@@ -55,6 +58,7 @@ export function CreateProposal({
     [template, setTemplate] = useState("payment"),
     [parameter, setParameter] = useState("setVotingDelay");
   const tx = useTransaction();
+  const rules = useApi<GovernanceParameters>("governance-parameters");
   const [step, setStep] = useState(0),
     [coherent, setCoherent] = useState(false),
     [issue, setIssue] = useState<DraftIssue | null>(null);
@@ -71,7 +75,7 @@ export function CreateProposal({
   function addAction() {
     try {
       let action: Action;
-      const vault = config.contracts.vault?.address,
+      const treasury = config.contracts.treasury?.address,
         governor = config.contracts.governor?.address;
       if (template === "advanced") {
         update({
@@ -94,12 +98,7 @@ export function CreateProposal({
             inputs: [
               {
                 name: "value",
-                type:
-                  parameter === "setVotingDelay"
-                    ? "uint48"
-                    : parameter === "setVotingPeriod"
-                      ? "uint32"
-                      : "uint256",
+                type: "uint256",
               },
             ],
             outputs: [],
@@ -115,34 +114,31 @@ export function CreateProposal({
           }),
         };
       } else {
-        if (!vault)
+        if (!treasury)
           throw new Error(
-            m("Configure the new treasury before adding a payment."),
+            m("The DAO treasury must be configured before adding a payment."),
           );
         if (!isAddress(recipient) || recipient === zeroAddress)
           throw new Error(m("Enter a valid recipient."));
-        const token =
-          asset === "WETH"
-            ? config.contracts.weth?.address
-            : config.contracts.usdc?.address;
-        const units = parseUnits(value, asset === "USDC.e" ? 6 : 18);
+        const assetInfo = treasuryAssets(config).find(
+          (a) => a.symbol === asset,
+        );
+        const units = parseUnits(value, assetInfo?.decimals ?? 18);
         if (units <= 0n) throw new Error(m("Amount must be positive."));
-        action = {
-          target: vault,
-          value: "0",
-          data:
-            asset === "POL"
-              ? encodeFunctionData({
-                  abi: vaultAbi,
-                  functionName: "payNative",
+        if (!assetInfo || (asset !== "POL" && !assetInfo.address))
+          throw new Error("Asset address is unavailable.");
+        action =
+          asset === "POL"
+            ? { target: recipient, value: String(units), data: "0x" }
+            : {
+                target: assetInfo.address!,
+                value: "0",
+                data: encodeFunctionData({
+                  abi: tokenAbi,
+                  functionName: "transfer",
                   args: [recipient, units],
-                })
-              : encodeFunctionData({
-                  abi: vaultAbi,
-                  functionName: "payToken",
-                  args: [token!, recipient, units],
                 }),
-        };
+              };
       }
       update({ actions: validateActions([...draft.actions, action]) });
       setError("");
@@ -168,66 +164,43 @@ export function CreateProposal({
       const text = description(draft);
       if (new TextEncoder().encode(text).length > 32768)
         throw new Error(m("Description exceeds 32 KB."));
-      const community = draft.kind === "community";
-      if (
-        community &&
-        (draft.options.length < 2 ||
-          draft.options.length > 20 ||
-          draft.options.some(
-            (o) => !o.trim() || new TextEncoder().encode(o).length > 160,
-          ) ||
-          new Set(draft.options).size !== draft.options.length)
-      )
+      if (draft.kind === "community")
         throw new Error(
-          m("Use 2–20 distinct alternatives, each at most 160 bytes."),
+          "Advisory drafts are preserved for export. Publish advisory votes on Snapshot.",
         );
-      if (!community) validateActions(draft.actions);
-      const target = community
-        ? config.contracts.ballots?.address
-        : config.contracts.governor?.address;
+      validateActions(draft.actions);
+      const target = config.contracts.governor?.address;
       if (!target) throw new Error(m("Contracts are not yet deployed."));
       await tx.review({
-        title: community
-          ? m("Publish community ballot")
-          : m("Publish executable proposal"),
+        title: m("Publish executable proposal"),
         to: target,
-        data: community
-          ? encodeFunctionData({
-              abi: ballotsAbi,
-              functionName: "createBallot",
-              args: [text, draft.options],
-            })
-          : encodeFunctionData({
-              abi: governorAbi,
-              functionName: "propose",
-              args: [
-                draft.actions.map((a) => a.target),
-                draft.actions.map((a) => BigInt(a.value)),
-                draft.actions.map((a) => a.data),
-                text,
-              ],
-            }),
-        effect: community
-          ? t("advisoryNotice")
-          : m(
-              "Publish immutable text and actions for members to vote on. Text commitments are not automatically enforced.",
-            ),
+        data: encodeFunctionData({
+          abi: governorAbi,
+          functionName: "propose",
+          args: [
+            draft.actions.map((a) => a.target),
+            draft.actions.map((a) => BigInt(a.value)),
+            draft.actions.map((a) => a.data),
+            text,
+          ],
+        }),
+        effect: m(
+          "Publish immutable text and actions for members to vote on. Text commitments are not automatically enforced.",
+        ),
         details: [
           { label: m("Title"), value: draft.title },
           {
             label: m("Voting delay / period"),
-            value: m(
-              "Initial rules: 41,143 / 288,000 blocks. Current rules are enforced by the contract.",
-            ),
+            value: rules.data
+              ? `${rules.data.votingDelay} / ${rules.data.votingPeriod} blocks`
+              : "Current rules could not be verified.",
           },
           {
-            label: community ? m("Alternatives") : m("Actions"),
-            value: community
-              ? draft.options.join(" · ")
-              : String(draft.actions.length),
+            label: m("Actions"),
+            value: String(draft.actions.length),
           },
         ],
-        actions: community ? undefined : draft.actions,
+        actions: draft.actions,
       });
       setError("");
     } catch (e) {
@@ -343,6 +316,18 @@ export function CreateProposal({
           "Turn an idea into a decision members can review. Drafts stay on this device.",
         )}
       />
+      {draft.kind === "community" && (
+        <Notice>
+          <p>
+            {m(
+              "Advisory drafts remain available for import and export. Publish advisory votes on Snapshot.",
+            )}
+          </p>
+          <a href={config.snapshotUrl} target="_blank" rel="noreferrer">
+            {m("Open Snapshot ↗")}
+          </a>
+        </Notice>
+      )}
       <div className="wizard-tools">
         <button className="button" onClick={save}>
           {m("Save draft")}
@@ -601,6 +586,8 @@ export function CreateProposal({
                             value={asset}
                             onChange={(e) => setAsset(e.target.value)}
                           >
+                            <option>{m("GEM")}</option>
+                            <option>{m("USDC")}</option>
                             <option>{m("POL")}</option>
                             <option>{m("WETH")}</option>
                             <option>{m("USDC.e")}</option>
@@ -693,7 +680,7 @@ export function CreateProposal({
             )}
             <Notice>
               {m(
-                "Publication requires the current on-chain proposal threshold, verified network data and a successful wallet simulation. Initial threshold: 250 delegated MANA.",
+                "Publication requires the current on-chain proposal threshold, verified network data and a successful wallet simulation.",
               )}
             </Notice>
             {issues.length > 0 && (
@@ -717,6 +704,7 @@ export function CreateProposal({
               className="button primary full"
               disabled={
                 !canSign ||
+                draft.kind === "community" ||
                 tx.busy ||
                 (draft.kind === "executable" && !coherent)
               }

@@ -1,0 +1,15 @@
+{
+  "observations": [
+    {
+      "version": "a994d0f7-04a8-4c73-b926-54d612d87597",
+      "timestamp": 1790685788569,
+      "wallTime": 109444,
+      "diagnostic": {
+        "event": "index_failed",
+        "reason": "RPC_SECONDARY_TIMEOUT",
+        "phase": "read-logs:usdcNative",
+        "detail": "RPC_SECONDARY_TIMEOUT"
+      }
+    }
+  ]
+}

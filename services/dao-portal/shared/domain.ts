@@ -6,11 +6,17 @@ import {
   type Address,
   type Hex,
 } from "viem";
+import type { SyncProgress } from "./sync";
 export const CONFIRMATIONS = 64;
 export const MAX_INDEX_AGE_MS = 180_000;
 export const stringify = (value: unknown) =>
   JSON.stringify(value, (_, v) => (typeof v === "bigint" ? v.toString() : v));
 export type Role =
+  | "treasury"
+  | "ragequitModule"
+  | "gem"
+  | "usdcNative"
+  | "usdcBridged"
   | "mana"
   | "legacyGovernor"
   | "governor"
@@ -24,6 +30,15 @@ export interface ContractConfig {
   startBlock: string;
 }
 export interface PortalConfig {
+  schemaVersion?: number;
+  architecture?: "existing-governor" | "v2-historical";
+  snapshotUrl?: string;
+  capabilities?: {
+    governance: "existing-governor";
+    snapshot: "external";
+    timelock: false;
+    ragequit: boolean;
+  };
   chainId: number;
   environment: string;
   contracts: Partial<Record<Role, ContractConfig>>;
@@ -34,10 +49,14 @@ export interface PortalConfig {
 export interface Health {
   status: "ok" | "setup" | "syncing" | "degraded";
   signingAllowed: boolean;
+  /** Historical completeness is independent of live operation verification. */
+  historyComplete?: boolean;
+  liveReason?: string;
   checkedAt: string;
   head: string | null;
   confirmedHead: string | null;
   sources: { contract: string; block: string; updatedAt: number }[];
+  sync?: SyncProgress;
   reason?: string;
 }
 export interface ChainEvent {

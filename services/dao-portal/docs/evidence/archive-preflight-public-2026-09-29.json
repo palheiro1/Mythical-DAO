@@ -1,0 +1,87 @@
+{
+  "checkedAt": "2026-09-29T10:54:18.048Z",
+  "chainId": 137,
+  "providers": [
+    {
+      "role": "primary",
+      "hostname": "polygon.drpc.org"
+    },
+    {
+      "role": "secondary",
+      "hostname": "tenderly.rpc.polygon.community"
+    }
+  ],
+  "span": 5000,
+  "passed": false,
+  "checks": [
+    {
+      "name": "mana-deployment",
+      "fromBlock": 45785116,
+      "toBlock": 45790115,
+      "passed": false,
+      "durationMs": 25104,
+      "reason": "PROVIDER_REQUEST_FAILED",
+      "provider": "primary",
+      "chain": [
+        {
+          "name": "Error"
+        },
+        {
+          "name": "RpcRequestError",
+          "code": 35
+        },
+        {
+          "name": "Error",
+          "code": 35
+        }
+      ]
+    },
+    {
+      "name": "governor-older-proposal",
+      "fromBlock": 58427770,
+      "toBlock": 58432769,
+      "passed": false,
+      "durationMs": 17453,
+      "reason": "PROVIDER_REQUEST_FAILED",
+      "provider": "primary",
+      "chain": [
+        {
+          "name": "Error"
+        },
+        {
+          "name": "RpcRequestError",
+          "code": 35
+        },
+        {
+          "name": "Error",
+          "code": 35
+        }
+      ]
+    },
+    {
+      "name": "governor-recent-proposal",
+      "fromBlock": 89169940,
+      "toBlock": 89174939,
+      "passed": false,
+      "durationMs": 5504,
+      "reason": "PROVIDER_REQUEST_FAILED",
+      "provider": "primary",
+      "chain": [
+        {
+          "name": "Error"
+        },
+        {
+          "name": "RpcRequestError",
+          "code": 35
+        },
+        {
+          "name": "Error",
+          "code": 35
+        }
+      ]
+    }
+  ],
+  "scope": "Capability samples only; not proof of complete history or authorization to enable signing.",
+  "confirmedHead": "94649348",
+  "confirmedHash": "0x3ee6a908fc50d4f5c3a1a6d641c2127cf03623ba22ab74dd8c5fe31b19e4b104"
+}

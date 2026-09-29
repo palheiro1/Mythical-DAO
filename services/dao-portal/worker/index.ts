@@ -1,5 +1,9 @@
-import { isAddress, isHex, toHex, type Address, type Hex } from "viem";
-import { tokenAbi, vaultAbi } from "../shared/abis";
+import { simulateActions } from "./simulation";
+import { isAddress, isHex, type Address, type Hex } from "viem";
+import { redeemPreview } from "./ragequit";
+import { verifyLive, verifyOperation } from "./live";
+import { recoverProposal } from "./proposal-receipt";
+import { tokenAbi, governorAbi } from "../shared/abis";
 import { stringify, validateActions, type Health } from "../shared/domain";
 import { config } from "./config";
 import { agreed, clients, commonHead, RpcFault } from "./rpc";
@@ -49,14 +53,15 @@ async function handle(request: Request, env: Env): Promise<Response> {
   if (!path.startsWith("/api/")) return env.ASSETS.fetch(request);
   if (request.method !== "GET" && request.method !== "POST")
     return json({ error: "Method not allowed" }, 405);
+  const cfg = config(env);
   if (
     request.method === "POST" &&
     request.headers.has("origin") &&
-    request.headers.get("origin") !== url.origin
+    request.headers.get("origin") !== url.origin &&
+    request.headers.get("origin") !== new URL(cfg.portalUrl).origin
   )
     return json({ error: "Origin not allowed" }, 403);
   if (path === "/api/openapi.json") return json(openapi);
-  const cfg = config(env);
   if (path === "/api/config") return json(cfg);
   if (path === "/api/history/snapshot") {
     const before = Number(
@@ -104,60 +109,55 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return json({ error: "RPC_NOT_CONFIGURED" }, 503);
   }
   if (path === "/api/health") return json(await indexHealth(env, cfg, pair));
+  if (path === "/api/proposals/resolve" && request.method === "POST") {
+    const input = await body(request);
+    if (
+      typeof input.transactionHash !== "string" ||
+      !/^0x[0-9a-fA-F]{64}$/.test(input.transactionHash)
+    )
+      return json({ error: "Invalid transaction hash" }, 400);
+    const { confirmed, head } = await commonHead(pair, cfg);
+    return json(
+      await hydrate(
+        await recoverProposal(
+          env,
+          cfg,
+          pair,
+          input.transactionHash as Hex,
+          confirmed,
+        ),
+        pair,
+        head,
+      ),
+    );
+  }
   if (
     request.method === "POST" &&
     (path === "/api/preflight" || path === "/api/simulate-actions")
   ) {
-    const health = await indexHealth(env, cfg, pair);
-    if (!health.signingAllowed)
-      return json({ error: health.reason ?? "Signing disabled" }, 409);
     const input = await body(request);
     const { head } = await commonHead(pair, cfg);
-    // Agree on the exact current block, as well as the confirmed index, before any simulation.
-    await agreed(
+    // Live calls verify the current chain directly; no historical cursor is trusted.
+    const blockHash = await agreed(
       pair,
       async (c) => (await c.getBlock({ blockNumber: head })).hash,
     );
+    await verifyLive(cfg, pair, head);
     if (path === "/api/simulate-actions") {
-      const actions = validateActions(input.actions),
-        timelock = cfg.contracts.timelock!.address;
-      const result = await agreed(pair, async (c) => {
-        const raw = (await c.transport.request({
-          method: "eth_simulateV1",
-          params: [
-            {
-              blockStateCalls: [
-                {
-                  calls: actions.map((a) => ({
-                    from: timelock,
-                    to: a.target,
-                    data: a.data,
-                    value: toHex(BigInt(a.value)),
-                    gas: "0x989680",
-                  })),
-                },
-              ],
-              validation: false,
-              traceTransfers: false,
-            },
-            toHex(head),
-          ],
-        })) as {
-          calls: { status: string; returnData: string; gasUsed: string }[];
-        }[];
-        return raw;
-      });
-      if (!result?.[0]?.calls || result[0].calls.length !== actions.length)
-        throw new RpcFault("INVALID_SIMULATION_RESPONSE");
-      const ok = result[0].calls.every((c) => c.status === "0x1");
-      return json({
-        ok,
-        block: String(head),
-        calls: result[0].calls,
-        warning: ok
-          ? "Current-state simulation passed. Future balances and state may change."
-          : "Some proposed actions revert in the current state. Governance-only parameter changes require the approved execution context. Publication does not guarantee that this proposal can execute.",
-      });
+      const result = await simulateActions(
+        pair,
+        cfg,
+        head,
+        validateActions(input.actions),
+      );
+      if (
+        (await agreed(
+          pair,
+          async (c) => (await c.getBlock({ blockNumber: head })).hash,
+        )) !== blockHash
+      )
+        throw new RpcFault("PREFLIGHT_BLOCK_CHANGED");
+      return json(result);
     }
     const { account, to, data, value } = input;
     if (
@@ -170,7 +170,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       !/^\d+$/.test(String(value))
     )
       return json({ error: "Invalid transaction" }, 400);
-    const allowed = ["mana", "governor", "ballots", "vault"].some((role) =>
+    const allowed = ["mana", "governor", "ragequitModule"].some((role) =>
       Object.entries(cfg.contracts).some(
         ([r, e]) => r === role && e.address === to.toLowerCase(),
       ),
@@ -183,13 +183,25 @@ async function handle(request: Request, env: Env): Promise<Response> {
       value: BigInt(String(value)),
       blockNumber: head,
     };
+    const verification = await verifyOperation(cfg, pair, head, tx);
     await agreed(pair, async (c) => (await c.call(tx)).data ?? "0x");
     const gasEstimates = await Promise.all(pair.map((c) => c.estimateGas(tx)));
     const gas = gasEstimates.reduce((a, b) => (a > b ? a : b));
     const gasPrices = await Promise.all(pair.map((c) => c.getGasPrice()));
     const gasPrice = gasPrices.reduce((a, b) => (a > b ? a : b));
+    if (
+      (await agreed(
+        pair,
+        async (c) => (await c.getBlock({ blockNumber: head })).hash,
+      )) !== blockHash
+    )
+      throw new RpcFault("PREFLIGHT_BLOCK_CHANGED");
     return json({
       block: String(head),
+      blockHash,
+      chainId: cfg.chainId,
+      account,
+      verification,
       gas: String(gas),
       estimatedFee: String(gas * gasPrice),
       checkedAt: new Date().toISOString(),
@@ -200,7 +212,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
   if (path === "/api/overview") {
     const active = await env.DAO_DB.prepare(
       `SELECT COUNT(*) AS count FROM events p
-      WHERE p.chain_id=? AND p.contract!=? AND p.event_name IN ('ProposalCreated','BallotCreated')
+      WHERE p.chain_id=? AND p.contract=? AND p.event_name IN ('ProposalCreated','BallotCreated')
       AND CAST(COALESCE(json_extract(p.args_json,'$.voteStart'),json_extract(p.args_json,'$.snapshot')) AS INTEGER)<?
       AND CAST(COALESCE(json_extract(p.args_json,'$.voteEnd'),json_extract(p.args_json,'$.deadline')) AS INTEGER)>=?
       AND NOT EXISTS(SELECT 1 FROM events c WHERE c.chain_id=p.chain_id AND c.contract=p.contract
@@ -209,23 +221,46 @@ async function handle(request: Request, env: Env): Promise<Response> {
     )
       .bind(
         cfg.chainId,
-        cfg.contracts.legacyGovernor?.address ?? "",
+        cfg.contracts.governor?.address ?? "",
         Number(confirmed),
         Number(confirmed),
       )
       .first<{ count: number }>();
-    const queued = await env.DAO_DB.prepare(
-      `SELECT COUNT(*) AS count FROM events q WHERE q.chain_id=? AND q.contract=? AND q.event_name='ProposalQueued'
-      AND NOT EXISTS(SELECT 1 FROM events e WHERE e.chain_id=q.chain_id AND e.contract=q.contract AND e.event_name IN ('ProposalExecuted','ProposalCanceled')
-      AND json_extract(e.args_json,'$.proposalId')=json_extract(q.args_json,'$.proposalId'))`,
+    const candidates = await env.DAO_DB.prepare(
+      `SELECT p.args_json FROM events p
+      WHERE p.chain_id=? AND p.contract=? AND p.event_name='ProposalCreated'
+      AND CAST(json_extract(p.args_json,'$.voteEnd') AS INTEGER)<?
+      AND NOT EXISTS(SELECT 1 FROM events e WHERE e.chain_id=p.chain_id AND e.contract=p.contract
+        AND e.event_name IN ('ProposalExecuted','ProposalCanceled')
+        AND json_extract(e.args_json,'$.proposalId')=json_extract(p.args_json,'$.proposalId')) LIMIT 21`,
     )
-      .bind(cfg.chainId, cfg.contracts.governor?.address ?? "")
-      .first<{ count: number }>();
+      .bind(cfg.chainId, cfg.contracts.governor!.address, Number(confirmed))
+      .all<{ args_json: string }>();
+    // Bound RPC work. A larger unresolved set is explicitly incomplete, never a fabricated count.
+    const readyForExecution =
+      candidates.results.length > 20
+        ? null
+        : (
+            await agreed(pair, (c) =>
+              Promise.all(
+                candidates.results.map((row) =>
+                  c.readContract({
+                    address: cfg.contracts.governor!.address,
+                    abi: governorAbi,
+                    functionName: "state",
+                    args: [BigInt(JSON.parse(row.args_json).proposalId)],
+                    blockNumber: confirmed,
+                  }),
+                ),
+              ),
+            )
+          ).filter((state) => state === 4).length;
     const health = await indexHealth(env, cfg, pair);
     return json({
       activeVotes: active?.count ?? 0,
-      queuedExecutions: queued?.count ?? 0,
-      complete: health.signingAllowed,
+      queuedExecutions: 0,
+      readyForExecution,
+      complete: health.historyComplete === true,
       asOfBlock: String(confirmed),
     });
   }
@@ -238,7 +273,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       scope === "legacy"
         ? " AND contract=?"
         : scope === "executable"
-          ? " AND contract!=?"
+          ? " AND contract=?"
           : "";
     const params = [
       cfg.chainId,
@@ -247,7 +282,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       before.block,
       before.log,
       before.contract,
-      ...(scopeSql ? [cfg.contracts.legacyGovernor?.address ?? ""] : []),
+      ...(scopeSql ? [cfg.contracts.governor?.address ?? ""] : []),
     ];
     const rows = await env.DAO_DB.prepare(
       "SELECT * FROM events WHERE chain_id=? AND event_name=? AND block_number<=? AND (block_number,log_index,contract)<(?,?,?)" +
@@ -274,15 +309,15 @@ async function handle(request: Request, env: Env): Promise<Response> {
   }
   if (path === "/api/notification-feed") {
     const health = await indexHealth(env, cfg, pair);
-    if (!health.signingAllowed)
+    if (!health.historyComplete)
       return json({ error: "Index is not verified" }, 409);
     const after = parseCursor(url.searchParams.get("after"), "after");
     const rows = await env.DAO_DB.prepare(
-      "SELECT * FROM events WHERE chain_id=? AND event_name IN ('ProposalCreated','BallotCreated') AND contract!=? AND block_number<=? AND (block_number,log_index,contract)>(?,?,?) ORDER BY block_number,log_index,contract LIMIT 20",
+      "SELECT * FROM events WHERE chain_id=? AND event_name IN ('ProposalCreated','BallotCreated') AND contract=? AND block_number<=? AND (block_number,log_index,contract)>(?,?,?) ORDER BY block_number,log_index,contract LIMIT 20",
     )
       .bind(
         cfg.chainId,
-        cfg.contracts.legacyGovernor?.address ?? "",
+        cfg.contracts.governor?.address ?? "",
         Number(confirmed),
         after.block,
         after.log,
@@ -307,30 +342,85 @@ async function handle(request: Request, env: Env): Promise<Response> {
       .bind(cfg.chainId, detail[1].toLowerCase(), detail[2])
       .first<EventRow>();
     if (!row) return json({ error: "Proposal not indexed" }, 404);
-    return json(await hydrate(eventProposal(row, cfg), pair, confirmed));
+    if (
+      (await agreed(
+        pair,
+        async (c) =>
+          (await c.getBlock({ blockNumber: BigInt(row.block_number) })).hash,
+      )) !== row.block_hash
+    )
+      throw new RpcFault("PROPOSAL_REORG_DETECTED");
+    return json(await hydrate(eventProposal(row, cfg), pair, head));
   }
   if (path === "/api/redeem-preview") {
     const value = url.searchParams.get("amount") ?? "";
-    if (!/^\d+$/.test(value) || !cfg.contracts.vault)
-      return json({ error: "Invalid amount or missing vault" }, 400);
-    const [amounts, supply] = await agreed(pair, (c) =>
+    if (
+      !/^\d+$/.test(value) ||
+      BigInt(value) <= 0n ||
+      BigInt(value) >= 2n ** 256n
+    )
+      return json({ error: "Invalid amount" }, 400);
+    return json(await redeemPreview(cfg, pair, BigInt(value), head));
+  }
+  if (path === "/api/governance-parameters") {
+    const address = cfg.contracts.governor!.address;
+    const [
+      votingDelay,
+      votingPeriod,
+      proposalThreshold,
+      quorumNumerator,
+      quorumDenominator,
+      countingMode,
+    ] = await agreed(pair, (c) =>
       Promise.all([
         c.readContract({
-          address: cfg.contracts.vault!.address,
-          abi: vaultAbi,
-          functionName: "previewRedeem",
-          args: [BigInt(value)],
-          blockNumber: head,
+          address,
+          abi: governorAbi,
+          functionName: "votingDelay",
+          blockNumber: confirmed,
         }),
         c.readContract({
-          address: cfg.contracts.mana!.address,
-          abi: tokenAbi,
-          functionName: "totalSupply",
-          blockNumber: head,
+          address,
+          abi: governorAbi,
+          functionName: "votingPeriod",
+          blockNumber: confirmed,
+        }),
+        c.readContract({
+          address,
+          abi: governorAbi,
+          functionName: "proposalThreshold",
+          blockNumber: confirmed,
+        }),
+        c.readContract({
+          address,
+          abi: governorAbi,
+          functionName: "quorumNumerator",
+          blockNumber: confirmed,
+        }),
+        c.readContract({
+          address,
+          abi: governorAbi,
+          functionName: "quorumDenominator",
+          blockNumber: confirmed,
+        }),
+        c.readContract({
+          address,
+          abi: governorAbi,
+          functionName: "COUNTING_MODE",
+          blockNumber: confirmed,
         }),
       ]),
     );
-    return json({ amounts, supply, block: String(head) });
+    return json({
+      votingDelay,
+      votingPeriod,
+      proposalThreshold,
+      quorumNumerator,
+      quorumDenominator,
+      countingMode,
+      block: String(confirmed),
+      timelock: false,
+    });
   }
   if (path === "/api/treasury")
     return json({
@@ -404,13 +494,15 @@ async function handle(request: Request, env: Env): Promise<Response> {
             functionName: "totalSupply",
             blockNumber: head,
           }),
-          c.readContract({
-            address: mana,
-            abi: tokenAbi,
-            functionName: "allowance",
-            args: [address, cfg.contracts.vault?.address ?? address],
-            blockNumber: head,
-          }),
+          cfg.contracts.ragequitModule
+            ? c.readContract({
+                address: mana,
+                abi: tokenAbi,
+                functionName: "allowance",
+                args: [address, cfg.contracts.ragequitModule.address],
+                blockNumber: head,
+              })
+            : Promise.resolve(0n),
         ]),
     );
     return json({
@@ -452,12 +544,44 @@ export default {
       return await handle(request, env);
     } catch (error) {
       const reason = error instanceof RpcFault ? error.code : "REQUEST_FAILED";
-      console.error(JSON.stringify({ event: "request_failed", reason }));
+      const causes: {
+        name: string;
+        code?: number;
+        status?: number;
+        kind?: string;
+      }[] = [];
+      let cause = error;
+      // Record error classes/codes, never RPC URLs, request bodies or wallet inputs.
+      for (let depth = 0; depth < 6 && cause instanceof Error; depth++) {
+        const fault = cause as Error & {
+          code?: unknown;
+          status?: unknown;
+          details?: string;
+          cause?: unknown;
+        };
+        const message = `${fault.message} ${fault.details ?? ""}`;
+        causes.push({
+          name: fault.name,
+          code: typeof fault.code === "number" ? fault.code : undefined,
+          status: typeof fault.status === "number" ? fault.status : undefined,
+          kind: /I\/O.*different|I\/O.*behalf|different request/i.test(message)
+            ? "cross-request-io"
+            : /rate limit|too many requests|quota|compute units/i.test(message)
+              ? "provider-limit"
+              : /timed out|timeout/i.test(message)
+                ? "timeout"
+                : undefined,
+        });
+        cause = fault.cause;
+      }
+      console.error(
+        JSON.stringify({ event: "request_failed", reason, causes }),
+      );
       return json(
         {
           error: reason,
           message:
-            "Data could not be verified. Retry after checking index health.",
+            "The current operation or data could not be verified. Refresh and try again.",
         },
         503,
       );

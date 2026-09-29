@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-09-29T12:05:12.529Z",
+  "records": [
+    {
+      "outcome": "ok",
+      "event": {
+        "cron": "* * * * *",
+        "scheduledTime": 1790683335000
+      },
+      "logs": [],
+      "exceptions": []
+    }
+  ]
+}

@@ -1,13 +1,14 @@
 # Mythical DAO
 
-Implementação local do portal independente descrito em [PLAN_MYTHICAL_DAO.md](PLAN_MYTHICAL_DAO.md).
+Portal sobre o Governor e a tesouraria atuais da Polygon, com um módulo opcional de ragequit para **GEM, WETH e USDC nativo**, queimando MANA. Sem migração de tesouraria, token, delegações ou regras; as votações consultivas continuam no Snapshot.
 
-- [Melhoria visual e de experiência: relatório e capturas](services/dao-portal/docs/VISUAL_UX_REVIEW.md)
-- [Portal, contratos e API](services/dao-portal/README.md)
-- [Resultados dos testes e evidência](services/dao-portal/docs/evidence/VALIDATION.md)
-- [Estado de implementação e condições de lançamento](services/dao-portal/docs/IMPLEMENTATION_STATUS.md)
-- [Operação, implantação e recuperação](services/dao-portal/docs/OPERATIONS.md)
-- [Modelo de ameaças e regras contratuais](services/dao-portal/docs/THREAT_MODEL.md)
-- [Integração Telegram preservada e adaptada](services/telegram-governance-bot/README.md)
+- [Código e execução local](services/dao-portal/README.md)
+- [Estado da implementação e resultados](services/dao-portal/docs/IMPLEMENTATION_STATUS.md)
+- [Ativação por etapas, implantação e autorizações](services/dao-portal/docs/OPERATIONS.md)
+- [Modelo de ameaças](services/dao-portal/docs/THREAT_MODEL.md)
+- [Proposta de autorização para revisão](services/dao-portal/deployments/ragequit-authorization.template.json)
+- [Manifesto ativo](services/dao-portal/deployments/polygon.json)
 
-O código está preparado para ensaios e revisão. A publicação em produção e a migração real continuam dependentes da revisão independente, aprovação da DAO, configuração dos serviços e reconciliação dos ativos e receitas. O plano original foi preservado.
+O [portal de teste está publicado](https://dao-preview.mythicalbeings.io), com governação verificada por operação e sincronização histórica ainda em curso. A revisão independente/implantação do módulo, a autorização pela DAO e a pequena saída real continuam pendentes. Não houve transações públicas nem mudança de serviço Telegram.
+
+[O plano V2 original](PLAN_MYTHICAL_DAO.md), os seus contratos e a [configuração histórica](services/dao-portal/deployments/polygon-v2.historical.json) foram preservados; não são a arquitetura ativa.

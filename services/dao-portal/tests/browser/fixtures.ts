@@ -2,14 +2,25 @@ import type { Page } from "@playwright/test";
 import { encodeFunctionData } from "viem";
 import {
   proposalHash,
+  type Action,
   type PortalConfig,
   type Proposal,
 } from "../../shared/domain";
 import { vaultAbi } from "../../shared/abis";
-const addr = (n: number) => ("0x" + String(n).repeat(40)) as `0x${string}`;
-export const member = addr(1),
-  recipient = addr(2);
+const addr = (n: number) =>
+  ("0x" + n.toString(16).padStart(40, "0")) as `0x${string}`;
+export const member = "0x1111111111111111111111111111111111111111",
+  recipient = "0x2222222222222222222222222222222222222222";
 export const config: PortalConfig = {
+  schemaVersion: 2,
+  architecture: "existing-governor",
+  snapshotUrl: "https://snapshot.box/#/s:mythicalbeings.eth",
+  capabilities: {
+    governance: "existing-governor",
+    snapshot: "external",
+    timelock: false,
+    ragequit: true,
+  },
   chainId: 137,
   environment: "test",
   enabled: true,
@@ -25,17 +36,21 @@ export const config: PortalConfig = {
       "vault",
       "ballots",
       "legacyGovernor",
+      "treasury",
+      "ragequitModule",
+      "gem",
+      "usdcNative",
+      "usdcBridged",
     ].map((role, i) => [role, { address: addr(i + 2), startBlock: "1" }]),
   ),
 };
-export const payment = {
-  target: config.contracts.vault!.address,
-  value: "0",
-  data: encodeFunctionData({
-    abi: vaultAbi,
-    functionName: "payNative",
-    args: [recipient, 10000000000000000000n],
-  }),
+config.contracts.treasury = config.contracts.governor;
+config.contracts.legacyGovernor = config.contracts.governor;
+config.contracts.usdcBridged = config.contracts.usdc;
+export const payment: Action = {
+  target: recipient,
+  value: "10000000000000000000",
+  data: "0x" as const,
 };
 function proposal(title: string, state: string, actions = [payment]): Proposal {
   const text =
@@ -62,7 +77,10 @@ function proposal(title: string, state: string, actions = [payment]): Proposal {
     eta: "1900000000",
   };
 }
-export const paymentProposal = proposal("Fund the habitat research", "Queued");
+export const paymentProposal = proposal(
+  "Fund the habitat research",
+  "Succeeded",
+);
 export const parameterProposal = proposal(
   "Update a governance parameter",
   "Succeeded",
@@ -100,16 +118,28 @@ export async function controlledPortal(page: Page) {
     else if (url.pathname === "/api/health")
       result = {
         status: state.health,
-        signingAllowed: state.health === "ok",
+        signingAllowed: state.health === "ok" || state.health === "syncing",
+        historyComplete: state.health === "ok",
         head: "1000",
         confirmedHead: "936",
         checkedAt: new Date().toISOString(),
         sources: [],
       };
+    else if (url.pathname === "/api/governance-parameters")
+      result = {
+        votingDelay: "41143",
+        votingPeriod: "288000",
+        proposalThreshold: "0",
+        quorumNumerator: "4",
+        quorumDenominator: "100",
+        countingMode: "support=bravo&quorum=for,abstain",
+        block: "936",
+      };
     else if (url.pathname === "/api/overview")
       result = {
         activeVotes: 2,
-        queuedExecutions: 1,
+        queuedExecutions: 0,
+        readyForExecution: 1,
         complete: state.health === "ok",
       };
     else if (url.pathname === "/api/treasury")
@@ -118,32 +148,47 @@ export async function controlledPortal(page: Page) {
         : {
             accounts: [
               {
-                role: "vault",
-                address: config.contracts.vault!.address,
+                role: "treasury",
+                address: config.contracts.treasury!.address,
                 assets: [
                   {
-                    symbol: "POL",
+                    symbol: "GEM",
+                    address: config.contracts.gem!.address,
+                    ragequit: true,
+                    allowance: (2n ** 256n - 1n).toString(),
                     balance: "100000000000000000000",
                     decimals: 18,
                   },
                   {
                     symbol: "WETH",
+                    ragequit: true,
+                    allowance: (2n ** 256n - 1n).toString(),
                     address: config.contracts.weth!.address,
                     balance: "1230000000000000000",
                     decimals: 18,
                   },
                   {
-                    symbol: "USDC.e",
-                    address: config.contracts.usdc!.address,
-                    balance: "423450000",
+                    symbol: "USDC",
+                    address: config.contracts.usdcNative!.address,
+                    ragequit: true,
+                    allowance: (2n ** 256n - 1n).toString(),
+                    balance: "0",
                     decimals: 6,
                   },
+                  {
+                    symbol: "USDC.e",
+                    address: config.contracts.usdcBridged!.address,
+                    balance: "423450000",
+                    decimals: 6,
+                    ragequit: false,
+                  },
+                  {
+                    symbol: "POL",
+                    balance: "0",
+                    decimals: 18,
+                    ragequit: false,
+                  },
                 ],
-              },
-              {
-                role: "legacy",
-                address: config.contracts.legacyGovernor!.address,
-                assets: [{ symbol: "POL", balance: "0", decimals: 18 }],
               },
             ],
             asOfBlock: "936",
@@ -158,7 +203,7 @@ export async function controlledPortal(page: Page) {
                 ? [
                     {
                       ...paymentProposal,
-                      kind: "legacy",
+                      kind: "executable",
                       contract: config.contracts.legacyGovernor!.address,
                     },
                   ]
@@ -197,10 +242,24 @@ export async function controlledPortal(page: Page) {
         delegate: member,
         supply: "1000000000000000000000",
         allowance: "1000000000000000000",
+        asOfBlock: "1000",
       };
     else if (url.pathname === "/api/redeem-preview")
       result = {
-        amounts: ["100000000000000000", "20000000000000000", "500000"],
+        module: config.contracts.ragequitModule!.address,
+        treasury: config.contracts.treasury!.address,
+        mana: config.contracts.mana!.address,
+        basket: ["gem", "weth", "usdcNative"].map((role, i) => ({
+          symbol: ["GEM", "WETH", "USDC"][i],
+          address: config.contracts[role as "gem"]!.address,
+          balance: i === 2 ? "0" : "100000000000000000000",
+          allowance: (2n ** 256n - 1n).toString(),
+          amount: ["100000000000000000", "20000000000000000", "0"][i],
+          decimals: i === 2 ? 6 : 18,
+        })),
+        available: true,
+        reasons: [],
+        amounts: ["100000000000000000", "20000000000000000", "0"],
         supply: "1000000000000000000000",
         block: "1000",
       };

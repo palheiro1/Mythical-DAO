@@ -25,6 +25,8 @@ export interface TreasuryAccount {
     address?: Address | null;
     balance: string;
     decimals: number;
+    ragequit?: boolean;
+    allowance?: string;
   }[];
 }
 export type TreasuryResponse =
@@ -36,6 +38,7 @@ export interface Member {
   delegate: Address;
   supply: string;
   allowance: string;
+  asOfBlock?: string;
 }
 export interface SnapshotRecord {
   id: string;
@@ -50,4 +53,32 @@ export interface SnapshotRecord {
     created?: number;
     type?: string;
   };
+}
+
+export interface GovernanceParameters {
+  votingDelay: string;
+  votingPeriod: string;
+  proposalThreshold: string;
+  quorumNumerator: string;
+  quorumDenominator: string;
+  countingMode: string;
+  block: string;
+}
+export interface RedeemPreview {
+  module: Address | null;
+  treasury: Address;
+  mana: Address;
+  basket: {
+    symbol: string;
+    address: Address;
+    decimals: number;
+    balance: string;
+    allowance: string;
+    amount: string;
+  }[];
+  amounts: string[];
+  supply: string;
+  block: string;
+  available: boolean;
+  reasons: string[];
 }

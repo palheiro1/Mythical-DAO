@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-09-29T12:44:24.055Z",
+  "checks": [
+    {
+      "provider": "infura",
+      "side": "from",
+      "fromBlock": 48699443,
+      "toBlock": 48704442,
+      "status": 200,
+      "logs": 0,
+      "durationMs": 1329
+    },
+    {
+      "provider": "tenderly",
+      "side": "from",
+      "fromBlock": 48699443,
+      "toBlock": 48704442,
+      "status": 200,
+      "logs": 0,
+      "durationMs": 1544
+    },
+    {
+      "provider": "infura",
+      "side": "to",
+      "fromBlock": 48699443,
+      "toBlock": 48704442,
+      "status": 200,
+      "logs": 0,
+      "durationMs": 428
+    },
+    {
+      "provider": "tenderly",
+      "side": "to",
+      "fromBlock": 48699443,
+      "toBlock": 48704442,
+      "status": 200,
+      "logs": 0,
+      "durationMs": 933
+    }
+  ]
+}

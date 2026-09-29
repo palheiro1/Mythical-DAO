@@ -77,6 +77,8 @@ export function AssetIcon({ symbol }: { symbol: string }) {
     MANA: "/brand/mana.png",
     WETH: "/brand/weth.png",
     POL: "/brand/polygon.png",
+    GEM: "/brand/gem.png",
+    USDC: "/brand/usdc.svg",
     "USDC.e": "/brand/usdc.svg",
   };
   return src[symbol] ? (
@@ -139,7 +141,7 @@ export function blockedReason(
   if (chainId !== config.chainId)
     return m("Switch your wallet to the portal network to continue.");
   if (!config.enabled || health?.status === "setup")
-    return m("V2 is being prepared. Signing is not available yet.");
+    return m("The portal is being prepared. Signing is not available yet.");
   if (!health?.signingAllowed)
     return m(
       "Latest data is not verified. Signing will be available after verification.",
@@ -181,11 +183,15 @@ export function DataState({
     message =
       health?.status === "setup"
         ? m(
-            "V2 is being prepared. Explore the portal and save a proposal draft.",
+            "The portal is being prepared. Explore the portal and save a proposal draft.",
           )
         : health?.status === "syncing"
           ? m("History is synchronizing. Confirmed data will appear here.")
-          : m("We couldn’t verify the latest data. Try again.");
+          : health?.head && !unavailable
+            ? m(
+                "History is incomplete. More records will appear after indexing.",
+              )
+            : m("We couldn’t verify the latest data. Try again.");
   else if (empty)
     message = emptyTitle ?? m("No records in this confirmed view.");
   if (message)
@@ -205,7 +211,7 @@ export function DataState({
       {stale || (!independent && health && health.status !== "ok") ? (
         <Notice tone="warning">
           {m(
-            "Showing previously retrieved data. It may be out of date; signing remains unavailable.",
+            "Historical records may be incomplete or out of date. Each wallet operation is verified directly before signing.",
           )}
           {retry && (
             <button className="text-button" onClick={retry}>
@@ -258,11 +264,26 @@ export function DateStamp({ value }: { value: string | number }) {
 }
 
 export function ErrorNotice({ error }: { error: string }) {
+  const explanations: Record<string, string> = {
+    ALREADY_VOTED: m("This wallet has already voted on this proposal."),
+    PROPOSAL_STATE_CHANGED: m(
+      "The proposal state changed. Refresh and review it again.",
+    ),
+    PROPOSAL_THRESHOLD_NOT_MET: m(
+      "Your voting power is below the current proposal threshold.",
+    ),
+    PROPOSAL_AWAITING_CONFIRMATIONS: m(
+      "This proposal is still awaiting network confirmations. Try again shortly.",
+    ),
+  };
   const readable = Object.values(messages).some((value) => value === error);
   return (
     <div role="alert" className="error">
       <p>
-        {readable ? error : m("We couldn’t verify the latest data. Try again.")}
+        {readable
+          ? error
+          : (explanations[error] ??
+            m("We couldn’t verify the latest data. Try again."))}
       </p>
       {!readable && (
         <details>

@@ -1,3 +1,4 @@
+import { RecoverProposal } from "./RecoverProposal";
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 import { zeroAddress } from "viem";
@@ -9,8 +10,10 @@ import type {
   Member,
   SnapshotRecord,
   ListResponse,
+  GovernanceParameters,
 } from "./data-types";
 import { useApi } from "./api";
+import { SyncStatus } from "./SyncStatus";
 import {
   Wallet,
   Status,
@@ -18,6 +21,7 @@ import {
   ProposalCard,
   AddressLink,
   amount,
+  allowanceAmount,
 } from "./components";
 import { TransactionProvider } from "./Transaction";
 import { CreateProposal } from "./CreateProposal";
@@ -208,26 +212,34 @@ export function App() {
               </span>
               <Status health={health} />
             </div>
-            {health?.status !== "ok" && (
+            {(health?.status !== "ok" || health?.liveReason) && (
               <div className="setup-banner" role="status">
                 <Icon name="info" />
                 <div>
                   <strong>
-                    {health?.status === "setup"
-                      ? m("V2 is being prepared.")
-                      : health?.status === "syncing"
-                        ? m("History is synchronizing.")
-                        : m("We couldn’t verify the latest data.")}
+                    {health?.liveReason
+                      ? m("We couldn’t verify the latest data.")
+                      : health?.status === "setup"
+                        ? m("The portal is being prepared.")
+                        : health?.status === "syncing"
+                          ? m("History is synchronizing.")
+                          : health?.head
+                            ? m("History is incomplete.")
+                            : m("We couldn’t verify the latest data.")}
                   </strong>
                   <span>
                     {health?.status === "setup"
                       ? m("Explore the portal and save a proposal draft.")
-                      : m(
-                          "Previously retrieved data may be out of date. Wallet operations require verified data.",
-                        )}
+                      : health?.signingAllowed
+                        ? m(
+                            "Wallet and treasury balances are read directly from the network. Each wallet operation is verified and simulated before signing; historical lists and metrics are incomplete.",
+                          )
+                        : m(
+                            "Previously retrieved data may be out of date. Wallet operations require verified data.",
+                          )}
                   </span>
                 </div>
-                {health?.status === "degraded" && (
+                {(health?.status === "degraded" || health?.liveReason) && (
                   <button
                     className="button small"
                     onClick={() => void healthQuery.refetch()}
@@ -235,14 +247,19 @@ export function App() {
                     {m("Try again")}
                   </button>
                 )}
-                {health?.reason && (
+                {(health?.reason || health?.liveReason) && (
                   <details>
                     <summary>{m("Details")}</summary>
-                    <code>{health.reason}</code>
+                    <code>
+                      {[health.liveReason, health.reason]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </code>
                   </details>
                 )}
               </div>
             )}
+            {config.enabled && <SyncStatus health={health} />}
             <main id="main-content" tabIndex={-1}>
               {route === "overview" ? (
                 <Overview />
@@ -329,6 +346,7 @@ function Overview() {
     totals = useApi<{
       activeVotes: number;
       queuedExecutions: number;
+      readyForExecution: number | null;
       complete: boolean;
     }>("overview"),
     { address } = useAccount(),
@@ -339,7 +357,7 @@ function Overview() {
     ]
       .sort((a, b) => Number(BigInt(b.blockNumber) - BigInt(a.blockNumber)))
       .slice(0, 4),
-    vault = treasury.data?.accounts.find((a) => a.role === "vault");
+    vault = treasury.data?.accounts.find((a) => a.role === "treasury");
   return (
     <>
       <section className="welcome">
@@ -378,7 +396,7 @@ function Overview() {
           <strong>
             {totals.data?.complete ? totals.data.activeVotes : "—"}
           </strong>
-          <p>{m("Executable proposals and community ballots")}</p>
+          <p>{m("On-chain executable proposals")}</p>
         </div>
         <div className="metric">
           <span>
@@ -386,14 +404,16 @@ function Overview() {
             {m("Awaiting execution")}
           </span>
           <strong>
-            {totals.data?.complete ? totals.data.queuedExecutions : "—"}
+            {totals.data?.complete
+              ? (totals.data.readyForExecution ?? "—")
+              : "—"}
           </strong>
-          <p>{m("Approved actions in the timelock")}</p>
+          <p>{m("Approved actions ready for direct execution")}</p>
         </div>
         <div className="metric">
           <span>
             <Icon name="treasury" />
-            {m("V2 treasury assets")}
+            {m("DAO treasury assets")}
           </span>
           {vault && !treasury.error ? (
             <div className="balance-list">
@@ -488,7 +508,7 @@ function Overview() {
           <h2>{m("Two ways to make a decision")}</h2>
           <p>
             {m(
-              "Executable proposals can authorize contract actions. Community ballots record a preference and cannot spend treasury assets.",
+              "Executable proposals can authorize contract actions. Snapshot votes record a preference and cannot spend treasury assets.",
             )}
           </p>
         </div>
@@ -498,6 +518,7 @@ function Overview() {
   );
 }
 function Governance() {
+  const { config } = usePortal();
   const [tab, setTab] = useState("executable"),
     [search, setSearch] = useState(""),
     [before, setBefore] = useState("");
@@ -551,6 +572,24 @@ function Governance() {
           />
         </label>
       </div>
+      {tab === "community" && (
+        <section className="panel">
+          <h2>{m("Advisory votes on Snapshot")}</h2>
+          <p>{t("advisoryNotice")}</p>
+          <a
+            className="button primary"
+            href={config.snapshotUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {m("Open Snapshot ↗")}
+          </a>
+          <a className="button" href="#history">
+            {m("Snapshot archive")}
+          </a>
+        </section>
+      )}
+      {tab === "executable" && <RecoverProposal />}
       <p className="muted">
         {m("Search covers the proposals on this page only.")}
       </p>
@@ -626,9 +665,14 @@ function TreasuryPage() {
     .filter((p) => p.payments.length);
   const movements = (events.data?.items ?? []).filter(
     (e) =>
-      ["Redeemed", "Payment", "NativeDeposit", "Transfer"].includes(
-        e.event_name,
-      ) && e.contract !== config.contracts.mana?.address,
+      [
+        "RagequitExecuted",
+        "Approval",
+        "Redeemed",
+        "Payment",
+        "NativeDeposit",
+        "Transfer",
+      ].includes(e.event_name) && e.contract !== config.contracts.mana?.address,
   );
   return (
     <>
@@ -638,23 +682,17 @@ function TreasuryPage() {
           "Follow verified holdings and the decisions that authorize spending.",
         )}
       />
-      {["vault", "legacy"].map((role) => {
+      {["treasury"].map((role) => {
         const account = query.data?.accounts.find((a) => a.role === role),
-          address =
-            config.contracts[role === "vault" ? "vault" : "legacyGovernor"]
-              ?.address;
+          address = config.contracts.treasury?.address;
         return (
           <section className="panel treasury-panel" key={role}>
             <div className="section-top">
               <div>
                 <p className="eyebrow">
-                  {role === "vault"
-                    ? m("Fixed V2 exit basket")
-                    : m("Outside the V2 exit basket")}
+                  {m("GEM · WETH · native USDC exit basket")}
                 </p>
-                <h2>
-                  {role === "vault" ? m("V2 treasury") : m("Legacy holdings")}
-                </h2>
+                <h2>{m("DAO treasury")}</h2>
               </div>
               {address && <AddressLink address={address} />}
             </div>
@@ -663,6 +701,7 @@ function TreasuryPage() {
               error={query.error}
               unavailable={query.data?.unavailable || !account}
               empty={false}
+              independent
               retry={() => void query.refetch()}
             >
               <div className="metric-grid">
@@ -673,6 +712,19 @@ function TreasuryPage() {
                       {asset.symbol}
                     </span>
                     <strong>{amount(asset.balance, asset.decimals)}</strong>
+                    <p>
+                      {asset.ragequit
+                        ? m("Included in ragequit")
+                        : m("Excluded from ragequit")}
+                    </p>
+                    {asset.ragequit && (
+                      <p>
+                        {m("Treasury allowance")}:{" "}
+                        {asset.allowance
+                          ? allowanceAmount(asset.allowance, asset.decimals)
+                          : "0"}
+                      </p>
+                    )}
                     {asset.address ? (
                       <AddressLink address={asset.address} />
                     ) : (
@@ -689,7 +741,7 @@ function TreasuryPage() {
                 </p>
               )}
             </DataState>
-            {role === "vault" && <Notice>{t("fundingNotice")}</Notice>}
+            <Notice>{t("fundingNotice")}</Notice>
           </section>
         );
       })}
@@ -759,7 +811,7 @@ function TreasuryPage() {
       </div>
       <p className="muted">
         {m(
-          "MANA, NFTs, other tokens and assets outside the V2 vault are excluded from the exit basket. Transferring excluded assets requires governance.",
+          "POL, WPOL, USDC.e, MANA and NFTs are excluded from ragequit. No assets are automatically converted.",
         )}
       </p>
     </>
@@ -770,9 +822,7 @@ function History() {
     [tab, setTab] = useState("legacy"),
     [before, setBefore] = useState(""),
     proposals = useApi<ProposalList>(
-      "proposals?kind=" +
-        (tab === "v2" ? "executable" : "legacy") +
-        (before ? "&before=" + before : ""),
+      "proposals?kind=" + "legacy" + (before ? "&before=" + before : ""),
       tab !== "snapshot",
     ),
     archive = useApi<ListResponse<SnapshotRecord>>(
@@ -790,7 +840,6 @@ function History() {
       <div className="segmented history-tabs">
         {[
           ["legacy", m("Original Governor")],
-          ["v2", m("Governor V2")],
           ["snapshot", m("Snapshot archive")],
         ].map(([value, label]) => (
           <button
@@ -865,31 +914,17 @@ function History() {
         <>
           <section className="panel compact">
             <div className="section-top">
-              <h2>
-                {tab === "legacy" ? m("Original Governor") : m("Governor V2")}
-              </h2>
-              {config.contracts[
-                tab === "legacy" ? "legacyGovernor" : "governor"
-              ] ? (
-                <AddressLink
-                  address={
-                    config.contracts[
-                      tab === "legacy" ? "legacyGovernor" : "governor"
-                    ]!.address
-                  }
-                />
+              <h2>{m("Original Governor")}</h2>
+              {config.contracts["governor"] ? (
+                <AddressLink address={config.contracts["governor"]!.address} />
               ) : (
                 <span className="muted">{m("Awaiting deployment")}</span>
               )}
             </div>
             <p>
-              {tab === "legacy"
-                ? m(
-                    "Legacy proposals retain their original identities. Residual funds and unfinished decisions remain part of the migration process.",
-                  )
-                : m(
-                    "V2 decisions retain their on-chain identities and execution state.",
-                  )}
+              {m(
+                "The original Governor remains active. Proposals retain their original identities, actions and execution state.",
+              )}
             </p>
           </section>
           <DataState
@@ -916,12 +951,36 @@ function History() {
   );
 }
 function Guide() {
+  const rules = useApi<GovernanceParameters>("governance-parameters");
   return (
     <>
       <PageHeading
         title={m("How governance works")}
         description={m("Community-governed. Powered by MANA.")}
       />
+      <section className="panel">
+        <h2>{m("Current Governor rules")}</h2>
+        {rules.data ? (
+          <dl>
+            <dt>{m("Proposal threshold")}</dt>
+            <dd>{amount(rules.data.proposalThreshold)} MANA</dd>
+            <dt>{m("Voting delay / period")}</dt>
+            <dd>
+              {rules.data.votingDelay} / {rules.data.votingPeriod} blocks
+            </dd>
+            <dt>{m("Quorum")}</dt>
+            <dd>
+              {rules.data.quorumNumerator} / {rules.data.quorumDenominator}
+            </dd>
+            <dt>{m("Counting mode")}</dt>
+            <dd>{rules.data.countingMode}</dd>
+            <dt>{m("Verified at block")}</dt>
+            <dd>{rules.data.block}</dd>
+          </dl>
+        ) : (
+          <p>{m("Current rules could not be verified.")}</p>
+        )}
+      </section>
       <div className="guide-grid">
         {[
           [
@@ -933,19 +992,19 @@ function Guide() {
           [
             m("2. Propose a decision"),
             m(
-              "Create an executable proposal for contract actions, or a community ballot for an advisory preference. The initial proposal threshold is 250 delegated MANA at the previous block.",
+              "Create an executable proposal for contract actions, or use Snapshot for an advisory preference. The existing Governor enforces the current proposal threshold.",
             ),
           ],
           [
             m("3. Review and vote"),
             m(
-              "Initial rules: voting starts after 41,143 blocks and lasts 288,000 blocks. Executable proposals need 10% quorum from for plus abstain votes and at least two-thirds support among directional votes.",
+              "Voting power is fixed at the proposal snapshot. The current Governor determines quorum, voting deadlines and the result.",
             ),
           ],
           [
-            m("4. Wait, then execute"),
+            m("4. Execute approved actions"),
             m(
-              "Approved executable proposals must be scheduled and wait at least 72 hours. Anyone can schedule or execute an eligible proposal. Approval does not reserve assets.",
+              "Approved proposals execute directly through the existing Governor, without a timelock step. Approval does not reserve treasury assets.",
             ),
           ],
         ].map(([title, body]) => (
@@ -957,7 +1016,7 @@ function Guide() {
       </div>
       <Notice>
         {m(
-          "V2 exits burn MANA permanently for a proportional share of the configured basket. Availability depends on the deployed vault, current assets and successful atomic transfers.",
+          "Exits burn MANA permanently for GEM, WETH and native USDC. The DAO can spend treasury funds or revoke allowances. There is no mandatory exit window.",
         )}
       </Notice>
       <a className="button primary" href="#create">

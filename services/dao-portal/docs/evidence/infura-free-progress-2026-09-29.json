@@ -1,0 +1,54 @@
+{
+  "checkedAt": "2026-09-29T12:03:14.233Z",
+  "quota": {
+    "provider": "infura",
+    "day": "2026-09-29",
+    "credits": 5660,
+    "requests": 42,
+    "not_before": 1790683360324,
+    "blocked_until": 0
+  },
+  "cursors": [
+    {
+      "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+      "block_number": 48679442,
+      "updated_at": 1790683234233
+    },
+    {
+      "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+      "block_number": 45795115,
+      "updated_at": 1790683354310
+    },
+    {
+      "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+      "block_number": 48679442,
+      "updated_at": 1790683224112
+    },
+    {
+      "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+      "block_number": 48679442,
+      "updated_at": 1790683215210
+    },
+    {
+      "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "block_number": 48684442,
+      "updated_at": 1790683340653
+    },
+    {
+      "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "block_number": 48679442,
+      "updated_at": 1790683246690
+    }
+  ],
+  "indexHealth": {
+    "id": 1,
+    "status": "ok",
+    "checked_at": 1790683246963,
+    "reason": null
+  },
+  "snapshotArchive": 8,
+  "advancedSinceFirstRun": [
+    "0x2cacca1266653bb090d3fb511456ebca33150562",
+    "0x7b9e327748462f1038c9d081c98d189b22c60a27"
+  ]
+}

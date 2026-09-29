@@ -1,3 +1,5 @@
+> Este documento descreve a implementação visual original. As capturas foram atualizadas para o Governor existente; os resultados atuais estão em [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+
 # Visual and UX implementation — 28 September 2026
 
 The [visual plan](VISUAL_PLAN.md) is implemented in the existing local portal. Preview at **http://127.0.0.1:8787** while the local Worker is running. This update preserves the contracts, economic rules, ABIs, API endpoints, database schema, game authentication and Telegram service. It performs no public deployment or real transaction.

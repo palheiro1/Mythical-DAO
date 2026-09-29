@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-09-29T11:18:14.261Z",
+  "project": "/home/usuario/Documentos/GitHub/wallet",
+  "scope": "Read-only source/config discovery and bounded RPC capability probes; wallet unchanged.",
+  "configuredProvider": {
+    "name": "Alchemy",
+    "hostname": "polygon-mainnet.g.alchemy.com",
+    "configFile": ".env",
+    "variables": [
+      "POLYGON_RPC_URL",
+      "VITE_POLYGON_RPC_URL"
+    ],
+    "sameEndpoint": true,
+    "chainId": 137,
+    "observedPlan": "Free",
+    "observedEthGetLogsMaxBlockRange": 10,
+    "range5000": {
+      "httpStatus": 400,
+      "rpcCode": -32600,
+      "reason": "Free tier allows up to a 10 block range; PAYG required for expanded range."
+    }
+  },
+  "fallback": {
+    "name": "PublicNode",
+    "hostname": "polygon-bor-rpc.publicnode.com",
+    "sources": [
+      ".env.example",
+      "server/polygonApi.js:15",
+      "src/services/Polygon/wagmiConfig.js:11",
+      "src/services/Polygon/polygonApiClient.js:5"
+    ]
+  },
+  "historicalSamples": [
+    {
+      "fromBlock": 45785116,
+      "toBlock": 45785125,
+      "contractRole": "mana",
+      "alchemyLogs": 2,
+      "tenderlyLogs": 2,
+      "logsAndCanonicalBlockHashAgree": true
+    },
+    {
+      "fromBlock": 58427770,
+      "toBlock": 58427779,
+      "contractRole": "governor",
+      "alchemyLogs": 1,
+      "tenderlyLogs": 1,
+      "logsAndCanonicalBlockHashAgree": true
+    }
+  ],
+  "secondConfiguredPrivateProviderFound": false,
+  "credentialsStoredInReport": false,
+  "completeBackfillReady": false,
+  "reference": "https://www.alchemy.com/docs/chains/polygon-pos/polygon-po-s-api-endpoints/eth-get-logs"
+}

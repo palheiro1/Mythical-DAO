@@ -117,9 +117,9 @@ export function Wallet({ config }: { config: PortalConfig }) {
 export function Status({ health }: { health?: Health }) {
   const labels = {
     ok: m("Data verified"),
-    setup: m("V2 in preparation"),
+    setup: m("Portal in preparation"),
     syncing: m("Synchronizing"),
-    degraded: m("Data unavailable"),
+    degraded: health?.head ? m("History incomplete") : m("Data unavailable"),
   };
   return (
     <span
@@ -206,4 +206,10 @@ export function ProposalCard({ p }: { p: Proposal }) {
       </div>
     </a>
   );
+}
+
+export function allowanceAmount(value: string, decimals = 18) {
+  return BigInt(value) === 2n ** 256n - 1n
+    ? m("Unlimited (revocable)")
+    : amount(value, decimals);
 }

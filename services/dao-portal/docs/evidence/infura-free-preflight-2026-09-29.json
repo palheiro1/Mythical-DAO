@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-09-29T11:50:18.726Z",
+  "chainId": 137,
+  "providers": [
+    {
+      "role": "primary",
+      "hostname": "polygon-mainnet.infura.io"
+    },
+    {
+      "role": "secondary",
+      "hostname": "tenderly.rpc.polygon.community"
+    }
+  ],
+  "span": 5000,
+  "passed": true,
+  "checks": [
+    {
+      "name": "mana-deployment",
+      "fromBlock": 45785116,
+      "toBlock": 45790115,
+      "passed": true,
+      "logs": 9,
+      "durationMs": 12071,
+      "endHash": "0x9acf01ef4f8dac687aa7bf0bd627d9836c7d0e019c1d4285cf4d532f67e97c05"
+    },
+    {
+      "name": "governor-older-proposal",
+      "fromBlock": 58427770,
+      "toBlock": 58432769,
+      "passed": true,
+      "logs": 1,
+      "durationMs": 22474,
+      "endHash": "0x94643d3b4582a39449281128e492835f369106c243d97e775b534b71f6b4970c"
+    },
+    {
+      "name": "governor-recent-proposal",
+      "fromBlock": 89169940,
+      "toBlock": 89174939,
+      "passed": true,
+      "logs": 1,
+      "durationMs": 4627,
+      "endHash": "0xb8cf4c91ed44e15cc48fa49c8e9810f4df66bc5316b9b20a5a581442393d34ce"
+    }
+  ],
+  "scope": "Capability samples only; not proof of complete history or authorization to enable signing.",
+  "confirmedHead": "94651589",
+  "confirmedHash": "0x6d29746419556b6909eb036a70d407ccab040deef9aca685ef90372b0228798b"
+}

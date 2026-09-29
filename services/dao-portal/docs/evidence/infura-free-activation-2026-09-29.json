@@ -1,0 +1,124 @@
+{
+  "checkedAt": "2026-09-29T12:02:29.092Z",
+  "workerVersion": "f6e02799-ffe0-4164-b318-26ffa0587df5",
+  "mode": "infura-free",
+  "migration": "0002_infura_quota.sql",
+  "schedule": "* * * * *",
+  "dailyCreditLimit": 2400000,
+  "requestSpacingMs": 1100,
+  "tests": 67,
+  "typecheck": "passed",
+  "build": "passed",
+  "dryRun": "passed",
+  "publicRouteChecks": "infura-free-public-2026-09-29.json",
+  "archivePreflight": "infura-free-preflight-2026-09-29.json",
+  "before": {
+    "events": 2,
+    "snapshotArchive": 8,
+    "cursors": 0
+  },
+  "firstCompletedRun": {
+    "quota": {
+      "provider": "infura",
+      "day": "2026-09-29",
+      "credits": 3920,
+      "requests": 29,
+      "not_before": 1790683297392,
+      "blocked_until": 0
+    },
+    "cursors": [
+      {
+        "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "block_number": 48679442,
+        "updated_at": 1790683234233
+      },
+      {
+        "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "block_number": 45790115,
+        "updated_at": 1790683202849
+      },
+      {
+        "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "block_number": 48679442,
+        "updated_at": 1790683224112
+      },
+      {
+        "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "block_number": 48679442,
+        "updated_at": 1790683215210
+      },
+      {
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 48679442,
+        "updated_at": 1790683181619
+      },
+      {
+        "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "block_number": 48679442,
+        "updated_at": 1790683246690
+      }
+    ],
+    "indexHealth": {
+      "id": 1,
+      "status": "ok",
+      "checked_at": 1790683246963,
+      "reason": null
+    },
+    "counts": [
+      {
+        "entity": "events",
+        "n": 10
+      },
+      {
+        "entity": "snapshot_archive",
+        "n": 8
+      }
+    ],
+    "governorCursors": 1
+  },
+  "health": {
+    "status": "syncing",
+    "signingAllowed": false,
+    "head": "94652138",
+    "confirmedHead": "94652074",
+    "checkedAt": "2026-09-29T12:02:28.313Z",
+    "sources": [
+      {
+        "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "block": "48679442",
+        "updatedAt": 1790683234233
+      },
+      {
+        "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "block": "45790115",
+        "updatedAt": 1790683202849
+      },
+      {
+        "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "block": "48679442",
+        "updatedAt": 1790683224112
+      },
+      {
+        "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "block": "48679442",
+        "updatedAt": 1790683215210
+      },
+      {
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block": "48684442",
+        "updatedAt": 1790683340653
+      },
+      {
+        "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "block": "48679442",
+        "updatedAt": 1790683246690
+      }
+    ],
+    "reason": "The confirmed index is catching up."
+  },
+  "notes": [
+    "A manual remote-preview probe was skipped because the scheduled indexer already held the lease.",
+    "No events/cursors were fabricated or cleared. Backfill remains incomplete.",
+    "Only the staging Worker was changed; no Vercel frontend, bot or on-chain transaction changed."
+  ]
+}

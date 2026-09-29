@@ -1,0 +1,104 @@
+{
+  "checkedAt": "2026-09-29T07:13:00.674Z",
+  "samples": [
+    {
+      "round": 0,
+      "path": "health",
+      "status": 200,
+      "state": "syncing",
+      "reason": "The confirmed index is catching up.",
+      "head": "94640559",
+      "ms": 397
+    },
+    {
+      "round": 0,
+      "path": "members/0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+      "status": 200,
+      "ms": 554
+    },
+    {
+      "round": 0,
+      "path": "governance-parameters",
+      "status": 200,
+      "ms": 554
+    },
+    {
+      "round": 0,
+      "path": "treasury",
+      "status": 200,
+      "ms": 561
+    },
+    {
+      "round": 0,
+      "path": "overview",
+      "status": 200,
+      "ms": 866
+    },
+    {
+      "round": 1,
+      "path": "health",
+      "status": 200,
+      "state": "syncing",
+      "reason": "The confirmed index is catching up.",
+      "head": "94640559",
+      "ms": 389
+    },
+    {
+      "round": 1,
+      "path": "members/0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+      "status": 200,
+      "ms": 525
+    },
+    {
+      "round": 1,
+      "path": "treasury",
+      "status": 200,
+      "ms": 533
+    },
+    {
+      "round": 1,
+      "path": "governance-parameters",
+      "status": 200,
+      "ms": 552
+    },
+    {
+      "round": 1,
+      "path": "overview",
+      "status": 200,
+      "ms": 901
+    },
+    {
+      "round": 2,
+      "path": "health",
+      "status": 200,
+      "state": "syncing",
+      "reason": "The confirmed index is catching up.",
+      "head": "94640560",
+      "ms": 398
+    },
+    {
+      "round": 2,
+      "path": "members/0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+      "status": 200,
+      "ms": 501
+    },
+    {
+      "round": 2,
+      "path": "treasury",
+      "status": 200,
+      "ms": 512
+    },
+    {
+      "round": 2,
+      "path": "governance-parameters",
+      "status": 200,
+      "ms": 527
+    },
+    {
+      "round": 2,
+      "path": "overview",
+      "status": 200,
+      "ms": 918
+    }
+  ]
+}

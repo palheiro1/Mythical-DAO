@@ -1,6 +1,6 @@
 import { Miniflare, convertV4MiniflareOptions } from "miniflare";
 import { unstable_splitSqlQuery } from "wrangler";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 export async function database() {
   const mf = new Miniflare(
     convertV4MiniflareOptions({
@@ -17,9 +17,13 @@ export async function database() {
   );
   const db = await mf.getD1Database("DAO_DB");
   await db.batch(
-    unstable_splitSqlQuery(
-      readFileSync("migrations/0001_governance.sql", "utf8"),
-    ).map((s) => db.prepare(s)),
+    readdirSync("migrations")
+      .filter((name) => name.endsWith(".sql"))
+      .sort()
+      .flatMap((name) =>
+        unstable_splitSqlQuery(readFileSync(`migrations/${name}`, "utf8")),
+      )
+      .map((s) => db.prepare(s)),
   );
   return { mf, db, bindings: await mf.getBindings<Env>() };
 }

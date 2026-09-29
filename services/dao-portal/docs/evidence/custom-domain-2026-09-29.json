@@ -1,0 +1,493 @@
+{
+  "checkedAt": "2026-09-29T08:57:40.579Z",
+  "portal": "https://dao-preview.mythicalbeings.io",
+  "vercelDeployment": "dpl_6qhGyXFiSbqboyopG9Nze7MQKfg4",
+  "workerVersion": "d3636347-84a3-4d74-bf02-3b9d0d395546",
+  "tlsValidation": "Passed with default certificate verification (no bypass)",
+  "entryAsset": "/assets/index-CdunPP4s.js",
+  "headers": {
+    "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https: wss:; frame-ancestors 'none'; base-uri 'self'; object-src 'none';",
+    "robots": "noindex, nofollow"
+  },
+  "metamaskScan": {
+    "hostname": "dao-preview.mythicalbeings.io",
+    "recommendedAction": "NONE"
+  },
+  "checks": [
+    {
+      "path": "/api/config",
+      "httpStatus": 200,
+      "durationMs": 274,
+      "body": {
+        "schemaVersion": 2,
+        "architecture": "existing-governor",
+        "snapshotUrl": "https://snapshot.box/#/s:mythicalbeings.eth",
+        "capabilities": {
+          "governance": "existing-governor",
+          "snapshot": "external",
+          "timelock": false,
+          "ragequit": false
+        },
+        "chainId": 137,
+        "environment": "staging",
+        "contracts": {
+          "treasury": {
+            "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+            "startBlock": "48674443"
+          },
+          "gem": {
+            "address": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+            "startBlock": "48674443"
+          },
+          "usdcNative": {
+            "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+            "startBlock": "48674443"
+          },
+          "usdcBridged": {
+            "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+            "startBlock": "48674443"
+          },
+          "mana": {
+            "address": "0x2cacca1266653bb090d3fb511456ebca33150562",
+            "startBlock": "45785116"
+          },
+          "legacyGovernor": {
+            "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+            "startBlock": "48674443"
+          },
+          "governor": {
+            "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+            "startBlock": "48674443"
+          },
+          "weth": {
+            "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+            "startBlock": "48674443"
+          },
+          "usdc": {
+            "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+            "startBlock": "48674443"
+          }
+        },
+        "confirmations": 64,
+        "enabled": true,
+        "portalUrl": "https://dao-preview.mythicalbeings.io"
+      }
+    },
+    {
+      "path": "/api/health",
+      "httpStatus": 200,
+      "durationMs": 530,
+      "body": {
+        "status": "degraded",
+        "signingAllowed": false,
+        "head": "94644746",
+        "confirmedHead": "94644682",
+        "checkedAt": "2026-09-29T08:57:38.286Z",
+        "sources": [],
+        "reason": "INDEX_READ_FAILED"
+      }
+    },
+    {
+      "path": "/api/members/0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+      "httpStatus": 503,
+      "durationMs": 1354,
+      "body": {
+        "error": "REQUEST_FAILED",
+        "message": "Data could not be verified. Retry after checking index health."
+      }
+    },
+    {
+      "path": "/api/treasury",
+      "httpStatus": 503,
+      "durationMs": 1205,
+      "body": {
+        "error": "REQUEST_FAILED",
+        "message": "Data could not be verified. Retry after checking index health."
+      }
+    },
+    {
+      "path": "/api/proposals",
+      "httpStatus": 503,
+      "durationMs": 801,
+      "body": {
+        "error": "REQUEST_FAILED",
+        "message": "Data could not be verified. Retry after checking index health."
+      }
+    },
+    {
+      "path": "/api/history/snapshot",
+      "httpStatus": 200,
+      "durationMs": 348,
+      "body": {
+        "items": [
+          {
+            "id": "0x4d6f739d7e6ce2061737dc84cec2ea0e871be0f49e21129ec96d448d817c4663",
+            "space": "mythicalbeings.eth",
+            "created_at": 1728575791,
+            "source_url": "https://snapshot.org/#/mythicalbeings.eth/proposal/0x4d6f739d7e6ce2061737dc84cec2ea0e871be0f49e21129ec96d448d817c4663",
+            "imported_at": "2026-09-28T11:58:11.720Z",
+            "verification": "Historical Snapshot Hub export. Off-chain scores and signatures have not been independently verified. Not V2 on-chain voting.",
+            "payload": {
+              "id": "0x4d6f739d7e6ce2061737dc84cec2ea0e871be0f49e21129ec96d448d817c4663",
+              "title": "S08 Oceanic Beings",
+              "body": "Choose the being that will be reinterpreted by Ana Santiso for the eighth season among the following:\n1. Yhi.\n2. Maukuk.\n\nDiscussion in the private Discord channel.\n\nMore information about each candidate can be found at this link: https://docs.google.com/spreadsheets/d/1MvjdCeUAIlO7bW0lyyuu_I6dRGCc69xOm3tm4Qu-U48/edit?usp=sharing",
+              "choices": [
+                "Yhi",
+                "Maukuk"
+              ],
+              "start": 1728575791,
+              "end": 1728856740,
+              "created": 1728575791,
+              "snapshot": 62871187,
+              "state": "closed",
+              "scores": [
+                94073.82701890403,
+                0
+              ],
+              "scores_total": 94073.82701890403,
+              "author": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+              "network": "137",
+              "strategies": [
+                {
+                  "name": "erc20-balance-of",
+                  "params": {
+                    "symbol": "MANA",
+                    "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+                    "decimals": 18
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "0x05063b871ba6f0383e47c2a4a43125317faa0b25bc3393db0148491d48f17b46",
+            "space": "mythicalbeings.eth",
+            "created_at": 1728575668,
+            "source_url": "https://snapshot.org/#/mythicalbeings.eth/proposal/0x05063b871ba6f0383e47c2a4a43125317faa0b25bc3393db0148491d48f17b46",
+            "imported_at": "2026-09-28T11:58:11.720Z",
+            "verification": "Historical Snapshot Hub export. Off-chain scores and signatures have not been independently verified. Not V2 on-chain voting.",
+            "payload": {
+              "id": "0x05063b871ba6f0383e47c2a4a43125317faa0b25bc3393db0148491d48f17b46",
+              "title": "SO8 Asian Beings",
+              "body": "Choose the being that will be reinterpreted by Ana Santiso for the eighth season among the following:\n1. Bakunawa.\n2. Simurgh.\n3. Garuda.\n\n\nDiscussion in the private Discord channel.\n\nMore information about each candidate can be found at this link: https://docs.google.com/spreadsheets/d/1MvjdCeUAIlO7bW0lyyuu_I6dRGCc69xOm3tm4Qu-U48/edit?usp=sharing",
+              "choices": [
+                "Bakunawa",
+                "Simurgh",
+                "Garuda"
+              ],
+              "start": 1728575668,
+              "end": 1728856740,
+              "created": 1728575668,
+              "snapshot": 62871127,
+              "state": "closed",
+              "scores": [
+                0,
+                93823.82701890403,
+                250
+              ],
+              "scores_total": 94073.82701890403,
+              "author": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+              "network": "137",
+              "strategies": [
+                {
+                  "name": "erc20-balance-of",
+                  "params": {
+                    "symbol": "MANA",
+                    "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+                    "decimals": 18
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "0x05d0552a13b302c1d96458305f14dae83c71ec6f73da3a71f5a560646a22582d",
+            "space": "mythicalbeings.eth",
+            "created_at": 1728570511,
+            "source_url": "https://snapshot.org/#/mythicalbeings.eth/proposal/0x05d0552a13b302c1d96458305f14dae83c71ec6f73da3a71f5a560646a22582d",
+            "imported_at": "2026-09-28T11:58:11.720Z",
+            "verification": "Historical Snapshot Hub export. Off-chain scores and signatures have not been independently verified. Not V2 on-chain voting.",
+            "payload": {
+              "id": "0x05d0552a13b302c1d96458305f14dae83c71ec6f73da3a71f5a560646a22582d",
+              "title": "S08 American Beings",
+              "body": "Choose the being that will be reinterpreted by Ana Santiso for the eighth season among the following:\n1. Curupira.\n2. Hah-nu-nah.\n3. Teju Jagua.\n4. Lobison.\n\nDiscussion in the private Discord channel.\n\nMore information about each candidate can be found at this link: https://docs.google.com/spreadsheets/d/1MvjdCeUAIlO7bW0lyyuu_I6dRGCc69xOm3tm4Qu-U48/edit?usp=sharing",
+              "choices": [
+                "Curupira",
+                "Hah-nu-nah",
+                "Teju Jagua",
+                "Lobison"
+              ],
+              "start": 1728570510,
+              "end": 1728856740,
+              "created": 1728570511,
+              "snapshot": 62868696,
+              "state": "closed",
+              "scores": [
+                0,
+                93573.19298256404,
+                250.63403634,
+                250
+              ],
+              "scores_total": 94073.82701890403,
+              "author": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+              "network": "137",
+              "strategies": [
+                {
+                  "name": "erc20-balance-of",
+                  "params": {
+                    "symbol": "MANA",
+                    "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+                    "decimals": 18
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "0x90682d62138cfcc3ac3cef34a2a2b7608e660a4d873fc9c7cdf2303a22854d11",
+            "space": "mythicalbeings.eth",
+            "created_at": 1727167934,
+            "source_url": "https://snapshot.org/#/mythicalbeings.eth/proposal/0x90682d62138cfcc3ac3cef34a2a2b7608e660a4d873fc9c7cdf2303a22854d11",
+            "imported_at": "2026-09-28T11:58:11.720Z",
+            "verification": "Historical Snapshot Hub export. Off-chain scores and signatures have not been independently verified. Not V2 on-chain voting.",
+            "payload": {
+              "id": "0x90682d62138cfcc3ac3cef34a2a2b7608e660a4d873fc9c7cdf2303a22854d11",
+              "title": "Season 8 Theme ",
+              "body": "Election of the theme for the next season of Mythical Beings from the proposals made by the members.\nDiscussion to be done at the Discord private channel.",
+              "choices": [
+                "Awakening of the First Light",
+                "Those naughty little ones"
+              ],
+              "start": 1727167933,
+              "end": 1727438400,
+              "created": 1727167934,
+              "snapshot": 62210856,
+              "state": "closed",
+              "scores": [
+                81132.48092566403,
+                1000
+              ],
+              "scores_total": 82132.48092566403,
+              "author": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+              "network": "137",
+              "strategies": [
+                {
+                  "name": "erc20-balance-of",
+                  "params": {
+                    "symbol": "MANA",
+                    "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+                    "decimals": 18
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "0xc8bd0fc90eb3595ee5fc453142045e06339d9ac83a4a3e22363a3fc29f456637",
+            "space": "mythicalbeings.eth",
+            "created_at": 1712570238,
+            "source_url": "https://snapshot.org/#/mythicalbeings.eth/proposal/0xc8bd0fc90eb3595ee5fc453142045e06339d9ac83a4a3e22363a3fc29f456637",
+            "imported_at": "2026-09-28T11:58:11.720Z",
+            "verification": "Historical Snapshot Hub export. Off-chain scores and signatures have not been independently verified. Not V2 on-chain voting.",
+            "payload": {
+              "id": "0xc8bd0fc90eb3595ee5fc453142045e06339d9ac83a4a3e22363a3fc29f456637",
+              "title": "Subsidy for representatives in NFC Lisbon 2024",
+              "body": "Proposal to subsidize part of the travel costs of DAO members travelling to Lisbon for the Non Fungible conference to represent the Mythical DAO and work on the Mythical Beings stand.\nhttps://www.nonfungibleconference.com/ \n![nfc.png](ipfs://bafkreicxnomor5s3mytvkmswd3qiytkdqwle3lg46tf2j4cuk2myurlmoy)\n    ",
+              "choices": [
+                "For",
+                "Against",
+                "Abstain"
+              ],
+              "start": 1712570238,
+              "end": 1713088560,
+              "created": 1712570238,
+              "snapshot": 55583882,
+              "state": "closed",
+              "scores": [
+                19648.913492444248,
+                0,
+                0
+              ],
+              "scores_total": 19648.913492444248,
+              "author": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+              "network": "137",
+              "strategies": [
+                {
+                  "name": "erc20-balance-of",
+                  "params": {
+                    "symbol": "MANA",
+                    "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+                    "decimals": 18
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "0x8d015e25368cb41b44221fb6926cee7cc623ae628f4ba77cfb86c022574d5a5a",
+            "space": "mythicalbeings.eth",
+            "created_at": 1709656136,
+            "source_url": "https://snapshot.org/#/mythicalbeings.eth/proposal/0x8d015e25368cb41b44221fb6926cee7cc623ae628f4ba77cfb86c022574d5a5a",
+            "imported_at": "2026-09-28T11:58:11.720Z",
+            "verification": "Historical Snapshot Hub export. Off-chain scores and signatures have not been independently verified. Not V2 on-chain voting.",
+            "payload": {
+              "id": "0x8d015e25368cb41b44221fb6926cee7cc623ae628f4ba77cfb86c022574d5a5a",
+              "title": "Change of economic system",
+              "body": "Vote on the proposal to change the economic model of the NFT Mythical Beings collection. A decision will be taken on the proposed package of measures and, if approved, will be implemented immediately.\nThe proposal and its discussion are available at https://dao.mythicalbeings.io/forum/post/new_economics_for_s07_fc96gzcf",
+              "choices": [
+                "Yes",
+                "No"
+              ],
+              "start": 1709656136,
+              "end": 1709828880,
+              "created": 1709656136,
+              "snapshot": 54300589,
+              "state": "closed",
+              "scores": [
+                49523.97445670632,
+                0
+              ],
+              "scores_total": 49523.974456706324,
+              "author": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+              "network": "137",
+              "strategies": [
+                {
+                  "name": "erc20-balance-of",
+                  "params": {
+                    "symbol": "MANA",
+                    "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+                    "decimals": 18
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "0x4aee9795bf2d52c9259267275646029a3e68035f898ff045745394e06bfc58bf",
+            "space": "mythicalbeings.eth",
+            "created_at": 1709294968,
+            "source_url": "https://snapshot.org/#/mythicalbeings.eth/proposal/0x4aee9795bf2d52c9259267275646029a3e68035f898ff045745394e06bfc58bf",
+            "imported_at": "2026-09-28T11:58:11.720Z",
+            "verification": "Historical Snapshot Hub export. Off-chain scores and signatures have not been independently verified. Not V2 on-chain voting.",
+            "payload": {
+              "id": "0x4aee9795bf2d52c9259267275646029a3e68035f898ff045745394e06bfc58bf",
+              "title": "Season 7 Theme",
+              "body": "Election of the theme for the next season of Mythical Beings from the proposals made by the members.",
+              "choices": [
+                "#1 Fallen Empires",
+                "#2 Aerial Beings",
+                "#3 Extinct Cultures",
+                "#4 Apocalyptic Season",
+                "#5 The Future Beings",
+                "#6 Shadows of the Forgotten",
+                "#7 Whispering Wilds"
+              ],
+              "start": 1709294967,
+              "end": 1709644167,
+              "created": 1709294968,
+              "snapshot": 54137147,
+              "state": "closed",
+              "scores": [
+                10158.93331142632,
+                0,
+                0,
+                29233.38723852,
+                0,
+                0,
+                3942.2879431
+              ],
+              "scores_total": 43334.608493046326,
+              "author": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+              "network": "137",
+              "strategies": [
+                {
+                  "name": "erc20-balance-of",
+                  "params": {
+                    "symbol": "MANA",
+                    "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+                    "decimals": 18
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "0xbb52f1f72ae6a911a3a52f7425b2da2d4a4464b81a94f7028709d2a0d6f10d8e",
+            "space": "mythicalbeings.eth",
+            "created_at": 1706889601,
+            "source_url": "https://snapshot.org/#/mythicalbeings.eth/proposal/0xbb52f1f72ae6a911a3a52f7425b2da2d4a4464b81a94f7028709d2a0d6f10d8e",
+            "imported_at": "2026-09-28T11:58:11.720Z",
+            "verification": "Historical Snapshot Hub export. Off-chain scores and signatures have not been independently verified. Not V2 on-chain voting.",
+            "payload": {
+              "id": "0xbb52f1f72ae6a911a3a52f7425b2da2d4a4464b81a94f7028709d2a0d6f10d8e",
+              "title": "Voting test",
+              "body": "This is a test of multiple choices voting.",
+              "choices": [
+                "Option A",
+                "Option B",
+                "Option C",
+                "None"
+              ],
+              "start": 1706889601,
+              "end": 1706893201,
+              "created": 1706889601,
+              "snapshot": 53042595,
+              "state": "closed",
+              "scores": [
+                0,
+                6825.93331142632,
+                0,
+                0
+              ],
+              "scores_total": 6825.93331142632,
+              "author": "0xF1C9b1c16581B5f204bCBEf2E2118703D2d51Fe0",
+              "network": "137",
+              "strategies": [
+                {
+                  "name": "erc20-balance-of",
+                  "params": {
+                    "symbol": "MANA",
+                    "address": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+                    "decimals": 18
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "readOnly": true
+      }
+    },
+    {
+      "path": "/api/governance-parameters",
+      "httpStatus": 200,
+      "durationMs": 1760,
+      "body": {
+        "votingDelay": "41143",
+        "votingPeriod": "288000",
+        "proposalThreshold": "0",
+        "quorumNumerator": "4",
+        "quorumDenominator": "100",
+        "countingMode": "support=bravo&quorum=for,abstain",
+        "block": "94644682",
+        "timelock": false
+      }
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://dao-preview.mythicalbeings.io",
+      "httpStatus": 409,
+      "body": {
+        "error": "INDEX_READ_FAILED"
+      }
+    },
+    {
+      "origin": "https://example.com",
+      "httpStatus": 403,
+      "body": {
+        "error": "Origin not allowed"
+      }
+    }
+  ]
+}

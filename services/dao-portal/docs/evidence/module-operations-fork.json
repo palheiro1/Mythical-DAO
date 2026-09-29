@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-09-28T19:35:00.216Z",
+  "scope": "Local Anvil fork only. No public deployment. The two loopback RPC URLs intentionally access the same isolated test node.",
+  "forkBlock": 94612062,
+  "deploymentScript": "DeployRagequit.s.sol",
+  "runtimeAndImmutablesVerified": true,
+  "initialAllowancesVerifiedZero": true,
+  "authorizationAndRevocationPayloadsVerified": true,
+  "moduleOnLocalForkOnly": "0x95dd40dedf244b11d84ef40b4d803216fb2cab38"
+}

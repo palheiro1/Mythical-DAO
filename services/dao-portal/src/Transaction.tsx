@@ -7,10 +7,11 @@ import {
   type ReactNode,
 } from "react";
 import { useAccount, useWalletClient, usePublicClient } from "wagmi";
-import { formatEther, type Address, type Hex } from "viem";
+import { formatEther, decodeFunctionData, type Address, type Hex } from "viem";
 import { useQueryClient } from "@tanstack/react-query";
-import type { Action, Health, PortalConfig } from "../shared/domain";
+import type { Action, PortalConfig, Proposal } from "../shared/domain";
 import { api } from "./api";
+import { governorAbi } from "../shared/abis";
 import { actionSummary } from "../shared/action-summary";
 import { m } from "./i18n";
 import { ErrorNotice } from "./ui";
@@ -29,6 +30,7 @@ export interface TransactionIntent {
 }
 interface BatchSimulation {
   ok: boolean;
+  complete?: boolean;
   warning: string;
   block: string;
 }
@@ -38,6 +40,8 @@ interface Review {
   gas: string;
   estimatedFee: string;
   batch?: BatchSimulation;
+  block?: string;
+  walletEpoch: number;
 }
 interface TransactionContextValue {
   review: (intent: TransactionIntent) => Promise<void>;
@@ -64,6 +68,25 @@ export function TransactionProvider({
     [error, setError] = useState(""),
     [hash, setHash] = useState<Hex>(),
     [busy, setBusy] = useState(false);
+  const [proposalLink, setProposalLink] = useState("");
+  const [invalidated, setInvalidated] = useState(false);
+  const identity = JSON.stringify([
+    address,
+    chainId,
+    config.enabled,
+    config.chainId,
+    config.contracts,
+  ]);
+  const currentWallet = useRef({ identity, epoch: 0 });
+  useEffect(() => {
+    if (currentWallet.current.identity !== identity) {
+      currentWallet.current = {
+        identity,
+        epoch: currentWallet.current.epoch + 1,
+      };
+      setInvalidated(true);
+    }
+  }, [identity]);
   useEffect(() => {
     if (review && !dialog.current?.open) dialog.current?.showModal();
   }, [review]);
@@ -80,14 +103,14 @@ export function TransactionProvider({
         : null;
     setError("");
     setHash(undefined);
+    setProposalLink("");
     setStatus(m("Checking current state…"));
     setBusy(true);
+    const walletEpoch = currentWallet.current.epoch;
     try {
       if (!address || chainId !== config.chainId)
         throw new Error(m("Connect your wallet to the correct network first."));
-      const health = await api<Health>("health");
-      if (!health.signingAllowed)
-        throw new Error(health.reason ?? m("Signing is unavailable."));
+      if (!config.enabled) throw new Error(m("Signing is unavailable."));
       const batch = intent.actions
         ? await api<BatchSimulation>("simulate-actions", {
             actions: intent.actions,
@@ -103,9 +126,14 @@ export function TransactionProvider({
         },
       );
       intent.assertCurrent?.();
+      if (currentWallet.current.epoch !== walletEpoch)
+        throw new Error(
+          m("Wallet or network changed. Review the operation again."),
+        );
+      setInvalidated(false);
       setNow(Date.now());
       setAcknowledged(false);
-      setReview({ intent, account: address, ...result, batch });
+      setReview({ intent, account: address, ...result, batch, walletEpoch });
       setStatus(m("Review before signing"));
     } catch (e) {
       setError(e instanceof Error ? e.message : m("Simulation failed."));
@@ -121,6 +149,7 @@ export function TransactionProvider({
     const intent = review.intent;
     try {
       if (
+        currentWallet.current.epoch !== review.walletEpoch ||
         address !== review.account ||
         (await wallet.getChainId()) !== config.chainId
       )
@@ -133,7 +162,10 @@ export function TransactionProvider({
         const latest = await api<BatchSimulation>("simulate-actions", {
           actions: intent.actions,
         });
-        if (!latest.ok && (!acknowledged || review.batch?.ok))
+        if (
+          (!latest.ok && (!acknowledged || review.batch?.ok)) ||
+          latest.complete !== review.batch?.complete
+        )
           throw new Error(
             m(
               "Proposed actions are not currently executable. Close this review and review the new simulation result.",
@@ -148,6 +180,7 @@ export function TransactionProvider({
       });
       intent.assertCurrent?.();
       if (
+        currentWallet.current.epoch !== review.walletEpoch ||
         (await wallet.getAddresses())[0]?.toLowerCase() !==
           review.account.toLowerCase() ||
         (await wallet.getChainId()) !== config.chainId
@@ -165,18 +198,42 @@ export function TransactionProvider({
       });
       setHash(sent);
       setStatus(m("Pending · waiting for inclusion"));
-      await waitForOperation(client, sent, config.confirmations, (progress) => {
-        setHash(progress.hash);
-        setStatus(
-          progress.phase === "included"
-            ? m("Included · waiting for ") +
-                config.confirmations +
-                m(" confirmations")
-            : m("Replaced · checking replacement"),
-        );
-        if (progress.phase === "included") void queries.invalidateQueries();
-      });
+      const receipt = await waitForOperation(
+        client,
+        sent,
+        config.confirmations,
+        (progress) => {
+          setHash(progress.hash);
+          setStatus(
+            progress.phase === "included"
+              ? m("Included · waiting for ") +
+                  config.confirmations +
+                  m(" confirmations")
+              : m("Replaced · checking replacement"),
+          );
+          if (progress.phase === "included") void queries.invalidateQueries();
+        },
+      );
       setStatus(m("Confirmed · operation completed"));
+      if (
+        intent.to.toLowerCase() ===
+          config.contracts.governor?.address.toLowerCase() &&
+        decodeFunctionData({ abi: governorAbi, data: intent.data })
+          .functionName === "propose"
+      ) {
+        try {
+          const proposal = await api<Proposal>("proposals/resolve", {
+            transactionHash: receipt.transactionHash,
+          });
+          setProposalLink("#proposal/" + proposal.contract + "/" + proposal.id);
+        } catch {
+          setError(
+            m(
+              "The transaction is confirmed. Recover the proposal from Governance using its transaction hash once both providers confirm it.",
+            ),
+          );
+        }
+      }
       await queries.invalidateQueries();
     } catch (e) {
       setStatus(m("Operation not completed"));
@@ -253,6 +310,12 @@ export function TransactionProvider({
                   <dd>{d.value}</dd>
                 </div>
               ))}
+              {review.block && (
+                <div>
+                  <dt>{m("Live verification block")}</dt>
+                  <dd>{review.block}</dd>
+                </div>
+              )}
               <div>
                 <dt>{m("Estimated network fee")}</dt>
                 <dd>
@@ -296,9 +359,13 @@ export function TransactionProvider({
                       checked={acknowledged}
                       onChange={(e) => setAcknowledged(e.target.checked)}
                     />
-                    {m(
-                      "I understand these actions are not currently executable and still want to publish them for voting.",
-                    )}
+                    {review.batch.complete === false
+                      ? m(
+                          "I understand that the combined actions have not been verified and still want to publish them for voting.",
+                        )
+                      : m(
+                          "I understand these actions are not currently executable and still want to publish them for voting.",
+                        )}
                   </label>
                 )}
               </section>
@@ -320,6 +387,18 @@ export function TransactionProvider({
               {status}
             </p>
             {error && <ErrorNotice error={error} />}
+            {proposalLink && (
+              <a
+                className="button primary"
+                href={proposalLink}
+                onClick={() => {
+                  dialog.current?.close();
+                  setReview(null);
+                }}
+              >
+                {m("View proposal")}
+              </a>
+            )}
             {hash && (
               <p>
                 <a
@@ -347,7 +426,9 @@ export function TransactionProvider({
                 </p>
               )}
             {!hash &&
-              (address !== review.account || chainId !== config.chainId) && (
+              (invalidated ||
+                address !== review.account ||
+                chainId !== config.chainId) && (
                 <p role="alert" className="error">
                   {m("Wallet or network changed. Review the operation again.")}
                 </p>
@@ -357,6 +438,7 @@ export function TransactionProvider({
                 className="button primary full"
                 disabled={
                   busy ||
+                  invalidated ||
                   (!!review.intent.validUntil &&
                     now >= review.intent.validUntil) ||
                   address !== review.account ||

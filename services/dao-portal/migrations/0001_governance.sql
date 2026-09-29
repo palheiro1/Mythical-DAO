@@ -1,8 +1,9 @@
 PRAGMA foreign_keys=ON;
 CREATE TABLE index_lock (id INTEGER PRIMARY KEY CHECK(id=1), owner TEXT NOT NULL, expires_at INTEGER NOT NULL);
 CREATE TABLE lease_guard (owner TEXT NOT NULL);
-CREATE TRIGGER validate_index_lease BEFORE INSERT ON lease_guard BEGIN
- SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM index_lock WHERE id=1 AND owner=NEW.owner AND expires_at>unixepoch()) THEN RAISE(ABORT,'index lease expired') END;
+CREATE TRIGGER validate_index_lease BEFORE INSERT ON lease_guard
+WHEN NOT EXISTS(SELECT 1 FROM index_lock WHERE id=1 AND owner=NEW.owner AND expires_at>unixepoch()) BEGIN
+ SELECT RAISE(ABORT,'index lease expired');
 END;
 CREATE TRIGGER clear_lease_guard AFTER INSERT ON lease_guard BEGIN DELETE FROM lease_guard WHERE owner=NEW.owner; END;
 CREATE TABLE cursors(chain_id INTEGER NOT NULL,contract TEXT NOT NULL,block_number INTEGER NOT NULL,block_hash TEXT NOT NULL,updated_at INTEGER NOT NULL,PRIMARY KEY(chain_id,contract));

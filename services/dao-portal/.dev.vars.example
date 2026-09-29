@@ -1,2 +1,12 @@
-RPC_PRIMARY_URL=https://your-first-provider.example
-RPC_SECONDARY_URL=https://your-independent-provider.example
+# Public Polygon endpoints for local read-only testing; service limits may apply.
+# Use two independent providers with sufficient capacity before activating signing.
+RPC_PRIMARY_URL=https://polygon.drpc.org
+RPC_SECONDARY_URL=https://tenderly.rpc.polygon.community
+
+# Opt in locally after creating a dedicated Infura Core Free key for Polygon.
+# Keep this key server-side; never use a VITE_ prefix or put it in wrangler vars.
+# INDEX_RPC_MODE=infura-free
+# INFURA_API_KEY=your_key
+# INDEX_RPC_SECONDARY_URL=https://tenderly.rpc.polygon.community
+# INDEX_BATCH_BLOCKS=5000
+# INFURA_DAILY_CREDITS=2400000

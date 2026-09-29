@@ -1,0 +1,169 @@
+[
+  {
+    "results": [
+      {
+        "chain_id": 137,
+        "source_key": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "span": 2500,
+        "successes": 0,
+        "failures": 0,
+        "last_duration_ms": 34395,
+        "last_reason": null,
+        "updated_at": 1790699219510
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.2583
+      },
+      "duration": 0.2583,
+      "changes": 0,
+      "last_row_id": 1,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 2,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "block_number": 48774442,
+        "block_hash": "0x386de71204b06b300ca2599ee6164f2b5e99925d9eb4f849c257bb1c875ce9eb",
+        "updated_at": 1790698758209
+      },
+      {
+        "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "block_number": 46040115,
+        "block_hash": "0x6b6fb55f163ea11a2f29035af40579f7715d0d600904d29cec1527a4fa23847e",
+        "updated_at": 1790698924262
+      },
+      {
+        "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "block_number": 48774442,
+        "block_hash": "0x386de71204b06b300ca2599ee6164f2b5e99925d9eb4f849c257bb1c875ce9eb",
+        "updated_at": 1790698737573
+      },
+      {
+        "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "block_number": 48779442,
+        "block_hash": "0xe0edfe287543ad1003946d5429b100616a466238090566ecf1f6e695e0c0271e",
+        "updated_at": 1790698863121
+      },
+      {
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 49039442,
+        "block_hash": "0x8bac1702c13e25600e53b97eda33a19948966907a503195fe0edc7bd3565627e",
+        "updated_at": 1790699219510
+      },
+      {
+        "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "block_number": 48774442,
+        "block_hash": "0x386de71204b06b300ca2599ee6164f2b5e99925d9eb4f849c257bb1c875ce9eb",
+        "updated_at": 1790698848267
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.4975
+      },
+      "duration": 0.4975,
+      "changes": 0,
+      "last_row_id": 1,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 12,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "events": 18
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1307
+      },
+      "duration": 0.1307,
+      "changes": 0,
+      "last_row_id": 1,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 18,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "snapshot_rows": 8
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.0735
+      },
+      "duration": 0.0735,
+      "changes": 0,
+      "last_row_id": 1,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 8,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  {
+    "results": [
+      {
+        "status": "degraded",
+        "reason": "RPC_SECONDARY_TIMEOUT",
+        "checked_at": 1790699128100
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "LIS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1102
+      },
+      "duration": 0.1102,
+      "changes": 0,
+      "last_row_id": 1,
+      "changed_db": false,
+      "size_after": 159744,
+      "rows_read": 1,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  }
+]

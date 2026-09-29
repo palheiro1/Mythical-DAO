@@ -7,11 +7,12 @@ import {
   zeroAddress,
   type Address,
 } from "viem";
-import { tokenAbi, vaultAbi } from "../shared/abis";
+import { tokenAbi, ragequitAbi } from "../shared/abis";
 import type { PortalConfig } from "../shared/domain";
-import type { Member, ListResponse } from "./data-types";
+import { basketAssets } from "../shared/assets";
+import type { RedeemPreview, Member, ListResponse } from "./data-types";
 import { api, useApi } from "./api";
-import { amount, AddressLink } from "./components";
+import { amount, allowanceAmount, AddressLink } from "./components";
 import { useTransaction } from "./Transaction";
 import { t, m } from "./i18n";
 import {
@@ -97,6 +98,8 @@ export function Delegation({
               <AddressLink address={member.delegate} />
             ) : member ? (
               m("Not delegated")
+            ) : address && memberQuery.isPending ? (
+              m("Loading verified data…")
             ) : address ? (
               m("Data unavailable")
             ) : (
@@ -106,11 +109,25 @@ export function Delegation({
           <p>{m("Delegation does not transfer MANA")}</p>
         </div>
       </div>
+      {member?.asOfBlock && !memberQuery.error && (
+        <p className="muted">
+          {m("Membership verified at block {block}", {
+            block: member.asOfBlock,
+          })}
+        </p>
+      )}
       {memberQuery.error && (
         <Notice tone="warning">
           {m(
             "Your latest membership data could not be verified. Previously retrieved values may be out of date.",
           )}
+          <button
+            className="button small"
+            disabled={memberQuery.isFetching}
+            onClick={() => void memberQuery.refetch()}
+          >
+            {m("Retry membership data")}
+          </button>
         </Notice>
       )}
       <div className="split-layout">
@@ -189,9 +206,7 @@ export function Delegation({
     </>
   );
 }
-interface Quote {
-  amounts: string[];
-  supply: string;
+interface Quote extends RedeemPreview {
   amount: string;
   block: string;
   time: number;
@@ -220,7 +235,7 @@ export function Ragequit({
     [now, setNow] = useState(Date.now());
   const current = useRef(""),
     requestId = useRef(0),
-    vault = config.contracts.vault?.address,
+    module = config.contracts.ragequitModule?.address,
     mana = config.contracts.mana?.address,
     to = customRecipient ? recipient : (address ?? "");
   let units = 0n;
@@ -235,6 +250,12 @@ export function Ragequit({
       quote.amount === units.toString() &&
       quote.owner === address &&
       quote.chain === chainId &&
+      quote.module?.toLowerCase() === module?.toLowerCase() &&
+      quote.basket.every(
+        (a, i) =>
+          a.address?.toLowerCase() ===
+          basketAssets(config)[i].address?.toLowerCase(),
+      ) &&
       now < quote.time + previewLifetime;
   const fingerprint = [
     units,
@@ -243,6 +264,10 @@ export function Ragequit({
     address,
     chainId,
     quote?.time,
+    module,
+    JSON.stringify(basketAssets(config)),
+    JSON.stringify(quote?.basket),
+    JSON.stringify(quote?.amounts),
   ].join(":");
   current.current = fingerprint;
   const ack = ackFor === fingerprint && validQuote;
@@ -256,7 +281,8 @@ export function Ragequit({
   const validRecipient =
     isAddress(to) &&
     to !== zeroAddress &&
-    to.toLowerCase() !== vault?.toLowerCase();
+    to.toLowerCase() !== module?.toLowerCase() &&
+    to.toLowerCase() !== config.contracts.treasury?.address.toLowerCase();
   useEffect(() => {
     if (!quote) return;
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -282,10 +308,7 @@ export function Ragequit({
         );
       if (units <= 0n || units > BigInt(member?.balance ?? 0))
         throw Error(m("Choose a positive amount within your MANA balance."));
-      if (!vault) throw Error(m("The V2 treasury is not available yet."));
-      const q = await api<{ amounts: string[]; supply: string; block: string }>(
-        "redeem-preview?amount=" + units,
-      );
+      const q = await api<RedeemPreview>("redeem-preview?amount=" + units);
       if (q.amounts.length !== 3 || q.amounts.every((a) => BigInt(a) === 0n))
         throw Error(m("This amount produces no payout."));
       if (id !== requestId.current) return;
@@ -305,7 +328,7 @@ export function Ragequit({
     }
   }
   async function approve() {
-    if (!vault || !mana || !validQuote || !quote) return;
+    if (!module || !mana || !validQuote || !quote?.available) return;
     const expected = fingerprint,
       validUntil = quote.time + previewLifetime;
     await tx.review({
@@ -314,14 +337,14 @@ export function Ragequit({
       data: encodeFunctionData({
         abi: tokenAbi,
         functionName: "approve",
-        args: [vault, units],
+        args: [module, units],
       }),
       effect: m(
         "Authorize only the MANA you selected. This approval does not burn tokens or perform your exit.",
       ),
       details: [
         { label: m("Allowance"), value: amount(units) + " MANA" },
-        { label: m("Spender"), value: vault },
+        { label: m("Spender"), value: module },
       ],
       validUntil,
       assertCurrent: () =>
@@ -331,7 +354,7 @@ export function Ragequit({
   async function redeem() {
     try {
       if (!validRecipient) throw Error(m("Choose a valid payout recipient."));
-      if (!vault || !validQuote || bps === null || !ack || !quote)
+      if (!module || !validQuote || bps === null || !ack || !quote?.available)
         throw Error(
           m("Refresh the preview and acknowledge the permanent burn."),
         );
@@ -340,9 +363,9 @@ export function Ragequit({
         validUntil = quote.time + previewLifetime;
       await tx.review({
         title: m("Review MANA burn and assets to receive"),
-        to: vault,
+        to: module,
         data: encodeFunctionData({
-          abi: vaultAbi,
+          abi: ragequitAbi,
           functionName: "redeem",
           args: [
             units,
@@ -362,16 +385,21 @@ export function Ragequit({
           { label: m("Recipient"), value: to },
           ...quote.amounts.map((v, i) => ({
             label: m("Expected {asset}", {
-              asset: ["POL", "WETH", "USDC.e"][i],
+              asset: ["GEM", "WETH", "USDC"][i],
             }),
             value: amount(v, i === 2 ? 6 : 18),
           })),
           ...minimums.map((v, i) => ({
             label: m("Minimum {asset}", {
-              asset: ["POL", "WETH", "USDC.e"][i],
+              asset: ["GEM", "WETH", "USDC"][i],
             }),
             value: amount(v, i === 2 ? 6 : 18),
           })),
+          {
+            label: m("Preview valid until"),
+            value: new Date(validUntil).toISOString(),
+          },
+          { label: m("Module"), value: module },
           {
             label: m("Transaction expiry (UTC)"),
             value: new Date(Number(deadline) * 1000).toISOString(),
@@ -389,9 +417,9 @@ export function Ragequit({
     <>
       <PageHeading
         title={m("Exit DAO")}
-        eyebrow={m("V2 treasury feature")}
+        eyebrow={m("DAO treasury · optional exit")}
         description={m(
-          "Preview the assets available for permanently burning your MANA. Availability depends on the V2 vault and successful transfers.",
+          "Burn MANA for a proportional share of GEM, WETH and native USDC, paid directly from the DAO treasury.",
         )}
       />
       <div className="exit-steps">
@@ -479,12 +507,18 @@ export function Ragequit({
           </label>
           <button
             className="button primary full"
-            disabled={!canSign || quoting || !vault || bps === null}
+            disabled={!canSign || quoting || bps === null}
             onClick={() => void preview()}
           >
             {quoting ? m("Reading current treasury…") : m("Preview my exit")}
           </button>
-          <ActionAvailability />
+          <ActionAvailability
+            extra={
+              !module
+                ? m("The ragequit module has not been deployed and configured.")
+                : null
+            }
+          />
           {error && (
             <p role="alert" className="error">
               {error}
@@ -498,11 +532,22 @@ export function Ragequit({
               "Expected amounts are a preview. Only the minimums are protected by the transaction.",
             )}
           </p>
-          {["POL", "WETH", "USDC.e"].map((symbol, i) => (
+          {["GEM", "WETH", "USDC"].map((symbol, i) => (
             <div className="asset-row" key={symbol}>
               <AssetIcon symbol={symbol} />
               <div>
                 {symbol}
+                {quote?.basket[i] && (
+                  <p className="muted">
+                    {m("Treasury balance")}:{" "}
+                    {amount(quote.basket[i].balance, i === 2 ? 6 : 18)} ·{" "}
+                    {m("Treasury allowance")}:{" "}
+                    {allowanceAmount(
+                      quote.basket[i].allowance,
+                      i === 2 ? 6 : 18,
+                    )}
+                  </p>
+                )}
                 <p className="muted">
                   {m("Minimum")}:{" "}
                   {minimums[i] !== undefined
@@ -542,7 +587,16 @@ export function Ragequit({
               </p>
             </>
           )}
-          <Notice>{t("fundingNotice")}</Notice>
+          {quote?.reasons.map((reason) => (
+            <Notice key={reason} tone="warning">
+              {reason}
+            </Notice>
+          ))}
+          <Notice>
+            {m(
+              "The DAO can spend funds or revoke treasury allowances. There is no guaranteed exit window or reservation of funds.",
+            )}
+          </Notice>
           <label className="checkbox">
             <input
               type="checkbox"
@@ -557,7 +611,13 @@ export function Ragequit({
           {allowance !== units && (
             <button
               className="button full"
-              disabled={!canSign || !validQuote || bps === null || tx.busy}
+              disabled={
+                !canSign ||
+                !validQuote ||
+                !quote?.available ||
+                bps === null ||
+                tx.busy
+              }
               onClick={() => void approve()}
             >
               {m("1. Authorize {amount} MANA", { amount: input || "0" })}
@@ -568,6 +628,7 @@ export function Ragequit({
             disabled={
               !canSign ||
               !validQuote ||
+              !quote?.available ||
               allowance !== units ||
               bps === null ||
               !ack ||
@@ -610,13 +671,15 @@ export function Ragequit({
             </p>
             <p>
               {m(
-                "You can call previewRedeem and redeem directly on the verified V2 vault, independently of this portal.",
+                "You can call previewRedeem and redeem directly on the verified ragequit module, independently of this portal.",
               )}
             </p>
-            {vault ? (
-              <AddressLink address={vault} />
+            {module ? (
+              <AddressLink address={module} />
             ) : (
-              <p>{m("Treasury address available after deployment.")}</p>
+              <p>
+                {m("The ragequit module has not been deployed and configured.")}
+              </p>
             )}
           </details>
         </section>

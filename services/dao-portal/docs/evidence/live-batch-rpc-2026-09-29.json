@@ -1,0 +1,96 @@
+[
+  {
+    "provider": "polygon.drpc.org",
+    "resultKeys": [
+      "baseFeePerGas",
+      "blobGasUsed",
+      "calls",
+      "difficulty",
+      "excessBlobGas",
+      "extraData",
+      "gasLimit",
+      "gasUsed",
+      "hash",
+      "logsBloom",
+      "miner",
+      "mixHash",
+      "nonce",
+      "number",
+      "parentBeaconBlockRoot",
+      "parentHash",
+      "receiptsRoot",
+      "sha3Uncles",
+      "size",
+      "stateRoot",
+      "timestamp",
+      "transactions",
+      "transactionsRoot",
+      "uncles"
+    ],
+    "calls": [
+      {
+        "returnData": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "logs": [
+          {
+            "address": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+            "topics": [
+              "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+              "0x0000000000000000000000007b9e327748462f1038c9d081c98d189b22c60a27",
+              "0x000000000000000000000000c4ccc6a11329558582c2da79c18a9aeac00f59f9"
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "blockNumber": "0x5a46985",
+            "transactionHash": "0x3c0fbd8eed76de67c01f05174b0b701c29f0eeffe1cc173381fd25fd612a4833",
+            "transactionIndex": "0x0",
+            "blockHash": "0xb37d7ed867aa2cd0026e261a4a40556e43cfbf3cc9593a13e18ef39a1d995039",
+            "blockTimestamp": "0x6abbdcc6",
+            "logIndex": "0x0",
+            "removed": false
+          }
+        ],
+        "gasUsed": "0xe25b",
+        "maxUsedGas": "0xe25b",
+        "status": "0x1"
+      }
+    ]
+  },
+  {
+    "provider": "tenderly.rpc.polygon.community",
+    "error": {
+      "code": -32601,
+      "message": "method ignored by upstream",
+      "data": {
+        "code": "ErrUpstreamsExhausted",
+        "message": "all upstream attempts failed (1 upstream method ignored)",
+        "details": {
+          "networkId": "evm:137",
+          "method": "eth_simulateV1",
+          "attempts": 1,
+          "retries": 0,
+          "hedges": 0,
+          "upstreams": 1,
+          "durationMs": 0,
+          "projectId": "polygon-mainnet"
+        },
+        "cause": [
+          {
+            "code": "ErrUpstreamRequestSkipped",
+            "message": "skipped forwarding request to upstream",
+            "details": {
+              "upstreamId": "tenderly"
+            },
+            "cause": {
+              "code": "ErrUpstreamMethodIgnored",
+              "message": "method ignored by upstream configuration",
+              "details": {
+                "method": "eth_simulateV1",
+                "upstreamId": "tenderly"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "resultKeys": null
+  }
+]

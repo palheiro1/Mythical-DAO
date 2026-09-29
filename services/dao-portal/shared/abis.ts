@@ -5,6 +5,8 @@ export const tokenAbi = parseAbi([
   "function totalSupply() view returns (uint256)",
   "function allowance(address,address) view returns (uint256)",
   "function approve(address,uint256) returns (bool)",
+  "function transfer(address,uint256) returns (bool)",
+  "event Approval(address indexed owner,address indexed spender,uint256 value)",
   "function delegate(address)",
   "function delegates(address) view returns (address)",
   "function getVotes(address) view returns (uint256)",
@@ -15,21 +17,27 @@ export const tokenAbi = parseAbi([
   "event DelegateVotesChanged(address indexed delegate,uint256 previousVotes,uint256 newVotes)",
 ]);
 export const governorAbi = parseAbi([
+  "function token() view returns (address)",
+  "function getVotes(address,uint256) view returns (uint256)",
+  "function hasVoted(uint256,address) view returns (bool)",
   "function propose(address[],uint256[],bytes[],string) returns (uint256)",
   "function hashProposal(address[],uint256[],bytes[],bytes32) pure returns (uint256)",
   "function castVote(uint256,uint8) returns (uint256)",
-  "function queue(address[],uint256[],bytes[],bytes32) returns (uint256)",
   "function execute(address[],uint256[],bytes[],bytes32) payable returns (uint256)",
   "function cancel(address[],uint256[],bytes[],bytes32) returns (uint256)",
   "function state(uint256) view returns (uint8)",
   "function proposalVotes(uint256) view returns (uint256 againstVotes,uint256 forVotes,uint256 abstainVotes)",
-  "function proposalEta(uint256) view returns (uint256)",
   "function quorum(uint256) view returns (uint256)",
+  "function quorumNumerator() view returns (uint256)",
+  "function quorumDenominator() view returns (uint256)",
+  "function COUNTING_MODE() view returns (string)",
+  "function proposalSnapshot(uint256) view returns (uint256)",
+  "function proposalDeadline(uint256) view returns (uint256)",
   "function votingDelay() view returns (uint256)",
   "function votingPeriod() view returns (uint256)",
   "function proposalThreshold() view returns (uint256)",
-  "function setVotingDelay(uint48)",
-  "function setVotingPeriod(uint32)",
+  "function setVotingDelay(uint256)",
+  "function setVotingPeriod(uint256)",
   "function setProposalThreshold(uint256)",
   "function updateQuorumNumerator(uint256)",
   "event ProposalCreated(uint256 proposalId,address proposer,address[] targets,uint256[] values,string[] signatures,bytes[] calldatas,uint256 voteStart,uint256 voteEnd,string description)",
@@ -38,6 +46,15 @@ export const governorAbi = parseAbi([
   "event ProposalExecuted(uint256 proposalId)",
   "event ProposalCanceled(uint256 proposalId)",
 ]);
+export const ragequitAbi = parseAbi([
+  "function treasury() view returns (address)",
+  "function mana() view returns (address)",
+  "function basket() view returns (address[3])",
+  "function previewRedeem(uint256) view returns (uint256[3])",
+  "function redeem(uint256,address,uint256[3],uint256) returns (uint256[3])",
+  "event RagequitExecuted(address indexed member,address indexed recipient,uint256 manaBurned,uint256 gemPaid,uint256 wethPaid,uint256 usdcPaid)",
+]);
+// Historical V2 vault ABI is retained for decoding old drafts and events only.
 export const vaultAbi = parseAbi([
   "function previewRedeem(uint256) view returns (uint256[3])",
   "function redeem(uint256,address,uint256[3],uint256) returns (uint256[3])",
@@ -72,6 +89,7 @@ export const timelockAbi = parseAbi([
   "event RoleRevoked(bytes32 indexed role,address indexed account,address indexed sender)",
 ]);
 export const allEvents = [
+  ...ragequitAbi,
   ...tokenAbi,
   ...governorAbi,
   ...vaultAbi,
