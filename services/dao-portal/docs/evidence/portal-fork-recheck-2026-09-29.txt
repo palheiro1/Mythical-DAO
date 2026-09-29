@@ -1,0 +1,19 @@
+
+Running 2 tests using 1 worker
+
+Fork UI: proposal published and recovered
+(node:1857870) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Fork UI: voting window reached
+Fork API: /api/preflight 503
+Fork UI: execution window reached
+  ✓  1 [desktop] › tests/browser/portal-fork.spec.ts:96:1 › real Polygon Governor web lifecycle with an empty archive (19.5s)
+Fork UI: proposal published and recovered
+(node:1859000) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Fork UI: voting window reached
+Fork API: /api/preflight 503
+Fork UI: execution window reached
+  ✓  2 [mobile] › tests/browser/portal-fork.spec.ts:96:1 › real Polygon Governor web lifecycle with an empty archive (18.2s)
+
+  2 passed (39.5s)

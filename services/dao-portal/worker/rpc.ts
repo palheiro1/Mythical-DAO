@@ -6,6 +6,18 @@ export class RpcFault extends Error {
     super(code);
   }
 }
+/** Viem wraps transport faults inside contract/function errors. Never log those bodies or URLs. */
+export function rpcFailureCode(error: unknown, fallback: string): string {
+  for (let cause = error, depth = 0; cause && depth < 8; depth++) {
+    if (typeof cause !== "object") break;
+    if (cause instanceof RpcFault) return cause.code;
+    const fault = cause as { status?: number; name?: string; cause?: unknown };
+    if (fault.status === 429) return "RPC_RATE_LIMITED";
+    if (fault.name === "TimeoutError") return "RPC_REQUEST_TIMEOUT";
+    cause = fault.cause;
+  }
+  return fallback;
+}
 export async function boundedFetch(
   input: RequestInfo | URL,
   init?: RequestInit,

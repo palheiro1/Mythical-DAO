@@ -1,0 +1,32 @@
+[
+  {
+    "provider": "infura",
+    "span": 10000,
+    "status": 200,
+    "logs": 0,
+    "milliseconds": 6851
+  },
+  {
+    "provider": "tenderly",
+    "span": 10000,
+    "status": 200,
+    "logs": 0,
+    "milliseconds": 939
+  },
+  {
+    "provider": "infura",
+    "span": 100000,
+    "status": 200,
+    "logs": null,
+    "code": -32602,
+    "milliseconds": 145
+  },
+  {
+    "provider": "tenderly",
+    "span": 100000,
+    "status": 413,
+    "logs": null,
+    "code": -32012,
+    "milliseconds": 71
+  }
+]

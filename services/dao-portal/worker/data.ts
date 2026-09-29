@@ -11,7 +11,7 @@ import {
   type PortalConfig,
   type Proposal,
 } from "../shared/domain";
-import { agreed, commonHead, RpcFault } from "./rpc";
+import { agreed, commonHead, rpcFailureCode } from "./rpc";
 import { verifyLive } from "./live";
 export type EventRow = Omit<ChainEvent, "args"> & { args_json: string };
 export function eventProposal(e: EventRow, cfg: PortalConfig): Proposal {
@@ -45,6 +45,7 @@ export async function indexHealth(
   env: Env,
   cfg: PortalConfig,
   pair: [PublicClient, PublicClient],
+  verifiedHead?: Awaited<ReturnType<typeof commonHead>>,
 ): Promise<Health> {
   const checkedAt = new Date().toISOString();
   const cursors = await env.DAO_DB.prepare(
@@ -63,7 +64,8 @@ export async function indexHealth(
     updatedAt: c.updated_at,
   }));
   try {
-    const { head, confirmed } = await commonHead(pair, cfg);
+    // Only callers that already verified this request's head may pass it here.
+    const { head, confirmed } = verifiedHead ?? (await commonHead(pair, cfg));
     const stored = await env.DAO_DB.prepare(
       "SELECT status,reason FROM index_health WHERE id=1",
     ).first<{ status: string; reason: string }>();
@@ -101,8 +103,7 @@ export async function indexHealth(
         }
     } catch (error) {
       ready = false;
-      archiveReason =
-        error instanceof RpcFault ? error.code : "ARCHIVE_VERIFICATION_FAILED";
+      archiveReason = rpcFailureCode(error, "ARCHIVE_VERIFICATION_FAILED");
     }
     // Historical governance summaries depend on Governor/MANA sources; optional assets are independent.
     const degraded =
@@ -118,8 +119,13 @@ export async function indexHealth(
         await verifyLive(cfg, pair, head);
         signingAllowed = true;
       } catch (error) {
-        liveReason =
-          error instanceof RpcFault ? error.code : "LIVE_VERIFICATION_FAILED";
+        liveReason = rpcFailureCode(error, "LIVE_VERIFICATION_FAILED");
+        console.warn(
+          JSON.stringify({
+            event: "live_verification_failed",
+            reason: liveReason,
+          }),
+        );
       }
     }
     const status = !cfg.enabled
@@ -149,27 +155,24 @@ export async function indexHealth(
     };
   } catch (error) {
     // Keep transient provider failures diagnosable without exposing credentials or request bodies.
-    const fault = error as { name?: string; shortMessage?: string };
+    const reason = rpcFailureCode(error, "RPC_UNAVAILABLE");
     console.error(
       JSON.stringify({
         event: "rpc_health_failed",
-        name: fault.name ?? "Error",
-        detail: (fault.shortMessage ?? "RPC verification failed")
-          .replace(/https?:\/\/\S+/g, "[provider]")
-          .slice(0, 200),
+        reason,
       }),
     );
     return {
       status: "degraded",
       signingAllowed: false,
       historyComplete: false,
-      liveReason: error instanceof RpcFault ? error.code : "RPC_UNAVAILABLE",
+      liveReason: reason,
       head: null,
       confirmedHead: null,
       checkedAt,
       sources,
       sync: syncProgress(cfg, sources, null),
-      reason: error instanceof RpcFault ? error.code : "RPC_UNAVAILABLE",
+      reason,
     };
   }
 }

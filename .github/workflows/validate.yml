@@ -35,6 +35,20 @@ jobs:
           done
           npm run test:browser
       - run: npx wrangler deploy --dry-run --env staging
+  subgraph:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: services/dao-subgraph
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22'
+          cache: npm
+          cache-dependency-path: services/dao-subgraph/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run check
   telegram:
     runs-on: ubuntu-latest
     defaults:

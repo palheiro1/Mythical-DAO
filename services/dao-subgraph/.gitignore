@@ -1,0 +1,9 @@
+node_modules/
+generated/
+build/
+.env
+.env.*
+!.env.example
+.graphclient/
+tests/.bin/
+tests/.latest.json

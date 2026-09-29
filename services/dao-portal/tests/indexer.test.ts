@@ -56,10 +56,9 @@ vi.mock("../worker/rpc", async (importOriginal) => {
         args?: unknown;
       }) => {
         fixture.queries.push({ address, event, args, fromBlock, toBlock });
-        if (
-          Number(toBlock - fromBlock + 1n) > fixture.maxLogSpan ||
-          address === fixture.timeoutAddress
-        )
+        if (Number(toBlock - fromBlock + 1n) > fixture.maxLogSpan)
+          throw new original.RpcFault("INFURA_LOG_RANGE_LIMIT");
+        if (address === fixture.timeoutAddress)
           throw new original.RpcFault("RPC_SECONDARY_TIMEOUT");
         await fixture.afterLogs?.();
         if (fixture.failLogs) throw Error("interrupted");
@@ -347,7 +346,7 @@ it("backfills Approval with an independent cursor and preserves Transfer history
   ).toHaveLength(1);
 });
 
-it("halves a timed-out range, persists learning and resumes every pending block without duplicates", async () => {
+it("halves an explicit capacity-limited range, persists learning and resumes every pending block without duplicates", async () => {
   fixture.maxLogSpan = 5;
   await indexChain(env);
   expect(fixture.queries.map((q) => [q.fromBlock, q.toBlock])).toEqual([
@@ -370,7 +369,7 @@ it("halves a timed-out range, persists learning and resumes every pending block 
   await indexChain(env);
   expect(
     await fixtureDb.db.prepare("SELECT span FROM index_adaptive").first(),
-  ).toEqual({ span: 6 });
+  ).toEqual({ span: 10 });
   await indexChain(env);
   await indexChain(env);
   await indexChain(env);
@@ -390,7 +389,7 @@ it("bounds retries, preserves a failed source cursor and allows another source t
   expect(await indexChain(env)).toHaveProperty("error", "INDEX_LOG_TIMEOUT");
   expect(
     fixture.queries.filter((q) => q.address === fixture.timeoutAddress),
-  ).toHaveLength(4);
+  ).toHaveLength(2);
   expect(
     await fixtureDb.db
       .prepare("SELECT * FROM cursors WHERE contract=?")
@@ -407,7 +406,7 @@ it("bounds retries, preserves a failed source cursor and allows another source t
     .prepare("SELECT span,last_reason FROM index_adaptive WHERE source_key=?")
     .bind(fixture.timeoutAddress)
     .first();
-  expect(state).toEqual({ span: 2, last_reason: "INDEX_LOG_TIMEOUT" });
+  expect(state).toEqual({ span: 11, last_reason: "INDEX_LOG_TIMEOUT" });
 });
 
 it("does not adapt or retry after an exhausted quota", async () => {
@@ -420,6 +419,37 @@ it("does not adapt or retry after an exhausted quota", async () => {
   expect(
     await fixtureDb.db.prepare("SELECT * FROM index_adaptive").first(),
   ).toBeNull();
+});
+
+it("bounds a cron to one source and rotates a failed source without skipping its pending blocks", async () => {
+  const raw = JSON.parse(env.DEPLOYMENT_MANIFEST);
+  raw.contracts.usdcNative.startBlock = "10";
+  env.DEPLOYMENT_MANIFEST = JSON.stringify(raw);
+  env.INDEX_SOURCES_PER_RUN = "1";
+  fixture.timeoutAddress = raw.contracts.governor.address;
+  expect(await indexChain(env)).toHaveProperty("error", "INDEX_LOG_TIMEOUT");
+  expect(new Set(fixture.queries.map((q) => q.address)).size).toBe(1);
+  fixture.queries = [];
+  fixture.timeoutAddress = "";
+  await indexChain(env);
+  expect(
+    fixture.queries.every(
+      (q) => q.address === raw.contracts.usdcNative.address,
+    ),
+  ).toBe(true);
+  expect(
+    await fixtureDb.db
+      .prepare("SELECT * FROM cursors WHERE contract=?")
+      .bind(raw.contracts.governor.address)
+      .first(),
+  ).toBeNull();
+  const attempts = await fixtureDb.db
+    .prepare(
+      "SELECT source_key,finished_at,reason FROM index_source_runs ORDER BY source_key",
+    )
+    .all();
+  expect(attempts.results).toHaveLength(2);
+  expect(attempts.results.every((r) => r.finished_at !== null)).toBe(true);
 });
 
 it("rolls back tuning, events and cursor together if its lease expires before commit", async () => {

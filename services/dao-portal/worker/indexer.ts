@@ -5,6 +5,7 @@ import { config } from "./config";
 import { agreed, commonHead, RpcFault, settledValues } from "./rpc";
 import { indexClients } from "./infura";
 import { indexSources } from "../shared/sync";
+import { scheduleSources } from "./index-schedule";
 import {
   initialBatch,
   failedBatch,
@@ -71,6 +72,8 @@ export async function indexChain(env: Env) {
     if (Date.now() >= deadline) throw new RpcFault("INDEX_RUN_BUDGET");
   };
   let phase = "read-head";
+  let currentSource: string | undefined;
+  let chainId: number | undefined;
   const deferred: string[] = [];
   try {
     const cfg = config(env),
@@ -81,30 +84,44 @@ export async function indexChain(env: Env) {
       1,
       Math.min(5000, Math.floor(Number(env.INDEX_BATCH_BLOCKS) || 1000)),
     );
-    const sources = indexSources(cfg);
-    // When the free budget defers asset history, resume the least recently
-    // processed source first instead of letting the first token monopolize it.
-    const lastRuns = await db
-      .prepare("SELECT contract,updated_at FROM cursors WHERE chain_id=?")
-      .bind(cfg.chainId)
-      .all<{ contract: string; updated_at: number }>();
-    const updated = new Map(
-      lastRuns.results.map((row) => [row.contract, row.updated_at]),
+    chainId = cfg.chainId;
+    const allSources = indexSources(cfg);
+    const sourceLimit = Math.max(
+      1,
+      Math.min(
+        allSources.length,
+        Math.floor(Number(env.INDEX_SOURCES_PER_RUN) || allSources.length),
+      ),
     );
-    const priority = (address: string) =>
-      address === cfg.contracts.governor?.address
-        ? 0
-        : address === cfg.contracts.mana?.address
-          ? 1
-          : 2;
-    sources.sort(
-      (a, b) =>
-        priority(a.address) - priority(b.address) ||
-        (updated.get(a.key) ?? 0) - (updated.get(b.key) ?? 0),
+    const lastRuns = await db
+      .prepare(
+        "SELECT source_key,started_at FROM index_source_runs WHERE chain_id=?",
+      )
+      .bind(cfg.chainId)
+      .all<{ source_key: string; started_at: number }>();
+    const sources = scheduleSources(
+      allSources.filter((source) => BigInt(source.startBlock) <= confirmed),
+      new Map(lastRuns.results.map((row) => [row.source_key, row.started_at])),
+      sourceLimit,
     );
     sourcesLoop: for (const entry of sources) {
       checkTime();
       const { address, role, key: cursorKey, approvals } = entry;
+      currentSource = cursorKey;
+      await db.batch([
+        guard(),
+        db
+          .prepare(
+            "INSERT OR REPLACE INTO index_source_runs VALUES(?,?,?,NULL,'INDEX_SOURCE_RUNNING')",
+          )
+          .bind(cfg.chainId, cursorKey, Date.now()),
+      ]);
+      const finishSource = (reason: string | null = null) =>
+        db
+          .prepare(
+            "UPDATE index_source_runs SET finished_at=?,reason=? WHERE chain_id=? AND source_key=?",
+          )
+          .bind(Date.now(), reason, cfg.chainId, cursorKey);
       session.state.background = ![
         cfg.contracts.governor?.address,
         cfg.contracts.mana?.address,
@@ -197,6 +214,7 @@ export async function indexChain(env: Env) {
               "UPDATE cursors SET updated_at=? WHERE chain_id=? AND contract=?",
             )
             .bind(Date.now(), cfg.chainId, cursorKey),
+          finishSource(),
         ]);
         continue;
       }
@@ -333,7 +351,7 @@ export async function indexChain(env: Env) {
         } catch (error) {
           const reason = rangeFailure(error);
           if (!reason) throw error;
-          tuning = failedBatch(tuning, attempted);
+          tuning = failedBatch(tuning, attempted, reason, span);
           await db.batch([
             guard(),
             tuningStatement(tuning, Date.now() - started, reason),
@@ -351,7 +369,9 @@ export async function indexChain(env: Env) {
           );
           // At most one smaller retry per source/run. All provider I/O has settled.
           // The unchanged 'from' is retried now or in the next cron invocation.
-          if (attempt === 0 && attempted > 1 && Date.now() < deadline) continue;
+          if (attempt === 0 && tuning.span < attempted && Date.now() < deadline)
+            continue;
+          await db.batch([guard(), finishSource(reason)]);
           deferred.push(reason);
           continue sourcesLoop;
         }
@@ -395,6 +415,7 @@ export async function indexChain(env: Env) {
             .prepare("INSERT OR REPLACE INTO checkpoints VALUES(?,?,?,?)")
             .bind(cfg.chainId, cursorKey, to, endHash),
         );
+        statements.push(finishSource());
         statements.push(
           db
             .prepare("INSERT OR REPLACE INTO cursors VALUES(?,?,?,?,?)")
@@ -440,6 +461,13 @@ export async function indexChain(env: Env) {
     };
   } catch (error) {
     const reason = error instanceof RpcFault ? error.code : "INDEX_READ_FAILED";
+    if (currentSource && chainId !== undefined)
+      await db
+        .prepare(
+          "UPDATE index_source_runs SET finished_at=?,reason=? WHERE chain_id=? AND source_key=? AND EXISTS(SELECT 1 FROM index_lock WHERE id=1 AND owner=? AND expires_at>unixepoch())",
+        )
+        .bind(Date.now(), reason, chainId, currentSource, owner)
+        .run();
     if (
       ["INFURA_GOVERNANCE_BUDGET_RESERVED", "INDEX_RUN_BUDGET"].includes(reason)
     ) {

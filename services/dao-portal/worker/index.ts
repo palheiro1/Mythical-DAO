@@ -255,7 +255,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
               ),
             )
           ).filter((state) => state === 4).length;
-    const health = await indexHealth(env, cfg, pair);
+    const health = await indexHealth(env, cfg, pair, { head, confirmed });
     return json({
       activeVotes: active?.count ?? 0,
       queuedExecutions: 0,
@@ -308,7 +308,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     });
   }
   if (path === "/api/notification-feed") {
-    const health = await indexHealth(env, cfg, pair);
+    const health = await indexHealth(env, cfg, pair, { head, confirmed });
     if (!health.historyComplete)
       return json({ error: "Index is not verified" }, 409);
     const after = parseCursor(url.searchParams.get("after"), "after");

@@ -39,3 +39,9 @@ Disco: preflight cumulativo de 0,25 GB aprovado com 40,643 GB disponíveis,
 preservando a reserva de 40 GB. Dependências e compilação existentes reutilizadas;
 o scanner e a cópia temporária apenas dos ficheiros candidatos destinam-se a esta
 revisão. Nenhuma base, projeto ou histórico foi eliminado.
+
+## Atualização: sync e piloto The Graph
+
+A revisão adicional verificou 414 ficheiros candidatos (~23,17 MB), incluindo o piloto, scripts e evidências. Gitleaks 8.30.1 não encontrou fugas. A comparação literal e em base64 com credenciais locais do portal, Wrangler e Graph CLI não encontrou correspondências; os valores não foram impressos. O manifesto adicional do piloto contém apenas hashes de fontes, versões e estado de implantação pendente. As quatro imagens novas/atualizadas foram inspecionadas: interface pública e fork local, sem chaves. Dependências, binários Matchstick, código gerado, build, ambiente local e autenticação Graph ficam fora do Git.
+
+O repositório continua privado. A nova job de CI do subgraph apenas testa e compila; não implanta nem utiliza chaves Studio. O módulo permanece não implantado e a revisão independente pendente.

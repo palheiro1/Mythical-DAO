@@ -1,0 +1,58 @@
+specVersion: 1.3.0
+description: Mythical DAO pilot — existing Governor and MANA on Polygon; historical observations only
+repository: https://github.com/palheiro1/Mythical-DAO
+schema:
+  file: ./schema.graphql
+indexerHints:
+  prune: never
+dataSources:
+  - kind: ethereum/contract
+    name: Governor
+    network: matic
+    source:
+      address: '0x7B9e327748462F1038c9D081c98d189b22C60A27'
+      abi: Governor
+      startBlock: 48674443
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities: [EventRecord, Proposal, PilotStats]
+      abis:
+        - name: Governor
+          file: ./abis/Governor.json
+      eventHandlers:
+        - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
+          handler: handleProposalCreated
+        - event: VoteCast(indexed address,uint256,uint8,uint256,string)
+          handler: handleVoteCast
+        - event: ProposalExecuted(uint256)
+          handler: handleProposalExecuted
+        - event: ProposalCanceled(uint256)
+          handler: handleProposalCanceled
+      file: ./src/governor.ts
+  - kind: ethereum/contract
+    name: MANA
+    network: matic
+    source:
+      address: '0x2caCCa1266653bB090D3Fb511456EBCA33150562'
+      abi: MANA
+      startBlock: 45785116
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities: [EventRecord, ManaAccount, PilotStats]
+      abis:
+        - name: MANA
+          file: ./abis/MANA.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: DelegateChanged(indexed address,indexed address,indexed address)
+          handler: handleDelegateChanged
+        - event: DelegateVotesChanged(indexed address,uint256,uint256)
+          handler: handleDelegateVotesChanged
+      file: ./src/mana.ts

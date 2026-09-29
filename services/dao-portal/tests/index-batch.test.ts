@@ -6,23 +6,29 @@ import {
   rangeFailure,
 } from "../worker/index-batch";
 import { RpcFault } from "../worker/rpc";
-it("reduces slow successful ranges and grows only after three fast full ranges within the cap", () => {
+it("preserves slow successful ranges and grows after three complete successful ranges within the cap", () => {
   let state = initialBatch(null, 5000);
-  state = successfulBatch(state, 5000, 16000, 5000);
+  state = successfulBatch(state, 5000, 22000, 5000);
+  expect(state.span).toBe(5000);
+  state = failedBatch(state, 5000, "INDEX_LOG_TIMEOUT", 5000);
   expect(state.span).toBe(2500);
-  state = successfulBatch(state, 2500, 7000, 5000);
-  state = successfulBatch(state, 2500, 7000, 5000);
+  state = successfulBatch(state, 2500, 22000, 5000);
+  state = successfulBatch(state, 2500, 22000, 5000);
   expect(state.span).toBe(2500);
-  state = successfulBatch(state, 2500, 7000, 5000);
-  expect(state.span).toBe(3125);
+  state = successfulBatch(state, 2500, 22000, 5000);
+  expect(state.span).toBe(5000);
   expect(
     successfulBatch({ ...state, span: 4900, successes: 2 }, 4900, 1, 5000).span,
   ).toBe(5000);
   expect(successfulBatch({ ...state, successes: 2 }, 1, 1, 5000).span).toBe(
-    3125,
+    5000,
   );
   expect(initialBatch(state, 1000).span).toBe(1000);
   expect(failedBatch(state, 1).span).toBe(1);
+  expect(failedBatch(state, 1000, "INDEX_LOG_TIMEOUT", 5000).span).toBe(1000);
+  expect(failedBatch(state, 1000, "INDEX_LOG_RANGE_LIMIT", 5000).span).toBe(
+    500,
+  );
 });
 it("only resizes log timeouts or capacity failures, never rate limits, quota, reorg or disagreement", () => {
   for (const code of ["RPC_SECONDARY_TIMEOUT", "INFURA_REQUEST_TIMEOUT"])

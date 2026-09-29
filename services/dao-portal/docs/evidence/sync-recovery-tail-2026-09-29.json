@@ -1,0 +1,360 @@
+[
+  {
+    "outcome": "ok",
+    "timestamp": 1790713155801,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "from": 48795115,
+        "to": 48796114,
+        "logs": 0,
+        "durationMs": 3227,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713215909,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "from": 48799525,
+        "to": 48800524,
+        "logs": 0,
+        "durationMs": 2177,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713275803,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "from": 48812066,
+        "to": 48813065,
+        "logs": 0,
+        "durationMs": 2306,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713335806,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "from": 46069667,
+        "to": 46070666,
+        "logs": 0,
+        "durationMs": 1251,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713395720,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "from": 49065901,
+        "to": 49066900,
+        "logs": 0,
+        "durationMs": 2937,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713455806,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "from": 48793437,
+        "to": 48794436,
+        "logs": 0,
+        "durationMs": 3417,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713575803,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "from": 46070667,
+        "to": 46071666,
+        "logs": 0,
+        "durationMs": 2040,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713635719,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+        "from": 48800525,
+        "to": 48801524,
+        "logs": 0,
+        "durationMs": 2506,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713695808,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "from": 49066901,
+        "to": 49067900,
+        "logs": 0,
+        "durationMs": 1210,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713755800,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "from": 48813066,
+        "to": 48814065,
+        "logs": 0,
+        "durationMs": 2200,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713777332,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713778045,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713779341,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713780356,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713780826,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713781698,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713782234,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713815902,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "from": 46071667,
+        "to": 46073666,
+        "logs": 0,
+        "durationMs": 1211,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713864825,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713866166,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713866168,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713866492,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713866470,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713866522,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713866519,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713887219,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713877609,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "from": 48794437,
+        "to": 48795436,
+        "logs": 0,
+        "durationMs": 2803,
+        "attempts": 1
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713892243,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713892235,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713907363,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713907794,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713907697,
+    "cron": null,
+    "logs": [
+      {
+        "event": "rpc_rate_limited",
+        "provider": "primary"
+      },
+      {
+        "event": "request_failed",
+        "reason": "REQUEST_FAILED",
+        "causes": [
+          {
+            "name": "HttpRequestError",
+            "status": 429,
+            "kind": "provider-limit"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713907731,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713907344,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713907754,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713907753,
+    "cron": null,
+    "logs": []
+  },
+  {
+    "outcome": "ok",
+    "timestamp": 1790713909804,
+    "cron": null,
+    "logs": []
+  }
+]

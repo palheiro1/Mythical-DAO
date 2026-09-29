@@ -1,0 +1,51 @@
+{
+  "preparedAt": "2026-09-29",
+  "status": "prepared-and-tested-not-deployed",
+  "studioWalletLoginRequired": true,
+  "deploymentCID": null,
+  "queryEndpoint": null,
+  "graphCli": "0.98.1",
+  "graphTs": "0.38.2",
+  "matchstick": "0.6.0",
+  "validationTests": 5,
+  "mappingTests": 10,
+  "build": "passed",
+  "files": [
+    {
+      "file": "src/common.ts",
+      "sha256": "e6523e3921f0b9bd4cbb5f3b0b37558eb33a8e0eb4c30b5ec13d90450783515f"
+    },
+    {
+      "file": "src/mana.ts",
+      "sha256": "49dacfa350e025a0b79d42f0b7e447a27df2543f61acfce9b78188c2b207cede"
+    },
+    {
+      "file": "src/governor.ts",
+      "sha256": "d2b922dae21303cc999fc564690e550deb97ce0617a091059ea120358b2f9f48"
+    },
+    {
+      "file": "abis/MANA.json",
+      "sha256": "b04c380d08599f997571ada1f13845c27eb42ad57beb7283e83237b29653aa17"
+    },
+    {
+      "file": "abis/Governor.json",
+      "sha256": "1037ddd1940571f5b242aebbed4966969937d1750ce0e25e3ed146b8d02d8b2b"
+    },
+    {
+      "file": "schema.graphql",
+      "sha256": "0b57c275e28f8cd0566adbcdc062d8a3baddb1b3c068b8d1031e8c084c3e2896"
+    },
+    {
+      "file": "subgraph.yaml",
+      "sha256": "f3fd7cb2175da7cebea33293dcc01b04846cac725a7b9bd3c840730af587ab31"
+    },
+    {
+      "file": "package.json",
+      "sha256": "b8d69d0b00e905437bb336673441911a59f33ae2acd56a395a7556d01758c123"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "7b4148dcf75256e3c49f81704162a53aa04fdd30ad2d99833d0ee5a3d6c55cd0"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Approval",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "owner",
+        "indexed": true
+      },
+      {
+        "type": "address",
+        "name": "spender",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "value"
+      }
+    ]
+  },
+  {
+    "name": "Transfer",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "from",
+        "indexed": true
+      },
+      {
+        "type": "address",
+        "name": "to",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "value"
+      }
+    ]
+  },
+  {
+    "name": "DelegateChanged",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "delegator",
+        "indexed": true
+      },
+      {
+        "type": "address",
+        "name": "fromDelegate",
+        "indexed": true
+      },
+      {
+        "type": "address",
+        "name": "toDelegate",
+        "indexed": true
+      }
+    ]
+  },
+  {
+    "name": "DelegateVotesChanged",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "delegate",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "previousVotes"
+      },
+      {
+        "type": "uint256",
+        "name": "newVotes"
+      }
+    ]
+  }
+]

@@ -76,6 +76,21 @@ it("atomically reserves quota when concurrent callers compete for the last reque
   expect(await state()).toMatchObject({ credits: 255, requests: 1 });
 });
 
+it("rechecks a cached quota's lease and other clients' cooldown before every dispatch", async () => {
+  const cached = quota();
+  await cached.reserve("eth_chainId");
+  await quota().block(false);
+  await expect(cached.reserve("eth_chainId")).rejects.toThrow(
+    "INFURA_PROVIDER_COOLDOWN",
+  );
+  now += 60_001;
+  await fixture.db.prepare("UPDATE index_lock SET expires_at=0").run();
+  await expect(cached.reserve("eth_chainId")).rejects.toThrow(
+    "INDEX_LEASE_EXPIRED",
+  );
+  expect((await state())?.requests).toBe(1);
+});
+
 it("serializes concurrent RPC reads, disables batching and prices each actual request", async () => {
   const starts: number[] = [];
   const fetcher = vi

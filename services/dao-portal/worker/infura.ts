@@ -43,6 +43,7 @@ const clock: Clock = {
 };
 
 export class InfuraQuota {
+  private cached: Quota | null | undefined;
   constructor(
     private db: D1Database,
     private owner: string,
@@ -63,16 +64,10 @@ export class InfuraQuota {
         ? Math.ceil(((Math.floor(now / DAY) + 1) * DAY - now) / 60_000) * 1_250
         : 0;
       const available = Math.max(0, this.limit - reservedForGovernance);
-      const lease = await this.db
-        .prepare(
-          "SELECT owner FROM index_lock WHERE id=1 AND owner=? AND expires_at>unixepoch()",
-        )
-        .bind(this.owner)
-        .first();
-      if (!lease) throw new RpcFault("INDEX_LEASE_EXPIRED");
-      const state = await this.db
-        .prepare("SELECT * FROM rpc_quota WHERE provider='infura'")
-        .first<Quota>();
+      // Reuse request-local quota state, not I/O handles. The conditional write
+      // below still checks the live lease, quota and cooldown on every dispatch.
+      if (this.cached === undefined) await this.refresh();
+      const state = this.cached;
       if (state && state.blocked_until > now)
         throw new RpcFault("INFURA_PROVIDER_COOLDOWN");
       if (state?.day === day && state.credits + cost > this.limit)
@@ -98,13 +93,29 @@ export class InfuraQuota {
           not_before=excluded.not_before
         WHERE rpc_quota.not_before<=? AND rpc_quota.blocked_until<=?
           AND (CASE WHEN rpc_quota.day=excluded.day THEN rpc_quota.credits ELSE 0 END)+excluded.credits<=?
-        RETURNING credits
+        RETURNING day,credits,requests,not_before,blocked_until
       `,
         )
         .bind(day, cost, now + INTERVAL, this.owner, now, now, available)
-        .first();
-      if (reserved) return;
+        .first<Quota>();
+      if (reserved) {
+        this.cached = reserved;
+        return;
+      }
+      // Another client may have reserved credit or installed a cooldown since
+      // our cached read. Reload before retrying; an expired lease fails closed.
+      await this.refresh();
     }
+  }
+  private async refresh(): Promise<void> {
+    const row = await this.db
+      .prepare(
+        "SELECT q.day,q.credits,q.requests,q.not_before,q.blocked_until FROM index_lock l LEFT JOIN rpc_quota q ON q.provider='infura' WHERE l.id=1 AND l.owner=? AND l.expires_at>unixepoch()",
+      )
+      .bind(this.owner)
+      .first<Quota>();
+    if (!row) throw new RpcFault("INDEX_LEASE_EXPIRED");
+    this.cached = row.day ? row : null;
   }
   async block(daily: boolean): Promise<void> {
     const now = this.time.now();
@@ -115,6 +126,7 @@ export class InfuraQuota {
       )
       .bind(until)
       .run();
+    this.cached = undefined;
   }
 }
 

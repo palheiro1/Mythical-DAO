@@ -1,0 +1,75 @@
+"Historical observations only. Current eligibility and simulations remain on RPC."
+type EventRecord @entity(immutable: true) {
+  id: Bytes!
+  eventKey: String!
+  contract: Bytes!
+  name: String!
+  blockNumber: BigInt!
+  blockHash: Bytes!
+  transactionHash: Bytes!
+  transactionIndex: BigInt!
+  logIndex: BigInt!
+  timestamp: BigInt!
+  proposal: Proposal
+  voter: Bytes
+  support: Int
+  weight: BigInt
+  reason: String
+  from: Bytes
+  to: Bytes
+  owner: Bytes
+  spender: Bytes
+  value: BigInt
+  account: Bytes
+  fromDelegate: Bytes
+  toDelegate: Bytes
+  previousVotes: BigInt
+  newVotes: BigInt
+}
+
+type Proposal @entity(immutable: false) {
+  id: ID!
+  proposalId: BigInt!
+  governor: Bytes!
+  proposer: Bytes!
+  description: String!
+  targets: [Bytes!]!
+  values: [BigInt!]!
+  signatures: [String!]!
+  calldatas: [Bytes!]!
+  voteStart: BigInt!
+  voteEnd: BigInt!
+  createdBlock: BigInt!
+  createdBlockHash: Bytes!
+  createdTransaction: Bytes!
+  againstVotes: BigInt!
+  forVotes: BigInt!
+  abstainVotes: BigInt!
+  executed: Boolean!
+  canceled: Boolean!
+  events: [EventRecord!]! @derivedFrom(field: "proposal")
+}
+
+type ManaAccount @entity(immutable: false) {
+  id: Bytes!
+  balance: BigInt!
+  votingPower: BigInt!
+  delegate: Bytes!
+  updatedBlock: BigInt!
+}
+
+type PilotStats @entity(immutable: false) {
+  id: ID!
+  chainId: Int!
+  governor: Bytes!
+  mana: Bytes!
+  governorStartBlock: BigInt!
+  manaStartBlock: BigInt!
+  totalSupply: BigInt!
+  holders: BigInt!
+  proposals: BigInt!
+  votes: BigInt!
+  transfers: BigInt!
+  delegationChanges: BigInt!
+  lastEventBlock: BigInt!
+}

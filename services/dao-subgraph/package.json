@@ -1,0 +1,25 @@
+{
+  "name": "@mythical/dao-subgraph-pilot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph codegen && graph build",
+    "test": "node --test tests/*.test.mjs",
+    "compare": "node scripts/compare.mjs",
+    "deploy:studio": "node scripts/deploy-studio.mjs",
+    "test:mappings": "graph codegen && graph test --version 0.6.0",
+    "check": "npm test && npm run test:mappings && npm run build"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-ts": "0.38.2"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "0.98.1",
+    "matchstick-as": "0.6.0"
+  }
+}

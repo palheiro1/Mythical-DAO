@@ -1,5 +1,7 @@
 # Entrega — Governor atual e ragequit sem migração
 
+Atualização: [recuperação do sync, validação do portal e preparação do piloto The Graph](SYNC_RECOVERY.md). A versão do Worker é agora `851124ed-f7f3-46bd-a668-6c1eaa5f8609`. Abaixo mantém-se a descrição da entrega anterior; os resultados e limites mais recentes estão no relatório ligado.
+
 Data: 28 de setembro de 2026. Código implementado localmente; nenhuma transação enviada à Polygon pública.
 
 Atualização: [portal de teste publicado no domínio próprio](https://dao-preview.mythicalbeings.io), com API Worker e D1 de staging. HTTPS, DNS e classificação MetaMask `NONE` foram verificados na preparação do domínio. A indexação histórica permanece incompleta; a governação já usa verificações diretas por operação, descritas na atualização seguinte. [Entrega inicial do deploy](TEST_DEPLOYMENT.md).

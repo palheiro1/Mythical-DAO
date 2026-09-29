@@ -1,0 +1,22 @@
+No files changed, compilation skipped
+2026-09-29T20:32:05.789247Z  WARN traces::etherscan: etherscan config not found
+
+Ran 15 tests for contracts/test/RagequitModule.t.sol:RagequitModuleTest
+[PASS] testAllZeroRejected() (gas: 107990)
+[PASS] testBlockedOrFeeTokenRollsBackEverything() (gas: 433590)
+[PASS] testDelegatedVoterCanBurnOnlyOwnBalanceEvenWithAllowance() (gas: 302376)
+[PASS] testFaultyBurnSupplyAndBalanceChangesRollBackPaymentsAndAllowance() (gas: 1953507)
+[PASS] testFuzzConservationAndRounding(uint96) (runs: 2048, μ: 189781, ~: 182215)
+[PASS] testInsufficientAndRevokedAllowanceRollBackAllAssetsAndBurn() (gas: 365317)
+[PASS] testInvalidAmountAndConstructor() (gas: 98460)
+[PASS] testLaterAssetHookCannotAlterAnEarlierPayout() (gas: 1732332)
+[PASS] testMinimumsAreEnforcedForEachAssetBeforeAnyBurn() (gas: 136163)
+[PASS] testNoDelegatedBurnAndReentrancyBlocked() (gas: 339548)
+[PASS] testProportionIncludesTreasuryManaAndExactApproval() (gas: 209023)
+[PASS] testProportionalMathHandlesIntermediateUint256Overflow() (gas: 2432762)
+[PASS] testRecipientExpiryAndMinimums() (gas: 189949)
+[PASS] testSuccessiveExitsAndNewRevenue() (gas: 377570)
+[PASS] testZeroQuotaAllowedEvenWithoutAllowance() (gas: 144826)
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 294.88ms (299.46ms CPU time)
+
+Ran 1 test suite in 295.67ms (294.88ms CPU time): 15 tests passed, 0 failed, 0 skipped (15 total tests)

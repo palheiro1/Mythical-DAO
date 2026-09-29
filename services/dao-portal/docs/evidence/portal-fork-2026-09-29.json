@@ -3,9 +3,9 @@
   "chainId": 137,
   "archive": "empty; recovered proposal receipts only",
   "rpc": "two local clients to one Anvil fork; independent providers verified separately",
-  "proposalId": "74840321711601028715935680284065296557694837155371294586337268029206869631691",
-  "canceled": "16132475030255539910442795354886104502013163464720888851648258353949851393643",
-  "reverted": "36748525428577603953007635829071574298367799252256207058294996434521575590144",
+  "proposalId": "57841297258239310596124749367906739005112610588845705855615703982426557653741",
+  "canceled": "44849886416207610339430401824232053386747049460579363948304022596322914270048",
+  "reverted": "80223233108486892059524201997191928328893652330890929332105754269068945987834",
   "checks": [
     "delegation",
     "rejection",
@@ -22,45 +22,43 @@
   "transactions": [
     {
       "operation": "0x5c19a95c",
-      "hash": "0x7df740f40c8a84f2777446d80c5df7b65b8cb957a8ee1eb056e8453f357b3c0c",
+      "hash": "0xb09bab715397e5c6211bf69de1f454c8be5080f047c0db3de56163ce8e3f0ab0",
       "status": "success"
     },
     {
       "operation": "0x7d5e81e2",
-      "hash": "0xcd020db185b9b1daa4f8657990678bc4ee9d3122d537f276aaadf17d005e1116",
+      "hash": "0x9c9fedb06906c4d1c331e048f38fb11f33cdbf99432634bbb12b247b3b813279",
       "status": "success"
     },
     {
       "operation": "0x56781388",
-      "hash": "0x345ff9d22366e96c219d51b0e5b38b3a9b64967d2b424b527baaf814cd6f7aa7",
+      "hash": "0x549a91274b92bc32f6475926b5b0ace0aa82061f45c0d3d7245d36fc099cc3a2",
       "status": "success"
     },
     {
       "operation": "0x2656227d",
-      "hash": "0xa3a892e33b0806c76cf811808dc629bcc6ca4f0f0d47276bd1c759df7dba9e39",
+      "hash": "0x520e7bad711d1e06963b5929571e5d55c5cc32412fc9d13b8bd249d1eef598a1",
       "status": "success"
     },
     {
       "operation": "0x7d5e81e2",
-      "hash": "0x2f2df494604ae87d668cd50ca30455af4f723c44df0d904a0484693c86ea4352",
+      "hash": "0xf6c96bf23a738aa5942ca3aed6e8bf686d8ab845459845b33fc7139d7a518ed3",
       "status": "success"
     },
     {
       "operation": "0x452115d6",
-      "hash": "0x2efce7f2a49f12b72936b59f32208f7ee4cf886f21eb8236032e46d2b4ef5bf6",
+      "hash": "0x06fb553261fb4189f79e17d3fb18fb2ca66e67c29897374a12cdb466afbc8394",
       "status": "success"
     },
     {
       "operation": "0x7d5e81e2",
-      "hash": "0xdc818b7ebfccc316f974d583333a0ba9d211081b93cb4380152faf6fd2b8b9a9",
+      "hash": "0x51a8a9156f1c2fc3cb10b976336895d4f39961d643b8f0c78cb519e28008154c",
       "status": "success"
     },
     {
       "operation": "0x452115d6",
-      "hash": "0x863aae7eb0333721ffd29e32e75f07daaaed121bb7aee81059e1bc77253a9a0e",
+      "hash": "0x7d4507b2ed564290136232d82dc85a8d93a65a58c25697540e67a4199e2ecaa5",
       "status": "reverted"
     }
-  ],
-  "source": "tenderly.rpc.polygon.community",
-  "blockAdvancement": "Anvil 1.3.5 synthetic empty checkpoint plus two mined blocks; all serialized accounts compared unchanged before/after. Governor storage and timing parameters preserved."
+  ]
 }

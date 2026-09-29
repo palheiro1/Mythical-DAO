@@ -15,8 +15,16 @@ export const initialBatch = (
 export const failedBatch = (
   state: BatchState,
   attempted: number,
+  reason = "INDEX_LOG_RANGE_LIMIT",
+  maximum = attempted,
 ): BatchState => ({
-  span: Math.max(1, Math.floor(attempted / 2)),
+  // A provider can be slow even for an empty eight-block query. Repeated
+  // timeouts must not collapse useful backfill ranges to single blocks.
+  // Explicit response/density limits may still require arbitrarily small ranges.
+  span: Math.max(
+    reason === "INDEX_LOG_TIMEOUT" ? Math.min(1000, maximum) : 1,
+    Math.floor(attempted / 2),
+  ),
   successes: 0,
   failures: Math.min(1000, state.failures + 1),
 });
@@ -26,23 +34,13 @@ export function successfulBatch(
   durationMs: number,
   maximum: number,
 ): BatchState {
-  if (durationMs >= 15_000)
-    return {
-      span: Math.max(1, Math.floor(attempted / 2)),
-      successes: 0,
-      failures: 0,
-    };
+  // Duration alone does not establish that range size caused latency. Preserve
+  // every successful range, including slow responses with no matching logs.
   // A short final range at the head does not demonstrate capacity for larger ranges.
   const successes =
-    durationMs <= 8_000 && attempted === state.span ? state.successes + 1 : 0;
+    durationMs <= 25_000 && attempted === state.span ? state.successes + 1 : 0;
   return {
-    span:
-      successes >= 3
-        ? Math.min(
-            maximum,
-            state.span + Math.max(1, Math.floor(state.span / 4)),
-          )
-        : state.span,
+    span: successes >= 3 ? Math.min(maximum, state.span * 2) : state.span,
     successes: successes >= 3 ? 0 : successes,
     failures: 0,
   };

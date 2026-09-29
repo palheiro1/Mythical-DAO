@@ -1,0 +1,114 @@
+{
+  "checkedAt": "2026-09-29T20:04:18.544Z",
+  "scope": "Read-only bounded provider diagnosis; 6 requests/provider; does not update cursors",
+  "results": [
+    {
+      "provider": "infura",
+      "label": "chain",
+      "method": "eth_chainId",
+      "ms": 1072,
+      "status": 200,
+      "chain": "0x89",
+      "digest": "b35c70d8656c80d027b63561359d5a21b6a2b58a8aff044c6bea6366f940a3ce"
+    },
+    {
+      "provider": "tenderly",
+      "label": "chain",
+      "method": "eth_chainId",
+      "ms": 836,
+      "status": 200,
+      "chain": "0x89",
+      "digest": "b35c70d8656c80d027b63561359d5a21b6a2b58a8aff044c6bea6366f940a3ce"
+    },
+    {
+      "provider": "infura",
+      "label": "governor-anchor",
+      "method": "eth_getBlockByNumber",
+      "ms": 219,
+      "status": 200,
+      "hash": "0x066ee7a8f712d617ec051d07f7de45e43ccca89383c96da55d49d8ca32d04772",
+      "digest": "6388a2849f4208ede24b7253c9c289d3cc6c984b548c3842b5c3c18bfe5dbf94"
+    },
+    {
+      "provider": "tenderly",
+      "label": "governor-anchor",
+      "method": "eth_getBlockByNumber",
+      "ms": 208,
+      "status": 200,
+      "hash": "0x066ee7a8f712d617ec051d07f7de45e43ccca89383c96da55d49d8ca32d04772",
+      "digest": "ab19eb181ded50918304fdd354d82a6bbedaf86713e4287b2586ac45d160b257"
+    },
+    {
+      "provider": "infura",
+      "label": "0x7B9e32-8-49065000",
+      "method": "eth_getLogs",
+      "ms": 261,
+      "status": 200,
+      "count": 0,
+      "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "provider": "tenderly",
+      "label": "0x7B9e32-8-49065000",
+      "method": "eth_getLogs",
+      "ms": 22647,
+      "status": 200,
+      "count": 0,
+      "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "provider": "infura",
+      "label": "0x7B9e32-5000-49065000",
+      "method": "eth_getLogs",
+      "ms": 1358,
+      "status": 200,
+      "count": 0,
+      "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "provider": "tenderly",
+      "label": "0x7B9e32-5000-49065000",
+      "method": "eth_getLogs",
+      "ms": 13665,
+      "status": 200,
+      "count": 0,
+      "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "provider": "infura",
+      "label": "0x2caCCa-5000-46069000",
+      "method": "eth_getLogs",
+      "ms": 1061,
+      "status": 200,
+      "count": 0,
+      "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "provider": "tenderly",
+      "label": "0x2caCCa-5000-46069000",
+      "method": "eth_getLogs",
+      "ms": 228,
+      "status": 200,
+      "count": 0,
+      "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "provider": "infura",
+      "label": "0x7B9e32-5000-58427770",
+      "method": "eth_getLogs",
+      "ms": 785,
+      "status": 200,
+      "count": 1,
+      "digest": "70223b0acaad5b8689693fb298718fa349b7317607a46326475f97e2c5e9fcbe"
+    },
+    {
+      "provider": "tenderly",
+      "label": "0x7B9e32-5000-58427770",
+      "method": "eth_getLogs",
+      "ms": 5532,
+      "status": 200,
+      "count": 1,
+      "digest": "176446331ff60abdda28c22a0eec2c281ad71a02fb608e60a51a0d9f4a9b6ef6"
+    }
+  ]
+}

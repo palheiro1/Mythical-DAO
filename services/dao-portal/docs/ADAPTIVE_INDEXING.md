@@ -1,5 +1,7 @@
 # Indexação com lotes adaptativos — 29 de setembro de 2026
 
+**Registo histórico:** a política abaixo foi substituída pela [recuperação do sync](SYNC_RECOVERY.md). A versão atual não reduz lotes apenas por lentidão, impõe piso de 1000 para timeouts e distribui uma fonte por execução em staging. Este documento conserva a evidência da primeira implementação e do problema depois diagnosticado.
+
 O Worker de staging aprende um tamanho de intervalo por fonte, sem alterar os endereços consultados ou saltar blocos pendentes. Worker final: `72f71cdc-5af2-43fd-b85d-13b8c9732cbf` (publicação inicial observada: `abc0ecb4-a68c-4492-ab95-da9d3888bd0f`). O frontend permanece no mesmo bundle `index-C9tIGjEp.js`.
 
 ## Política

@@ -1,0 +1,63 @@
+[
+  {
+    "outcome": "ok",
+    "eventTimestamp": 1790712315720,
+    "cron": "* * * * *",
+    "logs": [],
+    "exceptions": []
+  },
+  {
+    "outcome": "exceededCpu",
+    "eventTimestamp": 1790712375802,
+    "cron": "* * * * *",
+    "logs": [
+      {
+        "event": "index_batch_committed",
+        "source": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "from": 49064889,
+        "to": 49064894,
+        "logs": 0,
+        "durationMs": 4374,
+        "attempts": 1
+      },
+      {
+        "event": "index_batch_committed",
+        "source": "0x2cacca1266653bb090d3fb511456ebca33150562",
+        "from": 46068651,
+        "to": 46068658,
+        "logs": 0,
+        "durationMs": 1588,
+        "attempts": 1
+      }
+    ],
+    "exceptions": []
+  },
+  {
+    "outcome": "ok",
+    "eventTimestamp": 1790712435722,
+    "cron": "* * * * *",
+    "logs": [],
+    "exceptions": []
+  },
+  {
+    "outcome": "ok",
+    "eventTimestamp": 1790712495721,
+    "cron": "* * * * *",
+    "logs": [],
+    "exceptions": []
+  },
+  {
+    "outcome": "ok",
+    "eventTimestamp": 1790712555802,
+    "cron": "* * * * *",
+    "logs": [],
+    "exceptions": []
+  },
+  {
+    "outcome": "ok",
+    "eventTimestamp": 1790712615905,
+    "cron": "* * * * *",
+    "logs": [],
+    "exceptions": []
+  }
+]

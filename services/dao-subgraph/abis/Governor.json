@@ -1,0 +1,91 @@
+[
+  {
+    "name": "ProposalCreated",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "proposalId"
+      },
+      {
+        "type": "address",
+        "name": "proposer"
+      },
+      {
+        "type": "address[]",
+        "name": "targets"
+      },
+      {
+        "type": "uint256[]",
+        "name": "values"
+      },
+      {
+        "type": "string[]",
+        "name": "signatures"
+      },
+      {
+        "type": "bytes[]",
+        "name": "calldatas"
+      },
+      {
+        "type": "uint256",
+        "name": "voteStart"
+      },
+      {
+        "type": "uint256",
+        "name": "voteEnd"
+      },
+      {
+        "type": "string",
+        "name": "description"
+      }
+    ]
+  },
+  {
+    "name": "VoteCast",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "voter",
+        "indexed": true
+      },
+      {
+        "type": "uint256",
+        "name": "proposalId"
+      },
+      {
+        "type": "uint8",
+        "name": "support"
+      },
+      {
+        "type": "uint256",
+        "name": "weight"
+      },
+      {
+        "type": "string",
+        "name": "reason"
+      }
+    ]
+  },
+  {
+    "name": "ProposalExecuted",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "proposalId"
+      }
+    ]
+  },
+  {
+    "name": "ProposalCanceled",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "proposalId"
+      }
+    ]
+  }
+]
