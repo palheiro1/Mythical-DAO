@@ -10,27 +10,27 @@ TAP version 13
 # Subtest: rejects wrong deployment, errors and an incorrect historical anchor
 ok 1 - rejects wrong deployment, errors and an incorrect historical anchor
   ---
-  duration_ms: 0.988913
+  duration_ms: 0.663938
   ...
 # Subtest: accepts only the exact Polygon source identities and start blocks
 ok 2 - accepts only the exact Polygon source identities and start blocks
   ---
-  duration_ms: 0.273175
+  duration_ms: 0.135728
   ...
 # Subtest: GraphQL errors and HTTP failures never become empty successful data
 ok 3 - GraphQL errors and HTTP failures never become empty successful data
   ---
-  duration_ms: 14.28333
+  duration_ms: 13.25744
   ...
 # Subtest: pagination preserves all rows and rejects stalled order or truncation
 ok 4 - pagination preserves all rows and rejects stalled order or truncation
   ---
-  duration_ms: 1.12575
+  duration_ms: 1.002242
   ...
 # Subtest: approval owner/spender remain distinct; provider-only metadata is discarded
 ok 5 - approval owner/spender remain distinct; provider-only metadata is discarded
   ---
-  duration_ms: 0.57566
+  duration_ms: 0.536321
   ...
 1..5
 # tests 5
@@ -40,7 +40,7 @@ ok 5 - approval owner/spender remain distinct; provider-only metadata is discard
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 57.624824
+# duration_ms 53.989854
 
 > @mythical/dao-subgraph-pilot@0.1.0 test:mappings
 > graph codegen && graph test --version 0.6.0
@@ -110,20 +110,20 @@ Igniting tests 🔥
 
 mappings
 --------------------------------------------------
-  √ mint, transfer, full self-transfer, zero transfer and burn conserve balances and holders - 0.975ms
-  √ duplicate event does not double count and log index separates same transaction - 0.567ms
-  √ approval records owner and spender without changing balances - 0.191ms
-  √ delegation changes representative and voting power without moving tokens - 0.440ms
-  √ proposal preserves exact action bytes, text and all vote buckets - 0.897ms
-  √ execution and cancellation are retained as separate events - 0.644ms
-  √ missing mint history fails rather than fabricating a negative balance - 0.133ms
-  √ unknown proposal fails rather than hiding a missing event - 0.039ms
+  √ mint, transfer, full self-transfer, zero transfer and burn conserve balances and holders - 0.942ms
+  √ duplicate event does not double count and log index separates same transaction - 0.326ms
+  √ approval records owner and spender without changing balances - 0.098ms
+  √ delegation changes representative and voting power without moving tokens - 0.377ms
+  √ proposal preserves exact action bytes, text and all vote buckets - 0.951ms
+  √ execution and cancellation are retained as separate events - 0.649ms
+  √ missing mint history fails rather than fabricating a negative balance - 0.126ms
+  √ unknown proposal fails rather than hiding a missing event - 0.037ms
   √ unrelated contract events are rejected - 0.023ms
-  √ invalid support is rejected - 0.227ms
+  √ invalid support is rejected - 0.239ms
 
 All 10 tests passed! 😎
 
-[Tue, 29 Sep 2026 22:35:44 +0200] Program executed in: 2.454s.
+[Tue, 29 Sep 2026 22:43:28 +0200] Program executed in: 2.495s.
 
 > @mythical/dao-subgraph-pilot@0.1.0 build
 > graph codegen && graph build

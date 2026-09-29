@@ -24,7 +24,7 @@ npm ci --ignore-scripts
 npm run check
 ```
 
-`check` runs comparator guards, ten real AssemblyScript mapping tests through Matchstick 0.6.0, code generation and WASM compilation. Matchstick downloads its official Linux/macOS test binary on first use. CI uses Ubuntu 24.04; no Docker image is necessary. The production mappings never call an RPC from a handler.
+`check` runs comparator guards, ten real AssemblyScript mapping tests through Matchstick 0.6.0, code generation and WASM compilation. Matchstick downloads its official Linux/macOS test binary on first use. CI uses Ubuntu 24.04; no Docker image is necessary. The production mappings never call an RPC from a handler. The project explicitly uses standard npm peer resolution (`legacy-peer-deps=false`), with TypeScript and Node types pinned: the machine-wide legacy setting originally hid missing peers from the first lockfile, which CI detected.
 
 ## Studio deployment
 

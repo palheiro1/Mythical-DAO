@@ -20,6 +20,8 @@
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "0.98.1",
-    "matchstick-as": "0.6.0"
+    "@types/node": "22.19.0",
+    "matchstick-as": "0.6.0",
+    "typescript": "5.9.3"
   }
 }

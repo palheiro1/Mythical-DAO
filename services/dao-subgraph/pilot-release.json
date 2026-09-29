@@ -41,11 +41,15 @@
     },
     {
       "file": "package.json",
-      "sha256": "b8d69d0b00e905437bb336673441911a59f33ae2acd56a395a7556d01758c123"
+      "sha256": "051a164e983038e43315211bbc5836f1a54dd09415c9fefe3bdbba4a3d876cb9"
     },
     {
       "file": "package-lock.json",
-      "sha256": "7b4148dcf75256e3c49f81704162a53aa04fdd30ad2d99833d0ee5a3d6c55cd0"
+      "sha256": "9b1418e52861947ad5e7bec0b5f3d6db7cdaef574114117b7677f42fb3aad185"
+    },
+    {
+      "file": ".npmrc",
+      "sha256": "5602bb233ec1478ef60941257e98dfa8a86c9aeb22a4705aeb4beb15605e8a40"
     }
   ]
 }
