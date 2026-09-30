@@ -1,0 +1,230 @@
+
+> @mythical/dao-subgraph-pilot@0.1.0 check
+> npm test && npm run test:mappings && npm run build
+
+
+> @mythical/dao-subgraph-pilot@0.1.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: event ABIs explicitly declare anonymous and indexed for Graph Node deserialization
+ok 1 - event ABIs explicitly declare anonymous and indexed for Graph Node deserialization
+  ---
+  duration_ms: 0.90323
+  ...
+# Subtest: project key overrides global auth and never enters ordinary CLI arguments
+ok 2 - project key overrides global auth and never enters ordinary CLI arguments
+  ---
+  duration_ms: 0.842813
+  ...
+# Subtest: requires dedicated slug, valid version and a credential before deployment
+ok 3 - requires dedicated slug, valid version and a credential before deployment
+  ---
+  duration_ms: 0.300987
+  ...
+# Subtest: rejects wrong deployment, errors and an incorrect historical anchor
+ok 4 - rejects wrong deployment, errors and an incorrect historical anchor
+  ---
+  duration_ms: 0.70555
+  ...
+# Subtest: accepts only the exact Polygon source identities and start blocks
+ok 5 - accepts only the exact Polygon source identities and start blocks
+  ---
+  duration_ms: 0.170263
+  ...
+# Subtest: GraphQL errors and HTTP failures never become empty successful data
+ok 6 - GraphQL errors and HTTP failures never become empty successful data
+  ---
+  duration_ms: 14.812569
+  ...
+# Subtest: pagination preserves all rows and rejects stalled order or truncation
+ok 7 - pagination preserves all rows and rejects stalled order or truncation
+  ---
+  duration_ms: 1.064814
+  ...
+# Subtest: approval owner/spender remain distinct; provider-only metadata is discarded
+ok 8 - approval owner/spender remain distinct; provider-only metadata is discarded
+  ---
+  duration_ms: 0.662212
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 59.391191
+
+> @mythical/dao-subgraph-pilot@0.1.0 test:mappings
+> graph codegen && graph test --version 0.6.0
+
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.1 to 0.0.2
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.2 to 0.0.3
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.3 to 0.0.4
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.4 to 0.0.5
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.5 to 0.0.6
+- Apply migrations
+  Skip migration: Bump manifest specVersion from 0.0.1 to 0.0.2
+- Apply migrations
+  Skip migration: Bump manifest specVersion from 0.0.2 to 0.0.4
+- Apply migrations
+✔ Apply migrations
+- Load subgraph from subgraph.yaml
+✔ Load subgraph from subgraph.yaml
+- Load contract ABIs
+  Load contract ABI from abis/Governor.json
+- Load contract ABIs
+  Load contract ABI from abis/MANA.json
+- Load contract ABIs
+✔ Load contract ABIs
+- Generate types for contract ABIs
+  Generate types for contract ABI: Governor (abis/Governor.json)
+- Generate types for contract ABIs
+  Generate types for contract ABI: MANA (abis/MANA.json)
+- Generate types for contract ABIs
+  Write types to generated/Governor/Governor.ts
+- Generate types for contract ABIs
+  Write types to generated/MANA/MANA.ts
+- Generate types for contract ABIs
+✔ Generate types for contract ABIs
+- Generate types for data source templates
+✔ Generate types for data source templates
+- Load data source template ABIs
+✔ Load data source template ABIs
+- Generate types for data source template ABIs
+✔ Generate types for data source template ABIs
+- Load GraphQL schema from schema.graphql
+✔ Load GraphQL schema from schema.graphql
+- Generate types for GraphQL schema
+  Write types to generated/schema.ts
+- Generate types for GraphQL schema
+✔ Generate types for GraphQL schema
+
+Types generated successfully
+
+
+___  ___      _       _         _   _      _
+|  \/  |     | |     | |       | | (_)    | |
+| .  . | __ _| |_ ___| |__  ___| |_ _  ___| | __
+| |\/| |/ _` | __/ __| '_ \/ __| __| |/ __| |/ /
+| |  | | (_| | || (__| | | \__ \ |_| | (__|   <
+\_|  |_/\__,_|\__\___|_| |_|___/\__|_|\___|_|\_\
+
+Compiling...
+
+💬 Compiling mappings...
+
+Igniting tests 🔥
+
+mappings
+--------------------------------------------------
+  √ mint, transfer, full self-transfer, zero transfer and burn conserve balances and holders - 0.856ms
+  √ duplicate event does not double count and log index separates same transaction - 0.324ms
+  √ approval records owner and spender without changing balances - 0.102ms
+  √ delegation changes representative and voting power without moving tokens - 0.373ms
+  √ proposal preserves exact action bytes, text and all vote buckets - 1.122ms
+  √ execution and cancellation are retained as separate events - 0.718ms
+  √ missing mint history fails rather than fabricating a negative balance - 0.175ms
+  √ unknown proposal fails rather than hiding a missing event - 0.059ms
+  √ unrelated contract events are rejected - 0.032ms
+  √ invalid support is rejected - 0.272ms
+
+All 10 tests passed! 😎
+
+[Wed, 30 Sep 2026 10:20:08 +0200] Program executed in: 2.735s.
+
+> @mythical/dao-subgraph-pilot@0.1.0 build
+> graph codegen && graph build
+
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.1 to 0.0.2
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.2 to 0.0.3
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.3 to 0.0.4
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.4 to 0.0.5
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.5 to 0.0.6
+- Apply migrations
+  Skip migration: Bump manifest specVersion from 0.0.1 to 0.0.2
+- Apply migrations
+  Skip migration: Bump manifest specVersion from 0.0.2 to 0.0.4
+- Apply migrations
+✔ Apply migrations
+- Load subgraph from subgraph.yaml
+✔ Load subgraph from subgraph.yaml
+- Load contract ABIs
+  Load contract ABI from abis/Governor.json
+- Load contract ABIs
+  Load contract ABI from abis/MANA.json
+- Load contract ABIs
+✔ Load contract ABIs
+- Generate types for contract ABIs
+  Generate types for contract ABI: Governor (abis/Governor.json)
+- Generate types for contract ABIs
+  Generate types for contract ABI: MANA (abis/MANA.json)
+- Generate types for contract ABIs
+  Write types to generated/Governor/Governor.ts
+- Generate types for contract ABIs
+  Write types to generated/MANA/MANA.ts
+- Generate types for contract ABIs
+✔ Generate types for contract ABIs
+- Generate types for data source templates
+✔ Generate types for data source templates
+- Load data source template ABIs
+✔ Load data source template ABIs
+- Generate types for data source template ABIs
+✔ Generate types for data source template ABIs
+- Load GraphQL schema from schema.graphql
+✔ Load GraphQL schema from schema.graphql
+- Generate types for GraphQL schema
+  Write types to generated/schema.ts
+- Generate types for GraphQL schema
+✔ Generate types for GraphQL schema
+
+Types generated successfully
+
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.1 to 0.0.2
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.2 to 0.0.3
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.3 to 0.0.4
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.4 to 0.0.5
+- Apply migrations
+  Skip migration: Bump mapping apiVersion from 0.0.5 to 0.0.6
+- Apply migrations
+  Skip migration: Bump manifest specVersion from 0.0.1 to 0.0.2
+- Apply migrations
+  Skip migration: Bump manifest specVersion from 0.0.2 to 0.0.4
+- Apply migrations
+✔ Apply migrations
+- Load subgraph from subgraph.yaml
+✔ Load subgraph from subgraph.yaml
+- Compile subgraph
+  Compile data source: Governor => build/Governor/Governor.wasm
+- Compile subgraph
+  Compile data source: MANA => build/MANA/MANA.wasm
+- Compile subgraph
+✔ Compile subgraph
+- Write compiled subgraph to build/
+  Copy schema file build/schema.graphql
+- Write compiled subgraph to build/
+  Write subgraph file build/Governor/Governor.json
+- Write compiled subgraph to build/
+  Write subgraph file build/MANA/MANA.json
+- Write compiled subgraph to build/
+  Write subgraph manifest build/subgraph.yaml
+- Write compiled subgraph to build/
+✔ Write compiled subgraph to build/
+
+Build completed: build/subgraph.yaml

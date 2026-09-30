@@ -1,0 +1,12 @@
+
+> @mythical/dao-portal@0.1.0 test
+> vitest run tests/subgraph-comparison.test.mjs
+
+
+ RUN  v5.0.2 <workspace>/services/dao-portal
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  10:20:04
+   Duration  270ms (import 82%, transform 12%, tests 4%, worker 2%)

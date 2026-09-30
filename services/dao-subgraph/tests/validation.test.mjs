@@ -9,6 +9,8 @@ test('rejects wrong deployment, errors and an incorrect historical anchor', () =
   assert.throws(()=>validateMeta({...meta,hasIndexingErrors:true},cid), /INDEXING_ERRORS/);
   assert.throws(()=>validateMeta(meta,cid,50000001,'0xabc'), /ANCHOR/);
   assert.throws(()=>validateMeta(meta,cid,50000000,'0xdef'), /HASH/);
+  // Studio's number-based metadata may have no hash: never accept it as proof.
+  assert.throws(()=>validateMeta({...meta,block:{number:50000000,hash:null}},cid,50000000,'0xabc'), /HASH/);
   assert.throws(()=>validateMeta({...meta,block:{number:100}},cid), /NOT_READY/);
 });
 test('accepts only the exact Polygon source identities and start blocks', () => {

@@ -5,41 +5,51 @@
     "inputs": [
       {
         "type": "uint256",
-        "name": "proposalId"
+        "name": "proposalId",
+        "indexed": false
       },
       {
         "type": "address",
-        "name": "proposer"
+        "name": "proposer",
+        "indexed": false
       },
       {
         "type": "address[]",
-        "name": "targets"
+        "name": "targets",
+        "indexed": false
       },
       {
         "type": "uint256[]",
-        "name": "values"
+        "name": "values",
+        "indexed": false
       },
       {
         "type": "string[]",
-        "name": "signatures"
+        "name": "signatures",
+        "indexed": false
       },
       {
         "type": "bytes[]",
-        "name": "calldatas"
+        "name": "calldatas",
+        "indexed": false
       },
       {
         "type": "uint256",
-        "name": "voteStart"
+        "name": "voteStart",
+        "indexed": false
       },
       {
         "type": "uint256",
-        "name": "voteEnd"
+        "name": "voteEnd",
+        "indexed": false
       },
       {
         "type": "string",
-        "name": "description"
+        "name": "description",
+        "indexed": false
       }
-    ]
+    ],
+    "anonymous": false
   },
   {
     "name": "VoteCast",
@@ -52,21 +62,26 @@
       },
       {
         "type": "uint256",
-        "name": "proposalId"
+        "name": "proposalId",
+        "indexed": false
       },
       {
         "type": "uint8",
-        "name": "support"
+        "name": "support",
+        "indexed": false
       },
       {
         "type": "uint256",
-        "name": "weight"
+        "name": "weight",
+        "indexed": false
       },
       {
         "type": "string",
-        "name": "reason"
+        "name": "reason",
+        "indexed": false
       }
-    ]
+    ],
+    "anonymous": false
   },
   {
     "name": "ProposalExecuted",
@@ -74,9 +89,11 @@
     "inputs": [
       {
         "type": "uint256",
-        "name": "proposalId"
+        "name": "proposalId",
+        "indexed": false
       }
-    ]
+    ],
+    "anonymous": false
   },
   {
     "name": "ProposalCanceled",
@@ -84,8 +101,10 @@
     "inputs": [
       {
         "type": "uint256",
-        "name": "proposalId"
+        "name": "proposalId",
+        "indexed": false
       }
-    ]
+    ],
+    "anonymous": false
   }
 ]

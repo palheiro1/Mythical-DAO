@@ -1,13 +1,13 @@
 {
   "preparedAt": "2026-09-29",
-  "status": "prepared-and-tested-not-deployed",
-  "studioWalletLoginRequired": true,
-  "deploymentCID": null,
-  "queryEndpoint": null,
+  "status": "deployed-indexing-initial-comparison-passed",
+  "studioWalletLoginRequired": false,
+  "deploymentCID": "QmQ5GTG5cGpPDXc9duief12uyPsALnq569DJUY8PVvN7BW",
+  "queryEndpoint": "https://api.studio.thegraph.com/query/1762785/mythical-dao-pilot/v0.1.0",
   "graphCli": "0.98.1",
   "graphTs": "0.38.2",
   "matchstick": "0.6.0",
-  "validationTests": 5,
+  "validationTests": 8,
   "mappingTests": 10,
   "build": "passed",
   "files": [
@@ -25,11 +25,11 @@
     },
     {
       "file": "abis/MANA.json",
-      "sha256": "b04c380d08599f997571ada1f13845c27eb42ad57beb7283e83237b29653aa17"
+      "sha256": "c65537da86b3c661f49e8ae62b68f1bbc130ac558af49e9cefa315ca54fa9356"
     },
     {
       "file": "abis/Governor.json",
-      "sha256": "1037ddd1940571f5b242aebbed4966969937d1750ce0e25e3ed146b8d02d8b2b"
+      "sha256": "b6ab1f30a3bab33d1dc98ae0b7b78b65f5cc165a012ee1655d71be450b278a4d"
     },
     {
       "file": "schema.graphql",
@@ -41,7 +41,7 @@
     },
     {
       "file": "package.json",
-      "sha256": "051a164e983038e43315211bbc5836f1a54dd09415c9fefe3bdbba4a3d876cb9"
+      "sha256": "2c8dfda6b5f71f5af0c82240b73bbfab73de796272a75eb6fa64ec1277963d6a"
     },
     {
       "file": "package-lock.json",
@@ -50,6 +50,23 @@
     {
       "file": ".npmrc",
       "sha256": "5602bb233ec1478ef60941257e98dfa8a86c9aeb22a4705aeb4beb15605e8a40"
+    },
+    {
+      "file": "scripts/deploy-studio.mjs",
+      "sha256": "0bf960be5252908e93fdc547f3c7f349aaad24ff8e8e0ca339fc7fcd1d4b3bc7"
+    },
+    {
+      "file": "scripts/validation.mjs",
+      "sha256": "fd90bbafe03ca1c3ffedf8c145429a5014d53caa93112f05a45cf664db3be8e0"
     }
-  ]
+  ],
+  "deployedOn": "2026-09-30",
+  "studioSlug": "mythical-dao-pilot",
+  "studioVersion": "v0.1.0",
+  "portalComparatorTests": 3,
+  "publishedOnChain": false,
+  "portalBackend": "D1",
+  "comparisonEvidence": "evidence/comparison-2026-09-30.json",
+  "studioPolygonQueryEndDate": "2026-10-08",
+  "historicalEntityRetentionVerified": false
 }

@@ -1,7 +1,7 @@
 import { test, expect } from "vitest";
 import { encodeEventTopics, encodeAbiParameters } from "viem";
 import { readFileSync } from "node:fs";
-import { fromLog } from "../scripts/compare-subgraph.mjs";
+import { fromLog, comparisonRpcUrls } from "../scripts/compare-subgraph.mjs";
 const abi = JSON.parse(
   readFileSync(
     new URL("../../dao-subgraph/abis/Governor.json", import.meta.url),
@@ -9,6 +9,21 @@ const abi = JSON.parse(
 );
 const governor = "0x7b9e327748462f1038c9d081c98d189b22c60a27";
 const member = "0x0000000000000000000000000000000000000001";
+test("Infura comparison requires explicit opt-in and a local key", () => {
+  const env = { INFURA_API_KEY: "test-only-not-a-real-key" };
+  expect(comparisonRpcUrls(env)[0]).toBe("https://polygon.drpc.org");
+  expect(comparisonRpcUrls(env, true)).toEqual([
+    `https://polygon-mainnet.infura.io/v3/${env.INFURA_API_KEY}`,
+    "https://tenderly.rpc.polygon.community",
+  ]);
+  expect(() => comparisonRpcUrls({}, true)).toThrow("INFURA_KEY_REQUIRED");
+  expect(() =>
+    comparisonRpcUrls({ INFURA_API_KEY: "key?injected=value" }, true),
+  ).toThrow("INFURA_KEY_REQUIRED");
+  expect(
+    comparisonRpcUrls({ GRAPH_RPC_PRIMARY: "https://example.com" })[0],
+  ).toBe("https://example.com");
+});
 function log(name, args) {
   const event = abi.find((e) => e.name === name);
   return {

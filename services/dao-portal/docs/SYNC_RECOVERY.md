@@ -1,5 +1,7 @@
 # Recuperação do sync e validação — 29 de setembro de 2026
 
+Atualização posterior: o piloto The Graph foi implantado em 30 de setembro; ver [estado e primeiras comparações](../../dao-subgraph/DEPLOYMENT.md). O relatório abaixo preserva as observações de 29 de setembro.
+
 Worker atual: `851124ed-f7f3-46bd-a668-6c1eaa5f8609`, publicado em staging. A primeira publicação da correção foi `4d2779cd-9bb5-428c-973a-3183049b5068`; a segunda acrescenta reutilização do head dentro do mesmo pedido e diagnóstico sanitizado de falhas RPC. O frontend continua com o bundle `index-C9tIGjEp.js`; não foi necessário republicá-lo.
 
 ## Diagnóstico comprovado

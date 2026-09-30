@@ -46,14 +46,46 @@ const lower = (value) =>
   typeof value === "string" && value.startsWith("0x")
     ? value.toLowerCase()
     : value;
-async function agree(pair, fn) {
+export function comparisonRpcUrls(env, useInfura = false) {
+  if (useInfura)
+    requireValue(
+      /^[a-zA-Z0-9_-]{20,128}$/.test(env.INFURA_API_KEY || ""),
+      "INFURA_KEY_REQUIRED",
+    );
+  return [
+    env.GRAPH_RPC_PRIMARY ||
+      (useInfura
+        ? `https://polygon-mainnet.infura.io/v3/${env.INFURA_API_KEY}`
+        : "https://polygon.drpc.org"),
+    env.GRAPH_RPC_SECONDARY || "https://tenderly.rpc.polygon.community",
+  ];
+}
+function pacedFetch() {
+  let pending = Promise.resolve(),
+    last = 0;
+  return (url, options) => {
+    const next = pending.then(async () => {
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.max(0, 1100 - (Date.now() - last))),
+      );
+      last = Date.now();
+      return fetch(url, options);
+    });
+    pending = next.then(
+      () => {},
+      () => {},
+    );
+    return next;
+  };
+}
+async function agree(pair, fn, stage = "RPC") {
   const responses = await Promise.allSettled(pair.map(fn));
   requireValue(
     responses.every((r) => r.status === "fulfilled"),
-    "RPC_READ_FAILED",
+    `${stage}_READ_FAILED`,
   );
   const [a, b] = responses.map((r) => r.value);
-  requireValue(stable(a) === stable(b), "RPC_DIVERGENCE");
+  requireValue(stable(a) === stable(b), `${stage}_DIVERGENCE`);
   return a;
 }
 export function fromLog(log) {
@@ -128,10 +160,10 @@ async function run() {
     endpoint && expected,
     "Set GRAPH_PILOT_URL and GRAPH_PILOT_DEPLOYMENT after Studio deployment.",
   );
-  const urls = [
-    process.env.GRAPH_RPC_PRIMARY || "https://polygon.drpc.org",
-    process.env.GRAPH_RPC_SECONDARY || "https://tenderly.rpc.polygon.community",
-  ];
+  const urls = comparisonRpcUrls(
+    process.env,
+    process.argv.includes("--infura"),
+  );
   requireValue(
     urls.every((u) => new URL(u).protocol === "https:") &&
       new URL(urls[0]).hostname !== new URL(urls[1]).hostname,
@@ -139,11 +171,19 @@ async function run() {
   );
   const pair = urls.map((url) =>
     createPublicClient({
-      transport: http(url, { timeout: 15000, retryCount: 1 }),
+      transport: http(url, {
+        timeout: 15000,
+        retryCount: 1,
+        // Keep this bounded manual check below Infura Free's request budget.
+        fetchFn:
+          new URL(url).hostname === "polygon-mainnet.infura.io"
+            ? pacedFetch()
+            : undefined,
+      }),
     }),
   );
   requireValue(
-    (await agree(pair, (c) => c.getChainId())) === 137,
+    (await agree(pair, (c) => c.getChainId(), "RPC_CHAIN")) === 137,
     "WRONG_CHAIN",
   );
   const heads = await Promise.all(
@@ -161,22 +201,30 @@ async function run() {
       ? BigInt(latest._meta.block.number)
       : confirmed,
   );
-  const hash = await agree(pair, async (c) =>
-    (await c.getBlock({ blockNumber: BigInt(anchor) })).hash.toLowerCase(),
+  const hash = await agree(
+    pair,
+    async (c) =>
+      (await c.getBlock({ blockNumber: BigInt(anchor) })).hash.toLowerCase(),
+    "RPC_ANCHOR",
   );
+  // Graph Node returns a null _meta.block.hash for number-based queries.
+  // Pin every entity read to the canonical hash agreed by both RPCs instead.
   const anchored = await query(
-    `query($block:Int!){ _meta(block:{number:$block}) {deployment hasIndexingErrors block{number hash}} pilotStats(id:"137",block:{number:$block}) {${statsFields}} }`,
-    { block: anchor },
+    `query($hash:Bytes!){ _meta(block:{hash:$hash}) {deployment hasIndexingErrors block{number hash}} pilotStats(id:"137",block:{hash:$hash}) {${statsFields}} }`,
+    { hash },
   );
   validateMeta(anchored._meta, expected, anchor, hash);
   validateSources(anchored.pilotStats);
-  const supply = await agree(pair, (c) =>
-    c.readContract({
-      address: MANA,
-      abi: manaAbi,
-      functionName: "totalSupply",
-      blockNumber: BigInt(anchor),
-    }),
+  const supply = await agree(
+    pair,
+    (c) =>
+      c.readContract({
+        address: MANA,
+        abi: manaAbi,
+        functionName: "totalSupply",
+        blockNumber: BigInt(anchor),
+      }),
+    "RPC_SUPPLY",
   );
   requireValue(
     String(supply) === anchored.pilotStats.totalSupply,
@@ -186,25 +234,29 @@ async function run() {
   const accountChecks = [];
   for (const member of members) {
     const data = await query(
-      "query($id:Bytes!,$block:Int!){manaAccount(id:$id,block:{number:$block}){balance votingPower delegate}}",
-      { id: member, block: anchor },
+      "query($id:Bytes!,$hash:Bytes!){manaAccount(id:$id,block:{hash:$hash}){balance votingPower delegate}}",
+      { id: member, hash },
     );
-    const actual = await agree(pair, async (c) => {
-      const values = [];
-      for (const fn of ["balanceOf", "getVotes", "delegates"])
-        values.push(
-          String(
-            await c.readContract({
-              address: MANA,
-              abi: manaAbi,
-              functionName: fn,
-              args: [member],
-              blockNumber: BigInt(anchor),
-            }),
-          ).toLowerCase(),
-        );
-      return values;
-    });
+    const actual = await agree(
+      pair,
+      async (c) => {
+        const values = [];
+        for (const fn of ["balanceOf", "getVotes", "delegates"])
+          values.push(
+            String(
+              await c.readContract({
+                address: MANA,
+                abi: manaAbi,
+                functionName: fn,
+                args: [member],
+                blockNumber: BigInt(anchor),
+              }),
+            ).toLowerCase(),
+          );
+        return values;
+      },
+      "RPC_ACCOUNT",
+    );
     const indexed = data.manaAccount || {
       balance: "0",
       votingPower: "0",
@@ -234,25 +286,28 @@ async function run() {
       pending.push({ address, from, to });
       continue;
     }
-    const onChain = await agree(pair, async (c) =>
-      (
-        await c.getLogs({
-          address,
-          fromBlock: BigInt(from),
-          toBlock: BigInt(to),
-        })
-      )
-        .map(fromLog)
-        .filter(Boolean)
-        .sort((a, b) => a.eventKey.localeCompare(b.eventKey)),
+    const onChain = await agree(
+      pair,
+      async (c) =>
+        (
+          await c.getLogs({
+            address,
+            fromBlock: BigInt(from),
+            toBlock: BigInt(to),
+          })
+        )
+          .map(fromLog)
+          .filter(Boolean)
+          .sort((a, b) => a.eventKey.localeCompare(b.eventKey)),
+      "RPC_EVENT_SAMPLE",
     );
     const rows = await pagedEvents(
       (vars) =>
         query(
-          `query($block:Int!,$address:Bytes!,$from:BigInt!,$to:BigInt!,$after:Bytes!){eventRecords(first:500,orderBy:id,orderDirection:asc,block:{number:$block},where:{contract:$address,blockNumber_gte:$from,blockNumber_lte:$to,id_gt:$after}){${eventFields}}}`,
+          `query($hash:Bytes!,$address:Bytes!,$from:BigInt!,$to:BigInt!,$after:Bytes!){eventRecords(first:500,orderBy:id,orderDirection:asc,block:{hash:$hash},where:{contract:$address,blockNumber_gte:$from,blockNumber_lte:$to,id_gt:$after}){${eventFields}}}`,
           vars,
         ),
-      { block: anchor, address, from: String(from), to: String(to) },
+      { hash, address, from: String(from), to: String(to) },
     );
     rows.sort((a, b) => a.eventKey.localeCompare(b.eventKey));
     requireValue(
@@ -275,14 +330,17 @@ async function run() {
     checked.push({ address, from, to, events: rows.length });
   }
   requireValue(
-    (await agree(pair, async (c) =>
-      (await c.getBlock({ blockNumber: BigInt(anchor) })).hash.toLowerCase(),
+    (await agree(
+      pair,
+      async (c) =>
+        (await c.getBlock({ blockNumber: BigInt(anchor) })).hash.toLowerCase(),
+      "RPC_FINAL_ANCHOR",
     )) === hash,
     "ANCHOR_CHANGED",
   );
   const finalMeta = await query(
-    "query($block:Int!){_meta(block:{number:$block}){deployment hasIndexingErrors block{number hash}}}",
-    { block: anchor },
+    "query($hash:Bytes!){_meta(block:{hash:$hash}){deployment hasIndexingErrors block{number hash}}}",
+    { hash },
   );
   validateMeta(finalMeta._meta, expected, anchor, hash);
   return {

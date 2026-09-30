@@ -10,6 +10,7 @@ Portal sobre o Governor e a tesouraria atuais da Polygon, com um módulo opciona
 - [Manifesto ativo](services/dao-portal/deployments/polygon.json)
 - [Recuperação do sync e validação atual](services/dao-portal/docs/SYNC_RECOVERY.md)
 - [Piloto The Graph — Governor e MANA](services/dao-subgraph/README.md)
+- [Implantação do piloto no Studio e primeiras comparações](services/dao-subgraph/DEPLOYMENT.md)
 - [Pacote para revisão independente do ragequit](services/dao-portal/docs/INDEPENDENT_REVIEW_BRIEF.md)
 
 O [portal de teste está publicado](https://dao-preview.mythicalbeings.io), com governação verificada por operação e sincronização histórica ainda em curso. A revisão independente/implantação do módulo, a autorização pela DAO e a pequena saída real continuam pendentes. Não houve transações públicas nem mudança de serviço Telegram.

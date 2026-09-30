@@ -15,9 +15,11 @@
       },
       {
         "type": "uint256",
-        "name": "value"
+        "name": "value",
+        "indexed": false
       }
-    ]
+    ],
+    "anonymous": false
   },
   {
     "name": "Transfer",
@@ -35,9 +37,11 @@
       },
       {
         "type": "uint256",
-        "name": "value"
+        "name": "value",
+        "indexed": false
       }
-    ]
+    ],
+    "anonymous": false
   },
   {
     "name": "DelegateChanged",
@@ -58,7 +62,8 @@
         "name": "toDelegate",
         "indexed": true
       }
-    ]
+    ],
+    "anonymous": false
   },
   {
     "name": "DelegateVotesChanged",
@@ -71,12 +76,15 @@
       },
       {
         "type": "uint256",
-        "name": "previousVotes"
+        "name": "previousVotes",
+        "indexed": false
       },
       {
         "type": "uint256",
-        "name": "newVotes"
+        "name": "newVotes",
+        "indexed": false
       }
-    ]
+    ],
+    "anonymous": false
   }
 ]
