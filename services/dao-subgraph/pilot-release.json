@@ -1,6 +1,6 @@
 {
   "preparedAt": "2026-09-29",
-  "status": "published-network-readiness-pending-verification",
+  "status": "network-query-verified-portal-integration-pending",
   "studioWalletLoginRequired": false,
   "deploymentCID": "QmQ5GTG5cGpPDXc9duief12uyPsALnq569DJUY8PVvN7BW",
   "queryEndpoint": "https://api.studio.thegraph.com/query/1762785/mythical-dao-pilot/v0.1.0",
@@ -74,12 +74,26 @@
   "subgraphId": "56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
   "publicationTransaction": "0x116d6f23463cca98b2dbfcf95dff6859df37e02e55644240ba2f6bb4b6938f99",
   "publicationEvidence": "evidence/network-publication-2026-09-30.json",
-  "latestComparisonEvidence": "evidence/governor-reconciliation-2026-09-30.json",
+  "latestComparisonEvidence": "evidence/gateway-comparison-2026-09-30.json",
   "queryEndpointKind": "studio-development",
-  "networkQueryAvailability": "not-yet-verified",
+  "networkQueryAvailability": "verified",
   "networkQueryEndpoint": "https://gateway.thegraph.com/api/subgraphs/id/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
   "networkQueryAuthentication": "Authorization: Bearer GRAPH_API_KEY",
-  "queryCredentialStatus": "not-created-zero-cap-rejected-studio-session-unavailable",
-  "validatedAt": "2026-09-30T09:35:58.191Z",
-  "fullHistoryVerified": false
+  "queryCredentialStatus": "stored-locally-and-worker-subgraph-restriction-pending",
+  "validatedAt": "2026-09-30T09:53:06.876Z",
+  "fullHistoryVerified": false,
+  "studioCaughtUpAt": "2026-09-30T09:45:40.315Z",
+  "studioCaughtUpConfirmedBlock": 94704178,
+  "networkQueryVerificationEvidence": "evidence/gateway-comparison-2026-09-30.json",
+  "queryKeyName": "Mythical DAO pilot server",
+  "queryPlan": "Free Plan",
+  "monthlyFreeQueries": 100000,
+  "perKeySpendingCapUSD": null,
+  "querySubgraphRestriction": "pending-studio-selector-empty",
+  "workerSecret": {
+    "name": "GRAPH_API_KEY",
+    "worker": "mythical-dao-portal-staging",
+    "configured": true,
+    "usedByRuntime": false
+  }
 }
