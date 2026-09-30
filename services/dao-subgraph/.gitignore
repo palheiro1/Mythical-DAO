@@ -7,3 +7,6 @@ build/
 .graphclient/
 tests/.bin/
 tests/.latest.json
+
+.task-reorg/
+reorg.manifest.yaml

@@ -89,3 +89,11 @@ The first Gateway metadata/statistics request completed in approximately **525 m
 The key was transferred through a short-lived loopback password form, without printing it or placing it in shell arguments. The form server exited after saving; the temporary clipboard value was cleared and its tab closed. `services/dao-subgraph/.env` and `services/dao-portal/.dev.vars` are ignored by Git and have mode `600`. `wrangler secret put` stored `GRAPH_API_KEY` in `mythical-dao-portal-staging`; a separate secret listing confirmed the binding and preserved the three existing RPC/Infura secrets. No frontend credential was added. Updating the secret creates a Worker version using its existing code; the runtime still uses D1/RPC and does not query Graph.
 
 **Remaining credential issue:** Studio's `Restrict to a Subgraph` selector returned an empty list for the project name, exact network subgraph ID and a name prefix, including after a page reload. The key currently has no provider-side subgraph restriction. The user was asked to try the visible selector; do not report this restriction as enabled until its saved state is verified. The CLI itself only sends the key to the fixed approved Gateway URL. Full-history omission checks, controlled reorg/retention acceptance and runtime integration also remain pending; no D1 rows or cursors were changed.
+
+## Full entity validation and comparison-only integration — 30 September
+
+[Entity evidence](evidence/entity-comparison-2026-09-30.json): all 73 indexed accounts, 44 positive balances, total supply and both proposals matched two independent RPCs at block 94,706,303. The existing ten Governor events and both D1 proposal rows also matched. This extends earlier samples without marking full-history omission or Graph Node reorg acceptance complete.
+
+The user added `*.mythicalbeings.io` as the only allowed domain. A no-Origin Gateway query was denied; a query with the fixed preview Origin passed. The shared CLI/Worker reader now sends that Origin and retains its exact destination restriction. The provider's **subgraph** restriction remains pending.
+
+The [Worker integration](../dao-portal/docs/GRAPH_COMPARISON.md) is comparison-only and defaults off. Its table is additive, requests are quota/lease bounded and `/api/graph-status` is read-only. D1/RPC remain the serving backend and signing authority.

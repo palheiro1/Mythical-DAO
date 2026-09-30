@@ -10,3 +10,9 @@ RPC_SECONDARY_URL=https://tenderly.rpc.polygon.community
 # INDEX_RPC_SECONDARY_URL=https://tenderly.rpc.polygon.community
 # INDEX_BATCH_BLOCKS=5000
 # INFURA_DAILY_CREDITS=2400000
+
+# Optional private Graph query key (never a VITE_ variable).
+# GRAPH_API_KEY=your_query_key
+# Comparison remains off until provider-side subgraph restriction is verified.
+# GRAPH_COMPARE_MODE=off
+# GRAPH_SUBGRAPH_RESTRICTED=false

@@ -1,6 +1,14 @@
 import { readFileSync, writeFileSync, statSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-import { createPublicClient, http, decodeEventLog, parseAbi } from "viem";
+import {
+  createPublicClient,
+  http,
+  decodeEventLog,
+  parseAbi,
+  encodeAbiParameters,
+  keccak256,
+  stringToHex,
+} from "viem";
 import {
   GOVERNOR,
   MANA,
@@ -11,6 +19,9 @@ import {
   pagedEvents,
   comparableEvent,
   queryConnection,
+  pilotSnapshotQuery,
+  validatePilotSnapshot,
+  verifyPilotEntities,
 } from "../../dao-subgraph/scripts/validation.mjs";
 
 const ROOT = new URL("../../dao-subgraph/", import.meta.url);
@@ -543,6 +554,104 @@ async function run() {
       governorInventory.d1 = reconcileD1Governor(rows, d1Rows, anchor);
     }
   }
+  let entityInventory;
+  if (process.argv.includes("--entities")) {
+    const snapshot = validatePilotSnapshot(
+      await query(pilotSnapshotQuery, { hash }),
+      anchor,
+      hash,
+    );
+    entityInventory = await verifyPilotEntities(
+      snapshot,
+      (id) =>
+        agree(
+          pair,
+          async (c) => {
+            const values = [];
+            for (const functionName of ["balanceOf", "getVotes", "delegates"])
+              values.push(
+                String(
+                  await c.readContract({
+                    address: MANA,
+                    abi: manaAbi,
+                    functionName,
+                    args: [id],
+                    blockNumber: BigInt(anchor),
+                  }),
+                ).toLowerCase(),
+              );
+            return {
+              balance: values[0],
+              votingPower: values[1],
+              delegate: values[2],
+            };
+          },
+          "RPC_ALL_ACCOUNTS",
+        ),
+      (p) =>
+        agree(
+          pair,
+          async (c) => {
+            const params = {
+              address: GOVERNOR,
+              abi: parseAbi([
+                "function state(uint256) view returns(uint8)",
+                "function proposalSnapshot(uint256) view returns(uint256)",
+                "function proposalDeadline(uint256) view returns(uint256)",
+                "function proposalVotes(uint256) view returns(uint256,uint256,uint256)",
+              ]),
+              args: [BigInt(p.proposalId)],
+              blockNumber: BigInt(anchor),
+            };
+            const state = await c.readContract({
+              ...params,
+              functionName: "state",
+            });
+            const voteStart = await c.readContract({
+              ...params,
+              functionName: "proposalSnapshot",
+            });
+            const voteEnd = await c.readContract({
+              ...params,
+              functionName: "proposalDeadline",
+            });
+            const votes = await c.readContract({
+              ...params,
+              functionName: "proposalVotes",
+            });
+            const digest = keccak256(
+              encodeAbiParameters(
+                [
+                  { type: "address[]" },
+                  { type: "uint256[]" },
+                  { type: "bytes[]" },
+                  { type: "bytes32" },
+                ],
+                [
+                  p.targets,
+                  p.values.map(BigInt),
+                  p.calldatas,
+                  keccak256(stringToHex(p.description)),
+                ],
+              ),
+            );
+            return {
+              proposalId: String(BigInt(digest)),
+              voteStart: String(voteStart),
+              voteEnd: String(voteEnd),
+              votes: votes.map(String),
+              executed: state === 7,
+              canceled: state === 2,
+            };
+          },
+          "RPC_ALL_PROPOSALS",
+        ),
+    );
+    entityInventory.holders = snapshot.pilotStats.holders;
+    entityInventory.supply = snapshot.pilotStats.totalSupply;
+    entityInventory.limitation =
+      "Every returned account and proposal checked; balance conservation and holder count checked. Does not prove absence of omitted event blocks.";
+  }
   requireValue(
     (await agree(
       pair,
@@ -571,6 +680,7 @@ async function run() {
     checked,
     pending,
     governorInventory,
+    entityInventory,
     limitation:
       "Sample verification only; not a full-history or reorg acceptance test. The portal remains on D1.",
   };

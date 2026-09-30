@@ -1,3 +1,4 @@
+import { graphComparisonStatus, runGraphComparison } from "./graph-comparison";
 import { simulateActions } from "./simulation";
 import { isAddress, isHex, type Address, type Hex } from "viem";
 import { redeemPreview } from "./ragequit";
@@ -63,6 +64,8 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return json({ error: "Origin not allowed" }, 403);
   if (path === "/api/openapi.json") return json(openapi);
   if (path === "/api/config") return json(cfg);
+  if (path === "/api/graph-status" && request.method === "GET")
+    return json(await graphComparisonStatus(env));
   if (path === "/api/history/snapshot") {
     const before = Number(
       url.searchParams.get("before") ?? Number.MAX_SAFE_INTEGER,
@@ -588,6 +591,12 @@ export default {
     }
   },
   scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(indexChain(env));
+    ctx.waitUntil(
+      indexChain(env)
+        .then(() => runGraphComparison(env))
+        .catch(() => {
+          console.error(JSON.stringify({ event: "scheduled_task_failed" }));
+        }),
+    );
   },
 } satisfies ExportedHandler<Env>;

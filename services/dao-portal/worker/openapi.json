@@ -523,6 +523,16 @@
           }
         }
       }
+    },
+    "/api/graph-status": {
+      "get": {
+        "summary": "Read comparison-only Graph pilot diagnostics; never triggers a query or changes the active data source",
+        "responses": {
+          "200": {
+            "description": "Disabled, pending, stale or latest sanitized comparison; D1/RPC remains active"
+          }
+        }
+      }
     }
   },
   "components": {

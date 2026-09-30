@@ -74,13 +74,13 @@
   "subgraphId": "56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
   "publicationTransaction": "0x116d6f23463cca98b2dbfcf95dff6859df37e02e55644240ba2f6bb4b6938f99",
   "publicationEvidence": "evidence/network-publication-2026-09-30.json",
-  "latestComparisonEvidence": "evidence/gateway-comparison-2026-09-30.json",
+  "latestComparisonEvidence": "evidence/entity-comparison-2026-09-30.json",
   "queryEndpointKind": "studio-development",
   "networkQueryAvailability": "verified",
   "networkQueryEndpoint": "https://gateway.thegraph.com/api/subgraphs/id/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
   "networkQueryAuthentication": "Authorization: Bearer GRAPH_API_KEY",
   "queryCredentialStatus": "stored-locally-and-worker-subgraph-restriction-pending",
-  "validatedAt": "2026-09-30T09:53:06.876Z",
+  "validatedAt": "2026-09-30T10:43:00.017Z",
   "fullHistoryVerified": false,
   "studioCaughtUpAt": "2026-09-30T09:45:40.315Z",
   "studioCaughtUpConfirmedBlock": 94704178,
@@ -95,5 +95,27 @@
     "worker": "mythical-dao-portal-staging",
     "configured": true,
     "usedByRuntime": false
+  },
+  "entityValidation": {
+    "accounts": 73,
+    "holders": 44,
+    "proposals": 2,
+    "allReturnedEntitiesVerified": true,
+    "fullHistoryVerified": false,
+    "anchor": 94706303
+  },
+  "queryDomainRestriction": {
+    "userConfiguredPattern": "*.mythicalbeings.io",
+    "testedOrigin": "https://dao-preview.mythicalbeings.io",
+    "requestWithoutOrigin": "rejected",
+    "requestWithOrigin": "passed"
+  },
+  "portalIntegration": {
+    "mode": "off",
+    "implementation": "comparison-only",
+    "documentation": "../dao-portal/docs/GRAPH_COMPARISON.md",
+    "graphNodeReorgAcceptance": "pending",
+    "workerVersion": "8d7985fa-e647-4a45-8c38-2a8d4a5893fd",
+    "previewEvidence": "../dao-portal/docs/evidence/graph-comparison-preview-2026-09-30.json"
   }
 }

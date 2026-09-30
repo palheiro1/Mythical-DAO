@@ -14,6 +14,8 @@ Atualização: [portal de teste publicado no domínio próprio](https://dao-prev
 
 O [pacote do módulo para revisão](../deployments/ragequit-release/README.md) inclui ABI, código de criação sem assinatura, argumentos e hashes verificados contra as fontes compiladas. A simulação do construtor concordou em dois RPCs no bloco 94644367. O ensaio completo do Governor real passou novamente no fork do bloco 94644170. Revisão independente e implantação pública continuam pendentes.
 
+30 de setembro: [integração de comparação The Graph](GRAPH_COMPARISON.md) preparada e desligada. Validação real de 73 contas MANA, oferta/soma dos saldos e ambas as propostas passou em dois RPCs; 117 testes do portal passaram. Restrição por domínio verificada e cliente adaptado. A restrição ao subgraph, prova de ausência de omissões no histórico e ensaio de reorg no Graph Node continuam pendentes; D1/RPC mantêm-se ativos.
+
 ## Implementado
 
 29 de setembro: [indicador visual de sincronização publicado](SYNC_STATUS.md), com cobertura global e por fonte, atualização automática, erro/indisponibilidade distintos e última atualização. Diagnóstico Infura sanitizado e correção reproduzida do timeout que era anulado pelo sinal de isolamento de pedidos. Tipos/build, 74 testes de dados e oito verificações de browser passaram; sincronização histórica ainda em curso.
