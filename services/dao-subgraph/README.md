@@ -2,7 +2,7 @@
 
 Pilot for the existing Polygon Governor and MANA. **Published to [The Graph Network](https://thegraph.com/explorer/subgraphs/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb?view=Query&chain=arbitrum-one) as `v0.1.0` on 2026-09-30.** Publication is registered on Arbitrum One; indexed contracts remain on Polygon. It is not an active portal backend. Cloudflare D1, its history/cursors and the Telegram service continue operating unchanged. MANA and the first Governor sample passed comparison with two independent RPCs; full history, the later Governor sample and Gateway availability remain pending. See the [deployment report](DEPLOYMENT.md) and [release record](pilot-release.json).
 
-**Service deadline:** The Graph announced that Polygon staging queries end on **2026-10-08**. Network publication is complete; a working Gateway endpoint and the remaining validation are still required before any portal cutover. The local comparator currently uses the Studio development endpoint. No paid plan was activated. [Official announcement, 2026-09-24](https://thegraph.com/blog/subgraph-studio-traffic-to-network/).
+**Service deadline:** The Graph announced that Polygon staging queries end on **2026-10-08**. Network publication is complete; a working Gateway endpoint and the remaining validation are still required before any portal cutover. The local comparator uses Studio by default and supports an explicit authenticated Gateway check with `--gateway`. No paid plan was activated. [Official announcement, 2026-09-24](https://thegraph.com/blog/subgraph-studio-traffic-to-network/).
 
 ## Scope
 
@@ -63,6 +63,28 @@ The script checks chain 137, two distinct HTTPS RPC hosts, close heads, the subg
 Exit `0` means these samples passed, **not full-history acceptance**. Exit `2` means the available anchored data passed but some sample ranges are still ahead of the index. Exit `1` means configuration, provider or comparison failure. Optional `GRAPH_REPORT_PATH` writes a report without endpoints/keys. `GRAPH_RPC_PRIMARY` and `GRAPH_RPC_SECONDARY` can override the default independent public RPCs.
 
 Pagination is bounded and fails rather than silently truncating; GraphQL errors also fail. Do not continuously poll this full comparison. Studio development endpoints currently have a 3,000-query/day limit; monitor progress in Studio and compare at milestones. The code does not assume a published-network free query allowance applies to Studio.
+
+### Gateway and Governor reconciliation
+
+Store the dedicated query credential as `GRAPH_API_KEY` in the ignored `.env`, separately from `GRAPH_DEPLOY_KEY`. Restrict the key to subgraph `56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb`. Keep the account on the Free Plan; do not upgrade billing to complete the pilot. Studio rejected a per-key spending cap of `0 USD` during setup, so that cap must not be reported as configured. Confirm the account's actual free-plan state before completing credential setup.
+
+```sh
+node --env-file=.env --env-file=../dao-portal/.dev.vars scripts/compare.mjs --infura --gateway --governor-events
+```
+
+`--gateway` uses the fixed network endpoint with an `Authorization: Bearer` header. The credential is never put in the URL; redirects and other destinations are rejected. Responses are streamed with a 4 MB limit and a 30-second timeout. Transport, malformed JSON, HTTP and GraphQL failures return sanitized error codes. There is no automatic fallback to Studio and no change to the portal's backend.
+
+`--governor-events` verifies every Governor event returned at the agreed anchor against both RPCs, including all four supported Governor event types in each discovered block, canonical block hashes and proposal bytes. It cross-checks event counts with pilot statistics. Verification is bounded to 2,500 events and 100 distinct event blocks and fails if a bound is reached. This does not discover omitted events in completely absent blocks and therefore **does not establish complete history**.
+
+To compare existing D1 data, first export only the four Governor event types with a read-only Wrangler query from `services/dao-portal`:
+
+```sh
+./node_modules/.bin/wrangler d1 execute DAO_DB --env staging --remote --json --command "SELECT chain_id,contract,block_number,block_hash,tx_hash,log_index,event_name,args_json FROM events WHERE chain_id=137 AND contract='0x7b9e327748462f1038c9d081c98d189b22c60a27' AND event_name IN ('ProposalCreated','VoteCast','ProposalExecuted','ProposalCanceled') ORDER BY block_number,log_index LIMIT 2501" > /tmp/mythical-d1-governor.json
+```
+
+Then set `GRAPH_D1_EVENTS_PATH=/tmp/mythical-d1-governor.json` on the comparison command. Existing D1 events at or below the anchor must all match; events ahead of the anchor are reported separately. Graph events not yet present in D1 are counted without importing them or advancing cursors. D1 does not store transaction index, so that field is checked against the two RPCs instead. The export limit includes one extra row to detect truncation.
+
+The generated nullable-string setter stores an empty `VoteCast.reason` as `null`. The comparator treats only this field on this event as equivalent to the contract's empty string; non-empty text must still match exactly. Event mismatches report bounded event keys and field names, without credentials or full response bodies.
 
 Studio's displayed percentage uses the absolute Polygon block height. Pilot history coverage is `(indexedBlock - 45785116 + 1) / (targetBlock - 45785116 + 1)`, clamped to 0–100%; it measures blocks covered, not event completeness or remaining time. Indexing runs remotely and continues with the local computer switched off.
 

@@ -1,0 +1,89 @@
+{
+  "checkedAt": "2026-09-30T09:35:58.191Z",
+  "deployment": "QmQ5GTG5cGpPDXc9duief12uyPsALnq569DJUY8PVvN7BW",
+  "endpointKind": "studio-development",
+  "status": "samples-passed",
+  "anchor": 89532857,
+  "hash": "0x657ded29f2df26349b78a62daad62b78ed61628f2be27650c32494087a176717",
+  "latestIndexedBlock": 89532857,
+  "confirmedHead": "94703788",
+  "stats": {
+    "chainId": 137,
+    "governor": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+    "mana": "0x2cacca1266653bb090d3fb511456ebca33150562",
+    "governorStartBlock": "48674443",
+    "manaStartBlock": "45785116",
+    "totalSupply": "1000000000000000000000000",
+    "holders": "43",
+    "proposals": "2",
+    "votes": "6",
+    "transfers": "305"
+  },
+  "accountChecks": [
+    {
+      "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "balance": "91875700000000000000000",
+      "votingPower": "0",
+      "delegate": "0x0000000000000000000000000000000000000000"
+    },
+    {
+      "address": "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9",
+      "balance": "33669936971428589697113",
+      "votingPower": "33669936971428589697113",
+      "delegate": "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9"
+    }
+  ],
+  "checked": [
+    {
+      "address": "0x2cacca1266653bb090d3fb511456ebca33150562",
+      "from": 45785116,
+      "to": 45790115,
+      "events": 8
+    },
+    {
+      "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "from": 58427770,
+      "to": 58432769,
+      "events": 1
+    },
+    {
+      "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "from": 89169940,
+      "to": 89174939,
+      "events": 1
+    }
+  ],
+  "pending": [],
+  "governorInventory": {
+    "status": "indexed-events-verified",
+    "events": 10,
+    "counts": {
+      "ProposalCreated": 2,
+      "VoteCast": 6,
+      "ProposalExecuted": 2,
+      "ProposalCanceled": 0
+    },
+    "blocks": [
+      58427770,
+      58544373,
+      58560692,
+      58628044,
+      58635761,
+      58663809,
+      58984871,
+      89169940,
+      89223445,
+      89532760
+    ],
+    "completeHistoryVerified": false,
+    "limitation": "Verifies every indexed Governor event and all Governor events in those blocks. Does not discover events omitted from entirely absent blocks. Optional D1 reconciliation is reported separately.",
+    "d1": {
+      "matched": 2,
+      "aheadOfAnchor": 0,
+      "indexedEventsNotInD1": 8,
+      "completeHistoryVerified": false,
+      "transactionIndexStoredInD1": false
+    }
+  },
+  "limitation": "Sample verification only; not a full-history or reorg acceptance test. The portal remains on D1."
+}
