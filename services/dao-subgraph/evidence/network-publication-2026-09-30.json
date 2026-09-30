@@ -1,0 +1,46 @@
+{
+  "verifiedAt": "2026-09-30T08:54:20.311Z",
+  "publishedAt": "2026-09-30T08:49:12.000Z",
+  "network": "arbitrum-one",
+  "chainId": 42161,
+  "verificationProviders": [
+    "Arbitrum official RPC",
+    "dRPC"
+  ],
+  "transaction": {
+    "hash": "0x116d6f23463cca98b2dbfcf95dff6859df37e02e55644240ba2f6bb4b6938f99",
+    "from": "0x86708d2cc6c45c82ee8a0894d7bcf24c809d4c43",
+    "to": "0xec9a7fb6cbc2e41926127929c2dce6e9c5d33bec",
+    "function": "publishNewSubgraph",
+    "valueWei": "0",
+    "status": "success",
+    "blockNumber": "510297306",
+    "blockHash": "0x053771426cf291e781b4dc803fcc4de67e04e6abfeabcdff534c0e72b537cd80",
+    "gasUsed": "284114",
+    "effectiveGasPriceWei": "20006000",
+    "feeWei": "5683984684000",
+    "feeEth": "0.000005683984684"
+  },
+  "subgraph": {
+    "id": "56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
+    "idDecimal": "27490052590811600362272963589849515180206073581828229598330254941738255580216",
+    "deploymentCID": "QmQ5GTG5cGpPDXc9duief12uyPsALnq569DJUY8PVvN7BW",
+    "deploymentDigest": "0x19c67f2f8e38e52a326965e0d84783776bf01cca314e318bc4c5192c07073c51",
+    "owner": "0x86708d2cc6c45c82ee8a0894d7bcf24c809d4c43",
+    "isPublished": true,
+    "version": "v0.1.0"
+  },
+  "curation": {
+    "signalAddedByDeployer": false,
+    "grtApprovalOrTransferInPublication": false,
+    "explorerDisplayedSignal": "457.3",
+    "signalOriginIndependentlyVerified": false
+  },
+  "explorer": "https://thegraph.com/explorer/subgraphs/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb?view=Query&chain=arbitrum-one",
+  "gateway": {
+    "endpointTemplate": "https://gateway.thegraph.com/api/<API_KEY>/subgraphs/id/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
+    "availability": "not-yet-verified"
+  },
+  "portalBackend": "D1",
+  "note": "The user confirmed the publication in MetaMask. Receipt inclusion and the published CID/owner were checked; this does not assert L1 finality or network indexer readiness. The supplementary PublicNode receipt request required a personal archive token and was not used as evidence."
+}

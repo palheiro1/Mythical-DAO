@@ -1,6 +1,6 @@
 {
   "preparedAt": "2026-09-29",
-  "status": "deployed-indexing-initial-comparison-passed",
+  "status": "published-network-readiness-pending-verification",
   "studioWalletLoginRequired": false,
   "deploymentCID": "QmQ5GTG5cGpPDXc9duief12uyPsALnq569DJUY8PVvN7BW",
   "queryEndpoint": "https://api.studio.thegraph.com/query/1762785/mythical-dao-pilot/v0.1.0",
@@ -64,9 +64,18 @@
   "studioSlug": "mythical-dao-pilot",
   "studioVersion": "v0.1.0",
   "portalComparatorTests": 3,
-  "publishedOnChain": false,
+  "publishedOnChain": true,
   "portalBackend": "D1",
   "comparisonEvidence": "evidence/comparison-2026-09-30.json",
   "studioPolygonQueryEndDate": "2026-10-08",
-  "historicalEntityRetentionVerified": false
+  "historicalEntityRetentionVerified": false,
+  "publishedAt": "2026-09-30T08:49:12.000Z",
+  "publicationChainId": 42161,
+  "subgraphId": "56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
+  "publicationTransaction": "0x116d6f23463cca98b2dbfcf95dff6859df37e02e55644240ba2f6bb4b6938f99",
+  "publicationEvidence": "evidence/network-publication-2026-09-30.json",
+  "latestComparisonEvidence": "evidence/prepublication-comparison-2026-09-30.json",
+  "queryEndpointKind": "studio-development",
+  "networkQueryEndpointTemplate": "https://gateway.thegraph.com/api/<API_KEY>/subgraphs/id/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
+  "networkQueryAvailability": "not-yet-verified"
 }

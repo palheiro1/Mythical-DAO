@@ -1,8 +1,8 @@
 # Mythical DAO — The Graph pilot
 
-Pilot for the existing Polygon Governor and MANA. **Deployed to [Studio](https://thegraph.com/studio/subgraph/mythical-dao-pilot) as `v0.1.0` on 2026-09-30 and indexing.** It is not an active portal backend. Cloudflare D1, its history/cursors and the Telegram service continue operating unchanged. Initial MANA samples passed comparison with two independent RPCs; complete history and Governor samples remain pending. See the [deployment report](DEPLOYMENT.md) and [release record](pilot-release.json).
+Pilot for the existing Polygon Governor and MANA. **Published to [The Graph Network](https://thegraph.com/explorer/subgraphs/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb?view=Query&chain=arbitrum-one) as `v0.1.0` on 2026-09-30.** Publication is registered on Arbitrum One; indexed contracts remain on Polygon. It is not an active portal backend. Cloudflare D1, its history/cursors and the Telegram service continue operating unchanged. MANA and the first Governor sample passed comparison with two independent RPCs; full history, the later Governor sample and Gateway availability remain pending. See the [deployment report](DEPLOYMENT.md) and [release record](pilot-release.json).
 
-**Service deadline:** The Graph announced that Polygon staging queries end on **2026-10-08**. Continuing beyond that date requires publication to The Graph Network and a Gateway endpoint. This pilot is not published on-chain; no paid plan or portal cutover was activated. [Official announcement, 2026-09-24](https://thegraph.com/blog/subgraph-studio-traffic-to-network/).
+**Service deadline:** The Graph announced that Polygon staging queries end on **2026-10-08**. Network publication is complete; a working Gateway endpoint and the remaining validation are still required before any portal cutover. The local comparator currently uses the Studio development endpoint. No paid plan was activated. [Official announcement, 2026-09-24](https://thegraph.com/blog/subgraph-studio-traffic-to-network/).
 
 ## Scope
 

@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-09-30T08:48:32.093Z",
+  "deployment": "QmQ5GTG5cGpPDXc9duief12uyPsALnq569DJUY8PVvN7BW",
+  "status": "partial",
+  "anchor": 63114621,
+  "hash": "0x67634f3b92c0ec607614f5272a6d93159f30efd836dd5beb8a39d1100472af8f",
+  "latestIndexedBlock": 63114621,
+  "confirmedHead": "94701908",
+  "stats": {
+    "chainId": 137,
+    "governor": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+    "mana": "0x2cacca1266653bb090d3fb511456ebca33150562",
+    "governorStartBlock": "48674443",
+    "manaStartBlock": "45785116",
+    "totalSupply": "1000000000000000000000000",
+    "holders": "37",
+    "proposals": "1",
+    "votes": "5",
+    "transfers": "271"
+  },
+  "accountChecks": [
+    {
+      "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "balance": "91875700000000000000000",
+      "votingPower": "0",
+      "delegate": "0x0000000000000000000000000000000000000000"
+    },
+    {
+      "address": "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9",
+      "balance": "33669936971428589697113",
+      "votingPower": "33669936971428589697113",
+      "delegate": "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9"
+    }
+  ],
+  "checked": [
+    {
+      "address": "0x2cacca1266653bb090d3fb511456ebca33150562",
+      "from": 45785116,
+      "to": 45790115,
+      "events": 8
+    },
+    {
+      "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "from": 58427770,
+      "to": 58432769,
+      "events": 1
+    }
+  ],
+  "pending": [
+    {
+      "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "from": 89169940,
+      "to": 89174939
+    }
+  ],
+  "limitation": "Sample verification only; not a full-history or reorg acceptance test. The portal remains on D1.",
+  "rpcProviders": [
+    "Infura",
+    "Tenderly"
+  ],
+  "historyCoveragePercent": 35.4265
+}

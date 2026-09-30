@@ -13,6 +13,6 @@ Portal sobre o Governor e a tesouraria atuais da Polygon, com um módulo opciona
 - [Implantação do piloto no Studio e primeiras comparações](services/dao-subgraph/DEPLOYMENT.md)
 - [Pacote para revisão independente do ragequit](services/dao-portal/docs/INDEPENDENT_REVIEW_BRIEF.md)
 
-O [portal de teste está publicado](https://dao-preview.mythicalbeings.io), com governação verificada por operação e sincronização histórica ainda em curso. A revisão independente/implantação do módulo, a autorização pela DAO e a pequena saída real continuam pendentes. Não houve transações públicas nem mudança de serviço Telegram.
+O [portal de teste está publicado](https://dao-preview.mythicalbeings.io), com governação verificada por operação e sincronização histórica ainda em curso. O piloto The Graph foi publicado na rede através de uma transação em Arbitrum; a integração dos seus dados no portal continua pendente de validação. A revisão independente/implantação do módulo, a autorização pela DAO e a pequena saída real continuam pendentes. Os contratos da DAO e o serviço Telegram mantêm-se como estavam.
 
 [O plano V2 original](PLAN_MYTHICAL_DAO.md), os seus contratos e a [configuração histórica](services/dao-portal/deployments/polygon-v2.historical.json) foram preservados; não são a arquitetura ativa.

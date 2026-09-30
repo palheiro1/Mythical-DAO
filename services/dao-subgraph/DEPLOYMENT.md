@@ -1,6 +1,6 @@
-# Studio pilot deployment — 30 September 2026
+# Studio deployment and network publication — 30 September 2026
 
-The existing-Governor/MANA pilot is deployed and indexing remotely. The portal still uses its existing D1/RPC backend; this release does not activate a data-source switch.
+The existing-Governor/MANA pilot is published on The Graph Network. Studio history indexing continues; availability through the network Gateway still requires verification. The portal continues to use its existing D1/RPC backend.
 
 | Field | Value |
 |---|---|
@@ -9,7 +9,19 @@ The existing-Governor/MANA pilot is deployed and indexing remotely. The portal s
 | Deployment CID | `QmQ5GTG5cGpPDXc9duief12uyPsALnq569DJUY8PVvN7BW` |
 | Development endpoint | `https://api.studio.thegraph.com/query/1762785/mythical-dao-pilot/v0.1.0` |
 | Remote state | Deployed; indexing, with no indexing errors in the recorded metadata |
-| Publication / billing | Unpublished; no on-chain transaction or paid upgrade performed |
+| Publication / billing | Published on Arbitrum One at 08:49:12 UTC; no paid upgrade or deployer GRT signal |
+
+## Network publication
+
+The user confirmed `publishNewSubgraph` in MetaMask. The transaction succeeded in Arbitrum block **510,297,306**. Its receipt agrees between the official Arbitrum RPC and dRPC, and the published deployment digest decodes to the exact CID above. The registry reports `isPublished=true`; the ownership NFT belongs to `0x86708d2cc6c45c82ee8a0894d7bcf24c809d4c43`.
+
+- [Graph Explorer](https://thegraph.com/explorer/subgraphs/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb?view=Query&chain=arbitrum-one): subgraph ID `56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb`, version `v0.1.0`.
+- [Transaction](https://arbiscan.io/tx/0x116d6f23463cca98b2dbfcf95dff6859df37e02e55644240ba2f6bb4b6938f99): destination is the [official Arbitrum L2GNS](https://thegraph.com/docs/en/contracts/), `0xec9A7fb6CbC2E41926127929c2dcE6e9c5D33Bec`.
+- Value sent: **0 ETH**. Gas paid: **0.000005683984684 ETH**. No GRT transfer or approval occurred in this publication.
+- Explorer displayed **457.3 signal** shortly afterwards. This did not come from a deployer signal in the publication transaction; its origin was not independently traced. The Explorer's index-status field did not return a usable readiness result during verification.
+- [Publication evidence](evidence/network-publication-2026-09-30.json) records the receipt, deployment digest, owner, fee and Gateway URL template. Inclusion on Arbitrum and successful publication do not prove that an indexer has finished syncing or that Gateway queries are ready.
+
+Immediately before publication, the [second comparison](evidence/prepublication-comparison-2026-09-30.json) passed at Polygon block **63,114,621**: total supply, two accounts, the MANA event sample, and the first Governor proposal's exact identifier, description and actions all agreed with Infura and Tenderly. Coverage of the pilot block interval was **35.43%**. The later Governor sample remains pending.
 
 ## First independent comparison
 
@@ -36,11 +48,11 @@ Relative to the confirmed target block 94,700,763, the pilot had covered approxi
 - Three portal comparator tests passed, including exact proposal content preservation and explicit Infura opt-in.
 - The dedicated account key is stored in ignored local `.env` with mode `600`; the previous global Graph CLI authentication was preserved. The wrapper invokes the pinned CLI in-process so the key is not an OS command argument.
 - Before commit, all 422 candidate files (~23.2 MB) were checked against the local credentials and their encoded forms: no matches. Gitleaks 8.30.1 also found no leaks in the staged changes. The repository remains private; environment files, dependencies and generated builds are excluded.
-- No contracts, token approvals, D1 data, Telegram configuration, portal deployment or billing settings were changed.
+- The subsequent network publication only registered the subgraph on Arbitrum. The DAO contracts and token approvals, D1 data, Telegram configuration, portal deployment and billing settings were unchanged.
 - Dependencies were reused. Initial disk preflight reserved 0.15 GB against 40.380 GB free; approximately 40.227 GB remained after validation. No installations or project copies were made. Total free-space change was about 153 MB; concurrent application writes were not individually attributed. The 40 GB reserve was maintained.
 
 ## Next gate
 
-The [official announcement of 24 September](https://thegraph.com/blog/subgraph-studio-traffic-to-network/) says Polygon's Studio staging query service ends on **8 October 2026**. This development endpoint must not become a production dependency. Continuing service requires publishing this reviewed CID to The Graph Network, confirming network indexing and Gateway access, and assessing its billing configuration. Publication is a separate wallet operation; it has not been performed.
+The [official announcement of 24 September](https://thegraph.com/blog/subgraph-studio-traffic-to-network/) says Polygon's Studio staging query service ends on **8 October 2026**. Network publication is now complete. The remaining steps are confirming network indexing, configuring a Gateway API key within the existing free plan, checking real Gateway queries and the quota, and completing data validation. The development endpoint must not become a production dependency.
 
-While indexing continues, use Studio for status and run the bounded comparison at the two Governor milestones. Before any portal integration, complete the history comparison, reconcile all Governor proposal/vote events with RPCs and D1, verify retention/reorg behavior, and measure latency and costs. Existing D1 history and direct transaction verification remain in place throughout.
+While indexing continues, use Studio for status and run the bounded comparison at the remaining Governor milestone. Before any portal integration, complete the history comparison, reconcile all Governor proposal/vote events with RPCs and D1, verify retention/reorg behavior, and measure latency and costs. Existing D1 history and direct transaction verification remain in place throughout.
