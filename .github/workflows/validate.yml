@@ -49,21 +49,6 @@ jobs:
           cache-dependency-path: services/dao-subgraph/package-lock.json
       - run: npm ci --ignore-scripts
       - run: npm run check
-      - uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: v1.3.5
-      - name: Graph Node controlled reorg
-        timeout-minutes: 12
-        run: node scripts/rehearse-reorg.mjs
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: graph-reorg-acceptance
-          path: |
-            services/dao-subgraph/.task-reorg/report.json
-            services/dao-subgraph/.task-reorg/graph-node.log
-          include-hidden-files: true
-          retention-days: 7
   telegram:
     runs-on: ubuntu-latest
     defaults:

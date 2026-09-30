@@ -1,6 +1,6 @@
 {
   "preparedAt": "2026-09-29",
-  "status": "network-query-verified-portal-integration-pending",
+  "status": "network-query-verified-comparison-deployed-off",
   "studioWalletLoginRequired": false,
   "deploymentCID": "QmQ5GTG5cGpPDXc9duief12uyPsALnq569DJUY8PVvN7BW",
   "queryEndpoint": "https://api.studio.thegraph.com/query/1762785/mythical-dao-pilot/v0.1.0",
@@ -114,8 +114,10 @@
     "mode": "off",
     "implementation": "comparison-only",
     "documentation": "../dao-portal/docs/GRAPH_COMPARISON.md",
-    "graphNodeReorgAcceptance": "pending",
+    "graphNodeReorgAcceptance": "blocked-disk-reserve",
     "workerVersion": "8d7985fa-e647-4a45-8c38-2a8d4a5893fd",
-    "previewEvidence": "../dao-portal/docs/evidence/graph-comparison-preview-2026-09-30.json"
+    "previewEvidence": "../dao-portal/docs/evidence/graph-comparison-preview-2026-09-30.json",
+    "graphNodeReorgEvidence": "evidence/reorg-preflight-2026-09-30.json",
+    "graphNodeReorgWorkflow": ".github/workflows/graph-reorg.yml"
   }
 }

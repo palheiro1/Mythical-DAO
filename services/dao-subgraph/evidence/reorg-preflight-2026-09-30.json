@@ -1,0 +1,13 @@
+{
+  "status": "failed",
+  "graphNode": "v0.45.0",
+  "network": "isolated-anvil-137",
+  "liveNetworkAcceptance": false,
+  "startedAt": "2026-09-30T10:57:24.427Z",
+  "disk": {
+    "availableBefore": 13310627840,
+    "peakAdditional": 4000000000,
+    "reserve": 40000000000
+  },
+  "reason": "DISK_RESERVE_NOT_MET"
+}
