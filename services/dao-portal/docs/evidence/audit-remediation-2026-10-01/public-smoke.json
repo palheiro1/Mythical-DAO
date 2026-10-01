@@ -1,0 +1,34 @@
+{
+  "html": {
+    "status": 200,
+    "script": [
+      "/assets/index-Y9Q9WQ_O.js"
+    ]
+  },
+  "/api/config": {
+    "status": 200,
+    "chainId": 137,
+    "enabled": true,
+    "capabilities": {
+      "governance": "existing-governor",
+      "snapshot": "external",
+      "timelock": false,
+      "ragequit": false
+    },
+    "architecture": "existing-governor"
+  },
+  "/api/health": {
+    "status": 200,
+    "signingAllowed": true,
+    "confirmedHead": "94769352",
+    "historyComplete": false
+  },
+  "runtimePinInPublicBundle": true,
+  "deploymentPendingGuardInPublicBundle": true,
+  "codeCommit": "c8b3beb0f81fd54255bae069a932f6eb88f7825d",
+  "workerVersion": "97e3aad5-bd28-4996-b8ae-d97ce43542b9",
+  "vercelDeployment": "dpl_n3hjhYpUXYHoptwaj9KPD7MVpfpW",
+  "url": "https://dao-preview.mythicalbeings.io",
+  "target": "production alias of isolated preview project",
+  "browser": "Treasury renders with balances and history; no browser errors reported"
+}

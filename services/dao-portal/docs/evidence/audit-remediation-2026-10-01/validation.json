@@ -50,9 +50,29 @@
   "disk": {
     "preflightEstimateGB": 2,
     "availableBeforeBytes": 355284307968,
-    "availableAfterBytes": 355160842240,
+    "availableAfterBytes": 355209121792,
     "requiredReserveGB": 40,
     "dependenciesReused": true,
     "browsersDownloaded": false
+  },
+  "gitSecretScan": "gitleaks staged diff: no leaks",
+  "publicBuildSecretCheck": "no local Infura or Graph API keys found",
+  "publicSmoke": "passed: governance enabled, module unavailable, reviewed runtime pin in served JavaScript",
+  "ci": {
+    "codeCommit": "c8b3beb0f81fd54255bae069a932f6eb88f7825d",
+    "run": 36864680605,
+    "conclusion": "success",
+    "jobs": [
+      "portal",
+      "subgraph",
+      "telegram"
+    ]
+  },
+  "noticeFollowup": {
+    "typecheckAndBuild": "passed",
+    "unitTestsPassed": 25,
+    "browserChecksPassed": 5,
+    "duplicateMobileVisualMatrixSkipped": 1,
+    "visibleErrorTextVerified": true
   }
 }

@@ -289,6 +289,14 @@ test("exit edits and expiration invalidate acknowledgment; an unpinned module ca
   await expect(page.getByRole("alert")).toContainText(
     "awaiting a verified deployment",
   );
+  await expect(
+    page
+      .getByRole("alert")
+      .getByText(
+        "Ragequit is awaiting a verified deployment in this portal release.",
+        { exact: true },
+      ),
+  ).toBeVisible();
   await page.clock.fastForward(121000);
   await expect(
     page.getByRole("button", { name: "Review permanent exit", exact: true }),

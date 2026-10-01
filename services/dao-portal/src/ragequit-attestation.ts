@@ -6,6 +6,7 @@ import {
 } from "viem";
 import type { PortalConfig } from "../shared/domain";
 import { tokenAbi, ragequitAbi } from "../shared/abis";
+import { ragequitErrors } from "../shared/ragequit-errors";
 import {
   assertRagequitCode,
   assertRagequitConfiguration,
@@ -36,23 +37,16 @@ export async function attestRagequitIntent(
       call.args[0].toLowerCase() !==
         cfg.contracts.ragequitModule!.address.toLowerCase()
     )
-      throw Error(
-        "Only the reviewed ragequit module can receive MANA authorization.",
-      );
+      throw Error(ragequitErrors.spender);
   } else {
     const call = decodeFunctionData({ abi: ragequitAbi, data: intent.data });
     if (
       call.functionName !== "redeem" ||
       !validRagequitRecipient(call.args[1], cfg)
     )
-      throw Error(
-        "Choose a payout recipient other than the treasury, module or token contracts.",
-      );
+      throw Error(ragequitErrors.recipient);
   }
-  if (!client)
-    throw Error(
-      "An independent connection is required to verify the ragequit module.",
-    );
+  if (!client) throw Error(ragequitErrors.connection);
   // The public client has its own RPC transport, separate from the backend. No cached attestation.
   try {
     if ((await client.getChainId()) !== cfg.chainId) throw Error("chain");
@@ -70,8 +64,6 @@ export async function attestRagequitIntent(
     if (!before.hash || before.hash !== after.hash) throw Error("reorg");
     assertRagequitCode(code);
   } catch {
-    throw Error(
-      "The independent check could not verify the reviewed ragequit module. No MANA authorization or exit was sent. Try again after the connection or deployment is verified.",
-    );
+    throw Error(ragequitErrors.verification);
   }
 }

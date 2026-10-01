@@ -1,0 +1,12 @@
+
+Running 6 tests using 1 worker
+
+  ✓  1 [desktop] › tests/browser/flows.spec.ts:257:1 › exit edits and expiration invalidate acknowledgment; an unpinned module cannot reach signing (594ms)
+  ✓  2 [desktop] › tests/browser/flows.spec.ts:317:1 › an API-approved but unpinned module cannot obtain MANA authorization (351ms)
+  ✓  3 [desktop] › tests/browser/visual.spec.ts:180:3 › visual acceptance matrix › connected exit preview and unverified deployment warning stay accessible in both themes (6.2s)
+  ✓  4 [mobile] › tests/browser/flows.spec.ts:257:1 › exit edits and expiration invalidate acknowledgment; an unpinned module cannot reach signing (561ms)
+  ✓  5 [mobile] › tests/browser/flows.spec.ts:317:1 › an API-approved but unpinned module cannot obtain MANA authorization (353ms)
+  -  6 [mobile] › tests/browser/visual.spec.ts:180:3 › visual acceptance matrix › connected exit preview and unverified deployment warning stay accessible in both themes
+
+  1 skipped
+  5 passed (10.2s)

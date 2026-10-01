@@ -1,6 +1,7 @@
 import { isAddress, keccak256, zeroAddress, type Hex } from "viem";
 import type { PortalConfig } from "./domain";
 import trust from "./generated/ragequit-trust.json";
+import { ragequitErrors } from "./ragequit-errors";
 
 const roles = ["treasury", "mana", "gem", "weth", "usdcNative"] as const;
 export interface RagequitTrust {
@@ -16,10 +17,7 @@ export function assertRagequitConfiguration(
   cfg: PortalConfig,
   pin: RagequitTrust = trust,
 ) {
-  if (!pin.moduleAddress)
-    throw Error(
-      "Ragequit is awaiting a verified deployment in this portal release.",
-    );
+  if (!pin.moduleAddress) throw Error(ragequitErrors.pending);
   if (
     pin.version !== 1 ||
     cfg.chainId !== pin.chainId ||
@@ -34,9 +32,7 @@ export function assertRagequitConfiguration(
         pin.addresses[role].toLowerCase(),
     )
   )
-    throw Error(
-      "Ragequit configuration differs from the deployment reviewed for this portal release.",
-    );
+    throw Error(ragequitErrors.configuration);
 }
 
 export function assertRagequitCode(
@@ -44,9 +40,7 @@ export function assertRagequitCode(
   pin: RagequitTrust = trust,
 ) {
   if (!code || code === "0x" || keccak256(code) !== pin.runtimeHash)
-    throw Error(
-      "The ragequit module code does not match the reviewed release. MANA authorization is blocked.",
-    );
+    throw Error(ragequitErrors.runtime);
 }
 
 export function validRagequitRecipient(recipient: string, cfg: PortalConfig) {
