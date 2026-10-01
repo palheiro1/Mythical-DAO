@@ -2,7 +2,7 @@
   "html": {
     "status": 200,
     "script": [
-      "/assets/index-Y9Q9WQ_O.js"
+      "/assets/index-BTOoPkTq.js"
     ]
   },
   "/api/config": {
@@ -20,15 +20,21 @@
   "/api/health": {
     "status": 200,
     "signingAllowed": true,
-    "confirmedHead": "94769352",
+    "confirmedHead": "94769602",
     "historyComplete": false
   },
   "runtimePinInPublicBundle": true,
   "deploymentPendingGuardInPublicBundle": true,
-  "codeCommit": "c8b3beb0f81fd54255bae069a932f6eb88f7825d",
-  "workerVersion": "97e3aad5-bd28-4996-b8ae-d97ce43542b9",
-  "vercelDeployment": "dpl_n3hjhYpUXYHoptwaj9KPD7MVpfpW",
+  "codeCommit": "926509a169e7b619e3d01296ab80ce9590e29f1a",
+  "workerVersion": "c4f00543-b15c-4065-845b-c7fe896c25cb",
+  "vercelDeployment": "dpl_ZP61L1mWVsipX9qQ3HXkyCs1wFjD",
   "url": "https://dao-preview.mythicalbeings.io",
   "target": "production alias of isolated preview project",
-  "browser": "Treasury renders with balances and history; no browser errors reported"
+  "browser": "Treasury renders with balances and history; no browser errors reported",
+  "previousDeployment": {
+    "codeCommit": "c8b3beb0f81fd54255bae069a932f6eb88f7825d",
+    "workerVersion": "97e3aad5-bd28-4996-b8ae-d97ce43542b9",
+    "vercelDeployment": "dpl_n3hjhYpUXYHoptwaj9KPD7MVpfpW"
+  },
+  "fixedSecurityWarningsDirectlyReadable": true
 }

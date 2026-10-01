@@ -39,8 +39,27 @@ Os resultados finais de testes, browser, build e espaço em disco constam de `va
 
 ## Publicação do portal de teste
 
-Código publicado no GitHub no commit `c8b3beb0f81fd54255bae069a932f6eb88f7825d`. Worker de staging `97e3aad5-bd28-4996-b8ae-d97ce43542b9`; deployment Vercel `dpl_n3hjhYpUXYHoptwaj9KPD7MVpfpW`, estado READY, target production apenas do projeto isolado `mythical-dao-preview`. [Portal de teste](https://dao-preview.mythicalbeings.io).
+Código inicial no commit `c8b3beb0f81fd54255bae069a932f6eb88f7825d`, com ajuste de visibilidade dos avisos em `926509a169e7b619e3d01296ab80ce9590e29f1a`. Worker de staging `c4f00543-b15c-4065-845b-c7fe896c25cb`; deployment Vercel `dpl_ZP61L1mWVsipX9qQ3HXkyCs1wFjD`, estado READY, target production apenas do projeto isolado `mythical-dao-preview`. [Portal de teste](https://dao-preview.mythicalbeings.io).
 
 [Verificação pública](evidence/audit-remediation-2026-10-01/public-smoke.json): HTTP 200 no portal/configuração/saúde, bundle com o novo hash e bloqueio de implantação pendente, governação habilitada e ragequit indisponível por ausência do módulo. Tesouraria e histórico renderizaram no browser, sem erros reportados. O histórico completo ainda não está sincronizado. Não houve alteração do domínio oficial da DAO, contratos públicos ou notificações.
 
 Gitleaks não encontrou segredos nas alterações preparadas para o commit; os artefactos públicos foram também comparados com as chaves Infura/Graph locais, sem correspondências. Preflight de disco de 2 GB aprovado; cerca de 355 GB disponíveis após a validação, sem instalações nem downloads de browsers e com a reserva de 40 GB preservada.
+
+## Análise estática da versão corrigida
+
+Slither 0.11.6 voltou a analisar o módulo com o perfil Foundry fixado (solc 0.8.30, optimizer 200, Cancun). O verificador do pacote voltou a passar após essa compilação. O [relatório](evidence/audit-remediation-2026-10-01/slither.json) preserva os 51 alertas, IDs, confiança e descrições, mais o hash da cópia bruta local: 3 High, 12 Medium, 6 Low e 30 Informational. Não se apresenta como uma análise sem alertas.
+
+| Alerta | Triagem interna desta versão |
+|---|---|
+| arbitrary-send-erc20 — High | A origem é a tesouraria imutável; montantes resultam da fórmula e exigem queima do MANA do chamador. Não existe origem ou montante de transferência arbitrários. É a autorização contínua aprovada no desenho; conservação e falhas atómicas foram retestadas. |
+| reentrancy-balance — High | O saldo anterior é usado deliberadamente para verificar a diferença após a queima. O guard permanece antes das chamadas; o novo ator com MANA e allowance prova a rejeição pela proteção, e a mutação sem guard falha. Não foi demonstrada exploração nesta triagem. |
+| incorrect-exp — High; divide-before-multiply — 9 Medium | Referem-se à aritmética de precisão completa de OpenZeppelin Math. XOR na semente da inversa modular e etapas de divisão/multiplicação são intencionais; não foram substituídos. Dependência e fontes estão fixadas no pacote. |
+| uninitialized-local — 3 Medium | O booleano começa em false e todos os três elementos dos arrays são escritos antes do uso; casos de zero e pagamentos positivos passaram. |
+| missing-zero-check — Low | O construtor rejeita qualquer endereço sem código, incluindo zero; scripts/portal também fixam os contratos aprovados. |
+| calls-loop — 4 Low | Loops de três ativos fixos; os tokens externos continuam a poder bloquear a operação. Essa disponibilidade é um pressuposto explícito, não foi ocultada com exclusão de detetores. |
+| timestamp — Low | Comparação deliberada com o deadline do membro; não existe uso para sorteio ou preço. |
+| assembly, pragma/solc-version, complexidade e literal longo — Informational | Assembly/constantes sobretudo nas dependências fixadas; os pragmas permissivos não alteram o compilador exato do pacote. A complexidade do redeem inclui as verificações de destinatários e conservação. Permanecem disponíveis para revisão externa. |
+
+Esta classificação interna não encerra a revisão independente. O revisor deve retestar os três alertas High no contexto da fórmula, das autorizações e dos tokens reais e decidir sobre os pressupostos de disponibilidade/composição documentados.
+
+CI do código publicado `926509a`: [execução 36865451996](https://github.com/palheiro1/Mythical-DAO/actions/runs/36865451996) concluída com sucesso nos três jobs (portal, subgraph e Telegram). A validação inclui o novo controlo de integridade entre fontes, compilação, pacote e confiança distribuída na aplicação.
