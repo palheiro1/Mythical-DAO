@@ -72,5 +72,25 @@
     "gasCostWei": "46346287445605440"
   },
   "updatedAt": "2026-10-01T14:56:21.677Z",
-  "secretScan": "passed; only public evidence and addresses committed"
+  "secretScan": "passed; only public evidence and addresses committed",
+  "ci": {
+    "url": "https://github.com/palheiro1/Mythical-DAO/actions/runs/36880699410",
+    "commit": "ff5886a092651aa31a48834bb595355bc0b88849",
+    "conclusion": "success",
+    "jobs": {
+      "portal": "success",
+      "subgraph": "success",
+      "telegram": "success"
+    },
+    "solidity": {
+      "passed": 44,
+      "skipped": 2,
+      "skipReason": "Fork tests require an RPC outside CI"
+    },
+    "browser": {
+      "passed": 71,
+      "skipped": 13
+    },
+    "priorFailure": "Five browser cases expected the pre-deployment warning; updated assertions for the now-pinned release, with the rejection behavior preserved."
+  }
 }

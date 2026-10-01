@@ -23,3 +23,7 @@ O utilizador comunicou a aprovação do auditor e autorizou a implantação do m
 4. Realizar uma pequena saída real expressamente consentida antes de anunciar disponibilidade geral. O módulo continua sem migração, pausa administrativa ou reserva de fundos. A DAO pode revogar autorizações através da proposta de revogação preparada.
 
 O trabalho local desta etapa teve preflight para 1 GB adicional, com cerca de 355 GB disponíveis. As dependências existentes foram reutilizadas.
+
+## Verificação final
+
+[GitHub CI 36880699410](https://github.com/palheiro1/Mythical-DAO/actions/runs/36880699410) aprovado para `ff5886a`: portal, subgraph e Telegram. No portal: 155 testes de dados/scripts; 44 testes Solidity aprovados e dois ensaios de fork omitidos sem RPC; 71 casos de browser aprovados e 13 omitidos pela matriz de testes. Tipos, compilação, recuperação local e dry-run Worker aprovados. Cinco verificações de browser esperavam ainda o aviso anterior à implantação; foram atualizadas para exigir o aviso de configuração diferente do módulo agora fixado, mantendo o bloqueio da assinatura. O [bundle público](evidence/ragequit-activation-2026-10-01/published-bundle.json) contém o endereço/hash aprovados e nenhuma das chaves dos fornecedores. Código e evidências foram enviados ao GitHub.
