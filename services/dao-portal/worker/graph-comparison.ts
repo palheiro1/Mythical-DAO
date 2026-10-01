@@ -7,6 +7,10 @@ import {
 import { tokenAbi, governorAbi } from "../shared/abis";
 import { stringify } from "../shared/domain";
 import { config } from "./config";
+import {
+  historySnapshotQuery,
+  verifyGraphHistory,
+} from "./graph-history-model";
 import { agreed, clients, commonHead } from "./rpc";
 import {
   GOVERNOR,
@@ -31,7 +35,7 @@ function graphCredential(env: Env): string | undefined {
   return typeof key === "string" ? key : undefined;
 }
 
-// This feature has no path to serving governance data or authorizing a signature.
+// Comparisons never authorize a signature. Optional history reads have their own gate.
 export function graphComparisonGate(env: Env): string | null {
   if (env.GRAPH_COMPARE_MODE !== "shadow") return "GRAPH_COMPARISON_OFF";
   if (env.GRAPH_SUBGRAPH_RESTRICTED !== "true")
@@ -246,6 +250,19 @@ export async function compareGraph(env: Env) {
       rows.results.length === snapshot.proposals.length,
       "GRAPH_D1_PROPOSAL_COUNT_MISMATCH",
     );
+  const history =
+    env.GRAPH_READ_MODE === "verified" && env.GRAPH_REORG_VERIFIED === "true"
+      ? await verifyGraphHistory(
+          snapshot,
+          (
+            await query<{ eventRecords: unknown }>(historySnapshotQuery, {
+              hash,
+            })
+          ).eventRecords,
+          pair,
+          checkTime,
+        )
+      : undefined;
   requireValue((await hashAt()) === hash, "GRAPH_ANCHOR_CHANGED");
   const final = await query<{ _meta: unknown }>(
     "query($hash:Bytes!){_meta(block:{hash:$hash}){deployment hasIndexingErrors block{number hash}}}",
@@ -259,29 +276,45 @@ export async function compareGraph(env: Env) {
     verified,
     d1: { matchedProposals: rows.results.length, historyComplete: d1Complete },
     fullHistoryVerified: false,
+    history,
   };
 }
 
-// One run/hour, three Graph requests reserved before any network work, 3000/month.
+// One run/hour, 3 (comparison) or 4 (with history) queries reserved, 3000/month.
 // Atomic ownership fences late completions and survives cron retries/concurrency.
 export async function runGraphComparison(env: Env, compare = compareGraph) {
-  if (graphComparisonGate(env)) return;
+  if (graphComparisonGate(env)) return false;
+  const reserved =
+    env.GRAPH_READ_MODE === "verified" && env.GRAPH_REORG_VERIFIED === "true"
+      ? 4
+      : 3;
   const now = Date.now(),
     owner = crypto.randomUUID(),
     month = new Date(now).toISOString().slice(0, 7);
   const lease = await env.DAO_DB.prepare(
-    `INSERT INTO graph_comparison(id,owner,lease_until,next_attempt,month,reserved_queries) VALUES(1,?,?,?, ?,3)
+    `INSERT INTO graph_comparison(id,owner,lease_until,next_attempt,month,reserved_queries) VALUES(1,?,?,?, ?,?)
     ON CONFLICT(id) DO UPDATE SET owner=excluded.owner,lease_until=excluded.lease_until,next_attempt=excluded.next_attempt,month=excluded.month,
-    reserved_queries=CASE WHEN graph_comparison.month=excluded.month THEN graph_comparison.reserved_queries+3 ELSE 3 END
-    WHERE graph_comparison.lease_until<? AND graph_comparison.next_attempt<=? AND (graph_comparison.month<>excluded.month OR graph_comparison.reserved_queries<=2997)
+    reserved_queries=CASE WHEN graph_comparison.month=excluded.month THEN graph_comparison.reserved_queries+excluded.reserved_queries ELSE excluded.reserved_queries END
+    WHERE graph_comparison.lease_until<? AND graph_comparison.next_attempt<=? AND (graph_comparison.month<>excluded.month OR graph_comparison.reserved_queries<=?)
     RETURNING id`,
   )
-    .bind(owner, now + 180000, now + 3600000, month, now, now)
+    .bind(
+      owner,
+      now + 180000,
+      now + 3600000,
+      month,
+      reserved,
+      now,
+      now,
+      3000 - reserved,
+    )
     .first();
-  if (!lease) return;
+  if (!lease) return false;
   let report: unknown;
+  let history: unknown;
   try {
-    report = await compare(env);
+    const result = await compare(env);
+    ({ history, ...report } = result);
   } catch (error) {
     // Never serialize transport errors, URLs, headers or GraphQL response bodies.
     const reason =
@@ -294,10 +327,17 @@ export async function runGraphComparison(env: Env, compare = compareGraph) {
     report = { status: "failed", reason, fullHistoryVerified: false };
   }
   await env.DAO_DB.prepare(
-    "UPDATE graph_comparison SET report_json=?,checked_at=?,lease_until=0 WHERE id=1 AND owner=? AND lease_until>?",
+    "UPDATE graph_comparison SET report_json=?,history_json=?,checked_at=?,lease_until=0 WHERE id=1 AND owner=? AND lease_until>?",
   )
-    .bind(JSON.stringify(report), Date.now(), owner, Date.now())
+    .bind(
+      JSON.stringify(report),
+      history ? JSON.stringify(history) : null,
+      Date.now(),
+      owner,
+      Date.now(),
+    )
     .run();
+  return true;
 }
 export async function graphComparisonStatus(env: Env) {
   const reason = graphComparisonGate(env);
@@ -306,6 +346,8 @@ export async function graphComparisonStatus(env: Env) {
     activeBackend: "D1/RPC",
     subgraphId: SUBGRAPH_ID,
     fullHistoryVerified: false,
+    historyReadMode: env.GRAPH_READ_MODE === "verified" ? "verified" : "off",
+    reorgAcceptance: env.GRAPH_REORG_VERIFIED === "true",
   };
   if (reason) return { ...base, status: "disabled", reason };
   const row = await env.DAO_DB.prepare(

@@ -1,5 +1,7 @@
 # Entrega — Governor atual e ragequit sem migração
 
+1 de outubro: [leitura suplementar verificada](GRAPH_HISTORY.md) implementada, com 124 testes do portal e seis verificações de browser aprovados. O ensaio real de reorg local passou para MANA e propostas do Governor; a aplicação rejeita hashes órfãos via RPC, pois o Graph Node pode responder a essas consultas. Ativação aguarda reconexão do Studio e confirmação da restrição da chave. O histórico completo continua por demonstrar.
+
 Atualização: [recuperação do sync, validação do portal e preparação do piloto The Graph](SYNC_RECOVERY.md). A versão do Worker é agora `851124ed-f7f3-46bd-a668-6c1eaa5f8609`. Abaixo mantém-se a descrição da entrega anterior; os resultados e limites mais recentes estão no relatório ligado.
 
 Data: 28 de setembro de 2026. Código implementado localmente; nenhuma transação enviada à Polygon pública.

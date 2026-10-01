@@ -348,6 +348,8 @@ function Overview() {
       queuedExecutions: number;
       readyForExecution: number | null;
       complete: boolean;
+      countsVerified?: boolean;
+      indexedProposals?: number;
     }>("overview"),
     { address } = useAccount(),
     member = useApi<Member>("members/" + address, !!address);
@@ -394,9 +396,15 @@ function Overview() {
             {m("Open votes")}
           </span>
           <strong>
-            {totals.data?.complete ? totals.data.activeVotes : "—"}
+            {totals.data?.complete || totals.data?.countsVerified
+              ? totals.data.activeVotes
+              : "—"}
           </strong>
-          <p>{m("On-chain executable proposals")}</p>
+          <p>
+            {totals.data?.countsVerified && !totals.data.complete
+              ? m("Among verified indexed proposals")
+              : m("On-chain executable proposals")}
+          </p>
         </div>
         <div className="metric">
           <span>
@@ -404,11 +412,15 @@ function Overview() {
             {m("Awaiting execution")}
           </span>
           <strong>
-            {totals.data?.complete
+            {totals.data?.complete || totals.data?.countsVerified
               ? (totals.data.readyForExecution ?? "—")
               : "—"}
           </strong>
-          <p>{m("Approved actions ready for direct execution")}</p>
+          <p>
+            {totals.data?.countsVerified && !totals.data.complete
+              ? m("Among verified indexed proposals")
+              : m("Approved actions ready for direct execution")}
+          </p>
         </div>
         <div className="metric">
           <span>

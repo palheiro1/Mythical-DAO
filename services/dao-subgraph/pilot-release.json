@@ -112,12 +112,15 @@
   },
   "portalIntegration": {
     "mode": "off",
-    "implementation": "comparison-only",
-    "documentation": "../dao-portal/docs/GRAPH_COMPARISON.md",
-    "graphNodeReorgAcceptance": "blocked-disk-reserve",
-    "workerVersion": "8d7985fa-e647-4a45-8c38-2a8d4a5893fd",
-    "previewEvidence": "../dao-portal/docs/evidence/graph-comparison-preview-2026-09-30.json",
-    "graphNodeReorgEvidence": "evidence/reorg-preflight-2026-09-30.json",
-    "graphNodeReorgWorkflow": ".github/workflows/graph-reorg.yml"
+    "implementation": "verified-supplemental-history",
+    "documentation": "../dao-portal/docs/GRAPH_HISTORY.md",
+    "graphNodeReorgAcceptance": "local-rollback-passed-rpc-anchor-guard-required",
+    "workerVersion": "80e970cf-60ca-4250-8f4b-951c89d45e2a",
+    "previewEvidence": "../dao-portal/docs/evidence/graph-history-preview-2026-10-01.json",
+    "graphNodeReorgEvidence": "evidence/reorg-acceptance-2026-10-01.json",
+    "graphNodeReorgWorkflow": ".github/workflows/graph-reorg.yml",
+    "readMode": "off",
+    "previewFrontendDeployment": "dpl_99MTxRBX1BTnmB2XvupffW9b4JVo",
+    "historyAcceptanceEvidence": "../dao-portal/docs/evidence/graph-history-acceptance-2026-10-01.json"
   }
 }

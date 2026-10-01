@@ -1,5 +1,9 @@
 import type { Address } from "viem";
-import type { Proposal, ChainEvent } from "../shared/domain";
+import type {
+  Proposal,
+  ChainEvent,
+  GraphHistoryStatus,
+} from "../shared/domain";
 export type ListResponse<T> =
   | {
       unavailable: true;
@@ -14,6 +18,7 @@ export type ListResponse<T> =
       asOfBlock?: string;
       nextBefore?: string | null;
       limitedTo?: number;
+      history?: GraphHistoryStatus;
     };
 export type ProposalList = ListResponse<Proposal>;
 export type EventList = ListResponse<ChainEvent>;

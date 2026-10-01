@@ -1,5 +1,7 @@
 # The Graph — comparison-only backend
 
+Update 1 October: [verified supplemental history and completed local reorg acceptance](GRAPH_HISTORY.md). The report below records the 30 September comparison-only delivery.
+
 Published to the preview Worker on 30 September 2026, version `8d7985fa-e647-4a45-8c38-2a8d4a5893fd`, with comparison off. [HTTP verification](evidence/graph-comparison-preview-2026-09-30.json) confirms the new diagnostics route, signing enabled and D1 history still syncing. The portal still serves history from D1 and verifies live state and transactions through RPC. The Graph reader cannot supply signing eligibility, change a cursor, import events or replace those data sources.
 
 ## Validation completed

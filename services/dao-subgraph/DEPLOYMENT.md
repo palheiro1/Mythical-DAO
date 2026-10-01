@@ -99,3 +99,7 @@ The user added `*.mythicalbeings.io` as the only allowed domain. A no-Origin Gat
 The [Worker integration](../dao-portal/docs/GRAPH_COMPARISON.md) is comparison-only and defaults off. Its table is additive, requests are quota/lease bounded and `/api/graph-status` is read-only. D1/RPC remain the serving backend and signing authority.
 
 The isolated Graph Node rehearsal was attempted in [CI](https://github.com/palheiro1/Mythical-DAO/actions/runs/36705477332) and blocked before downloads by the disk preflight (13.31 GB available, 40 GB reserve plus 4 GB estimated allocation). It remains reproducible via a separate manual workflow on a suitable runner. Ordinary validation remains separate; no actual Graph Node rollback acceptance is claimed.
+
+## 1 October — supplemental history preparation
+
+The controlled local reorg rehearsal passed for MANA and Governor proposal/execution rollback. Graph Node did not reject an orphan-hash query; the application must enforce canonical RPC anchors. See [evidence](evidence/reorg-acceptance-2026-10-01.json) and [portal integration](../dao-portal/docs/GRAPH_HISTORY.md). Provider subgraph scope remains unconfirmed because Studio requires wallet reconnection. Read/comparison modes remain off; full-history omission checks are still pending.

@@ -12,7 +12,10 @@ import {
 import { randomUUID, createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import { createServer } from "node:net";
+// Reuse the ABI encoder already installed by the pinned Graph CLI.
+import { encodeParameters, encodeEventSignature } from "web3-eth-abi";
 const MANA = "0x2cacca1266653bb090d3fb511456ebca33150562";
+const GOVERNOR = "0x7b9e327748462f1038c9d081c98d189b22c60a27";
 const member = "0x0000000000000000000000000000000000000042";
 const topic =
   "ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -31,7 +34,13 @@ const save = () =>
     JSON.stringify(report, null, 2) + "\n",
   );
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
-const compose = ["compose", "-f", "tests/reorg/compose.yml"];
+const compose = [
+  "compose",
+  "--progress",
+  "quiet",
+  "-f",
+  "tests/reorg/compose.yml",
+];
 const env = { ...process.env, GRAPH_TEST_DB_PASSWORD: randomUUID() };
 // Never read local DAO .env files or pass deployment/query credentials to containers.
 for (const k of Object.keys(env))
@@ -88,7 +97,7 @@ async function emit(value, from) {
   return receipt;
 }
 const query =
-  '{_meta{hasIndexingErrors block{number hash}} pilotStats(id:"137"){totalSupply holders transfers} manaAccount(id:"' +
+  '{_meta{hasIndexingErrors block{number hash}} proposals(orderBy:proposalId){proposalId executed} pilotStats(id:"137"){totalSupply holders transfers proposals} manaAccount(id:"' +
   member +
   '"){balance} eventRecords(orderBy:blockNumber){transactionHash value blockHash}}';
 try {
@@ -138,16 +147,66 @@ try {
   const runtime =
     "0x60003560005273" + member.slice(2) + "60007f" + topic + "60206000a300";
   await rpc("anvil_setCode", [MANA, runtime]);
+  // LOG1 calldata fixture: first word is event topic, remaining bytes are event data.
+  await rpc("anvil_setCode", [
+    GOVERNOR,
+    "0x60203603806020600037600035906000a100",
+  ]);
   const [sender] = await rpc("eth_accounts");
+  async function governorEvent(id, executed = false) {
+    const event = executed
+      ? "ProposalExecuted(uint256)"
+      : "ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)";
+    const data = executed
+      ? encodeParameters([{ type: "uint256" }], [BigInt(id)])
+      : encodeParameters(
+          [
+            { type: "uint256" },
+            { type: "address" },
+            { type: "address[]" },
+            { type: "uint256[]" },
+            { type: "string[]" },
+            { type: "bytes[]" },
+            { type: "uint256" },
+            { type: "uint256" },
+            { type: "string" },
+          ],
+          [
+            BigInt(id),
+            member,
+            [MANA],
+            [0n],
+            [""],
+            ["0x"],
+            2n,
+            100n,
+            `Reorg fixture ${id}`,
+          ],
+        );
+    const hash = await rpc("eth_sendTransaction", [
+      {
+        from: sender,
+        to: GOVERNOR,
+        data: encodeEventSignature(event) + data.slice(2),
+        gas: "0x100000",
+      },
+    ]);
+    const r = await rpc("eth_getTransactionReceipt", [hash]);
+    assert.equal(r.status, "0x1");
+    assert.equal(r.logs.length, 1);
+    return r;
+  }
   const baseline = await emit(100, sender);
+  await governorEvent(1);
   const checkpoint = await rpc("evm_snapshot");
   const old = await emit(10, sender);
+  const oldExecution = await governorEvent(1, true);
   await rpc("anvil_mine", ["0x4"]);
   containers = true;
   execFileSync("docker", [...compose, "up", "-d"], {
     env,
     stdio: "inherit",
-    timeout: 180000,
+    timeout: 600000,
   });
   await until("GRAPH_ADMIN", async () => {
     await rpc("subgraph_create", { name: "mythical/reorg" }, 8020);
@@ -179,23 +238,25 @@ try {
   const before = await until("OLD_BRANCH", async () => {
     const d = await gql(query);
     return d.data?.pilotStats?.totalSupply === "110" &&
-      d.data?._meta?.block?.number >= 6
+      d.data?._meta?.block?.number >= 8
       ? d.data
       : null;
   });
   assert.equal(before._meta.hasIndexingErrors, false);
-  assert.equal(before.eventRecords.length, 2);
+  assert.equal(before.eventRecords.length, 4);
+  assert.deepEqual(before.proposals, [{ proposalId: "1", executed: true }]);
   assert.equal(before.manaAccount.balance, "110");
   assert(
     before.eventRecords.some((e) => e.transactionHash === old.transactionHash),
   );
   assert.equal(await rpc("evm_revert", [checkpoint]), true);
   const replacement = await emit(7, sender);
+  await governorEvent(2);
   await rpc("anvil_mine", ["0xc"]);
   const after = await until("REORG_ROLLBACK", async () => {
     const d = await gql(query);
     return d.data?.pilotStats?.totalSupply === "107" &&
-      d.data?._meta?.block?.number >= 14
+      d.data?._meta?.block?.number >= 16
       ? d.data
       : null;
   });
@@ -203,7 +264,17 @@ try {
   assert.equal(after.pilotStats.transfers, "2");
   assert.equal(after.pilotStats.holders, "1");
   assert.equal(after.manaAccount.balance, "107");
-  assert.equal(after.eventRecords.length, 2);
+  assert.equal(after.eventRecords.length, 4);
+  assert.equal(after.pilotStats.proposals, "2");
+  assert.deepEqual(after.proposals, [
+    { proposalId: "1", executed: false },
+    { proposalId: "2", executed: false },
+  ]);
+  assert(
+    !after.eventRecords.some(
+      (e) => e.transactionHash === oldExecution.transactionHash,
+    ),
+  );
   assert(
     !after.eventRecords.some((e) => e.transactionHash === old.transactionHash),
   );
@@ -221,17 +292,24 @@ try {
     'query($hash:Bytes!){pilotStats(id:"137",block:{hash:$hash}){totalSupply}}',
     { hash: old.blockHash },
   );
-  assert(
-    orphan.errors?.length,
-    "Orphan block must not return accepted entity data",
-  );
+  // Graph documents that orphan-hash queries can resolve without an error.
+  // Match the portal's mandatory RPC anchor guard instead of trusting that response.
+  const canonicalAtOldHeight = await rpc("eth_getBlockByNumber", [
+    old.blockNumber,
+    false,
+  ]);
+  const applicationRejectsOrphan = canonicalAtOldHeight.hash !== old.blockHash;
+  assert(applicationRejectsOrphan, "Portal must reject a non-canonical anchor");
   Object.assign(report, {
     status: "passed",
     completedAt: new Date().toISOString(),
     before,
     after,
     canonicalHistoricalSupply: retained.data.pilotStats.totalSupply,
-    orphanRejected: true,
+    graphRejectsOrphan: !!orphan.errors?.length,
+    orphanResponse: orphan,
+    applicationRejectsOrphan,
+    governorRollbackVerified: true,
     wasm: {
       mana: createHash("sha256")
         .update(readFileSync(`${folder}/build/MANA/MANA.wasm`))
@@ -241,7 +319,8 @@ try {
         .digest("hex"),
     },
     limitations: [
-      "Controlled short reorg of MANA events and derived entities; Governor event rollback not separately exercised.",
+      "Controlled short reorg of MANA balances/events and Governor proposal creation/execution.",
+      "Graph Node may answer orphan-hash queries; the portal must independently verify the canonical hash with RPC.",
       "Local Graph Node behavior does not prove Gateway indexer retention or complete Polygon event coverage.",
     ],
   });

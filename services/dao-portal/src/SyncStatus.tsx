@@ -18,6 +18,27 @@ export function SyncStatus({ health }: { health?: Health }) {
           : m("Syncing in the background");
   return (
     <section className="sync-status" aria-label={m("History sync")}>
+      {health?.graphHistory?.status === "ready" && (
+        <p className="muted" role="status">
+          {m(
+            "Governance history is supplemented by The Graph and verified against RPC providers.",
+          )}{" "}
+          {m("Verified through block {block}", {
+            block: blockText(health.graphHistory.asOfBlock!),
+          })}{" "}
+          {m(
+            "Full historical coverage is still being checked. The independent scan below continues.",
+          )}
+        </p>
+      )}
+      {health?.graphHistory &&
+        ["stale", "fallback"].includes(health.graphHistory.status) && (
+          <p className="muted" role="status">
+            {m(
+              "Supplemental history is unavailable. Showing the independent index while verification retries.",
+            )}
+          </p>
+        )}
       <div className="sync-heading">
         <strong>{m("History sync")}</strong>
         <span className="sync-percent">{percentText(sync?.percent)}</span>

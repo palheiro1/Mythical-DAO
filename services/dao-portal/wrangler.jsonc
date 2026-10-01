@@ -26,6 +26,8 @@
     "INFURA_DAILY_CREDITS": "2400000",
     "GRAPH_COMPARE_MODE": "off",
     "GRAPH_SUBGRAPH_RESTRICTED": "false",
+    "GRAPH_READ_MODE": "off",
+    "GRAPH_REORG_VERIFIED": "false",
   },
   "secrets": {
     "required": ["RPC_PRIMARY_URL", "RPC_SECONDARY_URL"],
@@ -57,6 +59,8 @@
         "INFURA_DAILY_CREDITS": "2400000",
         "GRAPH_COMPARE_MODE": "off",
         "GRAPH_SUBGRAPH_RESTRICTED": "false",
+        "GRAPH_READ_MODE": "off",
+        "GRAPH_REORG_VERIFIED": "true",
         "INDEX_RPC_SECONDARY_URL": "https://tenderly.rpc.polygon.community",
         "PORTAL_ORIGIN": "https://dao-preview.mythicalbeings.io",
       },
@@ -81,6 +85,8 @@
         "INFURA_DAILY_CREDITS": "2400000",
         "GRAPH_COMPARE_MODE": "off",
         "GRAPH_SUBGRAPH_RESTRICTED": "false",
+        "GRAPH_READ_MODE": "off",
+        "GRAPH_REORG_VERIFIED": "false",
       },
       "d1_databases": [
         {
