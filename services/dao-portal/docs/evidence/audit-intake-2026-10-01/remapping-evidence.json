@@ -1,0 +1,10 @@
+{
+  "baselineCompiler": "0.8.30",
+  "localFoundry": "1.3.5",
+  "reportedFoundry183Executed": false,
+  "addedRemapping": "@openzeppelin/=node_modules/@openzeppelin/",
+  "baselineRuntimeHash": "0x8e34aecff375d02996f3dc18c0bd8bc1afbffcde839a7e24389ff271c85d05f1",
+  "variantRuntimeHash": "0xa6d6f9e3e1534cb75526c432043a12975d896d2f11a7037a344be8fa61d068a8",
+  "runtimeExecutableEqual": true,
+  "creationExecutableEqual": true
+}

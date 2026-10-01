@@ -148,7 +148,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     (path === "/api/preflight" || path === "/api/simulate-actions")
   ) {
     const input = await body(request);
-    const { head } = await commonHead(pair, cfg);
+    const { head, confirmed } = await commonHead(pair, cfg);
     // Live calls verify the current chain directly; no historical cursor is trusted.
     const blockHash = await agreed(
       pair,
@@ -195,7 +195,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       value: BigInt(String(value)),
       blockNumber: head,
     };
-    const verification = await verifyOperation(cfg, pair, head, tx);
+    const verification = await verifyOperation(cfg, pair, head, tx, confirmed);
     await agreed(pair, async (c) => (await c.call(tx)).data ?? "0x");
     const gasEstimates = await Promise.all(pair.map((c) => c.estimateGas(tx)));
     const gas = gasEstimates.reduce((a, b) => (a > b ? a : b));
@@ -436,7 +436,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       BigInt(value) >= 2n ** 256n
     )
       return json({ error: "Invalid amount" }, 400);
-    return json(await redeemPreview(cfg, pair, BigInt(value), head));
+    return json(await redeemPreview(cfg, pair, BigInt(value), confirmed));
   }
   if (path === "/api/governance-parameters") {
     const address = cfg.contracts.governor!.address;

@@ -177,7 +177,7 @@ test.describe("visual acceptance matrix", () => {
         },
       );
     }
-  test("connected exit preview and signing dialog stay accessible in both themes", async ({
+  test("connected exit preview and unverified deployment warning stay accessible in both themes", async ({
     page,
   }) => {
     test.setTimeout(60000);
@@ -215,12 +215,8 @@ test.describe("visual acceptance matrix", () => {
               nodes: v.nodes.map((n) => n.target),
             })),
           ).toEqual([]);
-          if (name === "exit-review")
-            await page.getByRole("button", { name: "Close review" }).focus();
-          else {
-            await page.locator("#main-content").focus();
-            await page.evaluate(() => window.scrollTo(0, 0));
-          }
+          await page.locator("#main-content").focus();
+          await page.evaluate(() => window.scrollTo(0, 0));
           await page.screenshot({
             path:
               "docs/evidence/visual/controlled-" +
@@ -230,23 +226,21 @@ test.describe("visual acceptance matrix", () => {
               "-" +
               width +
               ".png",
-            fullPage: name !== "exit-review",
+            fullPage: true,
           });
         };
         await check("exit-preview");
         await page
           .getByRole("button", { name: "Review permanent exit", exact: true })
           .click();
-        await expect(page.getByRole("dialog")).toBeVisible();
-        await check("exit-review");
-        await page.keyboard.press("Escape");
         await expect(page.getByRole("dialog")).not.toBeVisible();
-        await expect(
-          page.getByRole("button", {
-            name: "Review permanent exit",
-            exact: true,
-          }),
-        ).toBeFocused();
+        await expect(page.getByRole("alert")).toContainText(
+          "awaiting a verified deployment",
+        );
+        await check("exit-blocked");
+        await page
+          .getByRole("button", { name: "Dismiss", exact: true })
+          .click();
       }
   });
   test("320 px and 200% zoom reflow without clipping", async ({ page }) => {

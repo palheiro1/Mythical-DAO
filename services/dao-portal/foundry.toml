@@ -5,6 +5,8 @@ script = "contracts/script"
 out = "out"
 libs = ["node_modules"]
 remappings = ["@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/"]
+auto_detect_remappings = false
+ast = true
 solc_version = "0.8.30"
 evm_version = "cancun"
 optimizer = true

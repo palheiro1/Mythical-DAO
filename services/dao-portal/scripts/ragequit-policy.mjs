@@ -94,3 +94,53 @@ export function assertModuleRuntime(code, artifact, addresses) {
   if (masked !== template)
     throw Error("Module runtime differs from the compiled immutable contract");
 }
+
+/** Instantiate each named immutable using the compiler AST, never guessed AST IDs. */
+export function instantiateModuleRuntime(artifact, addresses) {
+  const names = ["treasury", "mana", "gem", "weth", "usdc"];
+  const contract = artifact.ast?.nodes.find(
+    (n) =>
+      n.nodeType === "ContractDefinition" &&
+      n.name === "MythicalRagequitModule",
+  );
+  const declarations = contract?.nodes.filter(
+    (n) => n.mutability === "immutable",
+  );
+  const refs = artifact.deployedBytecode.immutableReferences;
+  if (
+    declarations?.length !== 5 ||
+    Object.keys(refs).length !== 5 ||
+    addresses.length !== 5
+  )
+    throw Error(
+      "Expected five named immutables and compiler AST; rebuild with ast enabled",
+    );
+  let code = artifact.deployedBytecode.object;
+  const occupied = new Set();
+  names.forEach((name, i) => {
+    const declaration = declarations.find((n) => n.name === name);
+    const positions = refs[declaration?.id];
+    if (!positions?.length || !isAddress(addresses[i]))
+      throw Error("Invalid named immutable");
+    const value = addresses[i].toLowerCase().slice(2).padStart(64, "0");
+    for (const { start, length } of positions) {
+      if (
+        length !== 32 ||
+        !Number.isSafeInteger(start) ||
+        start < 0 ||
+        2 + (start + length) * 2 > code.length
+      )
+        throw Error("Invalid immutable offset");
+      for (let j = start; j < start + length; j++) {
+        if (occupied.has(j)) throw Error("Overlapping immutable offsets");
+        occupied.add(j);
+      }
+      code =
+        code.slice(0, 2 + start * 2) +
+        value +
+        code.slice(2 + (start + length) * 2);
+    }
+  });
+  assertModuleRuntime(code, artifact, addresses);
+  return code;
+}

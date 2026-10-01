@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-09-29T08:49:46.173Z",
+  "chainId": 137,
+  "block": "94644367",
+  "blockHash": "0xc1841b1dc03b6e7f1918e3753ee982305cb402d8727746ac63548df41d3c1299",
+  "initCodeKeccak256": "0x710a2b7369fd614a83b89366d3cf7bb57150fec3a54161795fe7fa744f99b24c",
+  "instantiatedRuntimeKeccak256": "0x038f9c83bd7b3d3eb98c06770652a31e9f38cfa52fd7d79517e1a1c6ff3f1eb7",
+  "runtimeBytes": 4210,
+  "providersAgree": true,
+  "broadcast": false
+}

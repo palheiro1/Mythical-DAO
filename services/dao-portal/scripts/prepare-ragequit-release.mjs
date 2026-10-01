@@ -1,7 +1,10 @@
 // Produce reviewable deployment material without a private key, signing or broadcasting.
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { encodeDeployData, encodeAbiParameters, keccak256, toHex } from "viem";
-import { assertRagequitManifest } from "./ragequit-policy.mjs";
+import {
+  assertRagequitManifest,
+  instantiateModuleRuntime,
+} from "./ragequit-policy.mjs";
 
 const manifest = JSON.parse(readFileSync("deployments/polygon.json", "utf8"));
 assertRagequitManifest(manifest);
@@ -50,6 +53,23 @@ const data = encodeDeployData({
   bytecode: artifact.bytecode.object,
   args,
 });
+const runtimeHash = keccak256(instantiateModuleRuntime(artifact, args));
+// Distributed with both clients. An API response cannot replace this trust root.
+mkdirSync("shared/generated", { recursive: true });
+writeFileSync(
+  "shared/generated/ragequit-trust.json",
+  JSON.stringify(
+    {
+      version: 1,
+      chainId: 137,
+      moduleAddress: null,
+      runtimeHash,
+      addresses: Object.fromEntries(roles.map((role, i) => [role, args[i]])),
+    },
+    null,
+    2,
+  ) + "\n",
+);
 const directory = "deployments/ragequit-release";
 mkdirSync(directory, { recursive: true });
 const write = (name, value) =>
@@ -89,6 +109,7 @@ write("review-manifest.json", {
   initCodeKeccak256: keccak256(data),
   initCodeBytes: (data.length - 2) / 2,
   runtimeTemplateKeccak256: keccak256(artifact.deployedBytecode.object),
+  runtimeKeccak256: runtimeHash,
   immutableReferences: artifact.deployedBytecode.immutableReferences,
   sources,
   compilerInputKeccak256: keccak256(

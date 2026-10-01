@@ -1,0 +1,12 @@
+
+> @mythical/dao-portal@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.2 /home/usuario/Documentos/GitHub/Mythical DAO/services/dao-portal
+
+
+ Test Files  23 passed (23)
+      Tests  154 passed (154)
+   Start at  14:48:12
+   Duration  10.62s (tests 59%, import 34%, transform 6%)

@@ -133,6 +133,12 @@ async function main() {
   if (!runtime || runtime === "0x")
     throw Error("Constructor returned no runtime");
   assertModuleRuntime(runtime, artifact, args);
+  const pin = read("shared/generated/ragequit-trust.json");
+  if (
+    keccak256(runtime) !== review.runtimeKeccak256 ||
+    pin.runtimeHash !== review.runtimeKeccak256
+  )
+    throw Error("Simulated runtime differs from the reviewed portal trust pin");
   const gasEstimates = await Promise.all(
     clients.map((c) =>
       c.estimateGas({ account: from, data, value: 0n, blockNumber: head }),
@@ -204,6 +210,23 @@ async function main() {
   writeFileSync(
     output,
     JSON.stringify(JSON.parse(json(report)), null, 2) + "\n",
+  );
+  writeFileSync(
+    `${dir}/deployment-simulation.json`,
+    JSON.stringify(
+      JSON.parse(
+        json({
+          status: "simulation-only",
+          preparedAt: report.preparedAt,
+          from,
+          ...report.checks,
+          signed: false,
+          broadcast: false,
+        }),
+      ),
+      null,
+      2,
+    ) + "\n",
   );
   console.log(
     json({

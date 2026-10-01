@@ -2,21 +2,48 @@ import type { PublicClient } from "viem";
 import { basketAssets } from "../shared/assets";
 import { ragequitAbi, tokenAbi } from "../shared/abis";
 import { redeemAmounts, type PortalConfig } from "../shared/domain";
-import { agreed } from "./rpc";
+import { agreed, RpcFault } from "./rpc";
+import {
+  assertRagequitCode,
+  assertRagequitConfiguration,
+} from "../shared/ragequit-security";
 
 export async function redeemPreview(
   cfg: PortalConfig,
   pair: [PublicClient, PublicClient],
   amount: bigint,
   blockNumber: bigint,
+  attestationBlock = blockNumber,
 ) {
   const module = cfg.contracts.ragequitModule?.address ?? null;
   const treasury = cfg.contracts.treasury!.address;
   const mana = cfg.contracts.mana!.address;
   const assets = basketAssets(cfg);
-  const { supply, balances, allowances, identity, quoted } = await agreed(
-    pair,
-    async (c) => {
+  const anchors = () =>
+    agreed(pair, async (c) => {
+      const state = (await c.getBlock({ blockNumber })).hash;
+      const code =
+        attestationBlock === blockNumber
+          ? state
+          : (await c.getBlock({ blockNumber: attestationBlock })).hash;
+      if (!state || !code) throw new RpcFault("RAGEQUIT_BLOCK_UNAVAILABLE");
+      return [state, code];
+    });
+  const hashes = await anchors();
+  const { supply, balances, allowances, identity, quoted, attestationError } =
+    await agreed(pair, async (c) => {
+      let attestationError: string | null = null;
+      if (module) {
+        try {
+          assertRagequitConfiguration(cfg);
+          assertRagequitCode(
+            await c.getCode({ address: module, blockNumber: attestationBlock }),
+          );
+        } catch {
+          attestationError =
+            "The configured ragequit module could not be verified against this portal release. MANA authorization is unavailable.";
+        }
+      }
       const [supply, balances, allowances] = await Promise.all([
         c.readContract({
           address: mana,
@@ -49,42 +76,53 @@ export async function redeemPreview(
           ),
         ),
       ]);
-      const identity = module
-        ? await Promise.all([
-            c.readContract({
+      const identity =
+        module && !attestationError
+          ? await Promise.all([
+              c.readContract({
+                address: module,
+                abi: ragequitAbi,
+                functionName: "treasury",
+                blockNumber,
+              }),
+              c.readContract({
+                address: module,
+                abi: ragequitAbi,
+                functionName: "mana",
+                blockNumber,
+              }),
+              c.readContract({
+                address: module,
+                abi: ragequitAbi,
+                functionName: "basket",
+                blockNumber,
+              }),
+            ])
+          : null;
+      const quoted =
+        module && !attestationError
+          ? await c.readContract({
               address: module,
               abi: ragequitAbi,
-              functionName: "treasury",
+              functionName: "previewRedeem",
+              args: [amount],
               blockNumber,
-            }),
-            c.readContract({
-              address: module,
-              abi: ragequitAbi,
-              functionName: "mana",
-              blockNumber,
-            }),
-            c.readContract({
-              address: module,
-              abi: ragequitAbi,
-              functionName: "basket",
-              blockNumber,
-            }),
-          ])
-        : null;
-      const quoted = module
-        ? await c.readContract({
-            address: module,
-            abi: ragequitAbi,
-            functionName: "previewRedeem",
-            args: [amount],
-            blockNumber,
-          })
-        : null;
-      return { supply, balances, allowances, identity, quoted };
-    },
-  );
+            })
+          : null;
+      return {
+        supply,
+        balances,
+        allowances,
+        identity,
+        quoted,
+        attestationError,
+      };
+    });
+  if (JSON.stringify(await anchors()) !== JSON.stringify(hashes))
+    throw new RpcFault("RAGEQUIT_BLOCK_CHANGED");
   const amounts = redeemAmounts(balances, amount, supply);
   const reasons: string[] = [];
+  if (attestationError) reasons.push(attestationError);
   if (!module)
     reasons.push("The ragequit module has not been deployed and configured.");
   if (
@@ -122,6 +160,9 @@ export async function redeemPreview(
     amounts,
     supply,
     block: String(blockNumber),
+    blockHash: hashes[0],
+    attestationBlock: String(attestationBlock),
+    attestationBlockHash: hashes[1],
     available: reasons.length === 0,
     reasons,
     checkedAt: new Date().toISOString(),

@@ -100,6 +100,12 @@ contract ExistingGovernorForkTest {
         IERC20(MANA).approve(address(module), 1 ether);
         vm.prank(member);
         module.redeem(1 ether, member, quote, block.timestamp + 900);
+        // Native USDC and Polygon WETH consume even a maximum allowance; GEM preserves it.
+        require(IERC20(USDC).allowance(TREASURY, address(module)) == type(uint256).max - paid[2] - quote[2]);
+        require(IERC20(WETH).allowance(TREASURY, address(module)) == type(uint256).max - paid[1] - quote[1]);
+        require(IERC20(GEM).allowance(TREASURY, address(module)) == type(uint256).max);
+        emit log_named_uint("nativeUsdcAllowanceConsumed", paid[2] + quote[2]);
+        emit log_named_uint("wethAllowanceConsumed", paid[1] + quote[1]);
         checkPausedRollback(module);
         vm.prank(FiatToken(USDC).pauser());
         FiatToken(USDC).unpause();

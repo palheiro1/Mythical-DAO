@@ -1,11 +1,43 @@
 {
-  "checkedAt": "2026-09-29T08:49:46.173Z",
+  "status": "simulation-only",
+  "preparedAt": "2026-10-01T12:47:58.762Z",
+  "from": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
   "chainId": 137,
-  "block": "94644367",
-  "blockHash": "0xc1841b1dc03b6e7f1918e3753ee982305cb402d8727746ac63548df41d3c1299",
-  "initCodeKeccak256": "0x710a2b7369fd614a83b89366d3cf7bb57150fec3a54161795fe7fa744f99b24c",
-  "instantiatedRuntimeKeccak256": "0x038f9c83bd7b3d3eb98c06770652a31e9f38cfa52fd7d79517e1a1c6ff3f1eb7",
-  "runtimeBytes": 4210,
   "providersAgree": true,
+  "providers": [
+    "polygon.drpc.org",
+    "tenderly.rpc.polygon.community"
+  ],
+  "head": {
+    "number": "94769157",
+    "hash": "0x3d4216ee22e4e8d360d3fbd6c52331de438dcd1ab9ed69e2fc02b5c1a19fad54",
+    "timestamp": "1790858876"
+  },
+  "confirmedBlock": "94769093",
+  "confirmedBlockHash": "0x50c47bc58ca31f9f40161013a5984b96079336a041dc6f9005e90446d15db2f0",
+  "initCodeKeccak256": "0x4180449b7b77b9cad40d742b653aaca16d71f39810a5dd62904d4d2d8abe7324",
+  "instantiatedRuntimeKeccak256": "0x3a4c043fc5bac256e18e0c1f1fe2931cdd506f6c38ea22b00a4c3a41783dd73c",
+  "runtimeBytes": 4450,
+  "sourceFilesVerified": 12,
+  "deployerBalanceWei": "9312486471740127930",
+  "gasEstimates": [
+    "1068711",
+    "1068711"
+  ],
+  "gasLimit": "1282454",
+  "gasMarginPercent": 20,
+  "feeEstimates": [
+    {
+      "maxFeePerGas": "323035524378",
+      "maxPriorityFeePerGas": "25000000000"
+    },
+    {
+      "maxFeePerGas": "326350565027",
+      "maxPriorityFeePerGas": "25000000000"
+    }
+  ],
+  "maximumGasCostWei": "418529587521136258",
+  "maximumGasCostPOL": "0.418529587521136258",
+  "signed": false,
   "broadcast": false
 }

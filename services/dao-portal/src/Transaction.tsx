@@ -16,6 +16,7 @@ import { actionSummary } from "../shared/action-summary";
 import { m } from "./i18n";
 import { ErrorNotice } from "./ui";
 import { waitForOperation } from "./transaction-receipt";
+import { attestRagequitIntent } from "./ragequit-attestation";
 export interface TransactionIntent {
   title: string;
   to: Address;
@@ -111,6 +112,7 @@ export function TransactionProvider({
       if (!address || chainId !== config.chainId)
         throw new Error(m("Connect your wallet to the correct network first."));
       if (!config.enabled) throw new Error(m("Signing is unavailable."));
+      await attestRagequitIntent(config, intent, client);
       const batch = intent.actions
         ? await api<BatchSimulation>("simulate-actions", {
             actions: intent.actions,
@@ -178,6 +180,7 @@ export function TransactionProvider({
         data: intent.data,
         value: intent.value ?? "0",
       });
+      await attestRagequitIntent(config, intent, client);
       intent.assertCurrent?.();
       if (
         currentWallet.current.epoch !== review.walletEpoch ||

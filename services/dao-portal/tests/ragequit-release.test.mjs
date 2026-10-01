@@ -9,9 +9,50 @@ import {
   assertModuleAddress,
   assertIndependentProviders,
   assertModuleRuntime,
+  instantiateModuleRuntime,
   fixedAddresses,
 } from "../scripts/ragequit-policy.mjs";
 const manifest = JSON.parse(readFileSync("deployments/polygon.json", "utf8"));
+it("places constructor identities by named compiler declarations, rejecting missing or overlapping references", () => {
+  const addresses = ["treasury", "mana", "gem", "weth", "usdcNative"].map(
+    (k) => fixedAddresses[k],
+  );
+  const names = ["treasury", "mana", "gem", "weth", "usdc"];
+  const declarations = names.map((name, i) => ({
+    name,
+    id: 99 - i,
+    mutability: "immutable",
+  }));
+  const artifact = {
+    ast: {
+      nodes: [
+        {
+          nodeType: "ContractDefinition",
+          name: "MythicalRagequitModule",
+          nodes: declarations,
+        },
+      ],
+    },
+    deployedBytecode: {
+      object: "0x" + "00".repeat(160),
+      immutableReferences: Object.fromEntries(
+        declarations.map((d, i) => [d.id, [{ start: i * 32, length: 32 }]]),
+      ),
+    },
+  };
+  expect(instantiateModuleRuntime(artifact, addresses)).toBe(
+    "0x" + addresses.map((a) => a.slice(2).padStart(64, "0")).join(""),
+  );
+  const overlap = structuredClone(artifact);
+  overlap.deployedBytecode.immutableReferences[98][0].start = 0;
+  expect(() => instantiateModuleRuntime(overlap, addresses)).toThrow(
+    "Overlapping",
+  );
+  declarations[0].name = "unknown";
+  expect(() => instantiateModuleRuntime(artifact, addresses)).toThrow(
+    "named immutable",
+  );
+});
 it("pins the approved identities and rejects native/bridged USDC substitution and module/token confusion", () => {
   expect(() => assertRagequitManifest(manifest)).not.toThrow();
   const wrong = structuredClone(manifest);

@@ -1,0 +1,15 @@
+Compiling 63 files with Solc 0.8.30
+Solc 0.8.30 finished in 1.68s
+Compiler run successful!
+
+Ran 7 tests for contracts/test/RagequitAudit.t.sol:RagequitAuditTest
+[PASS] testAllowanceDriftsBelowMaxWithDecrementingToken() (gas: 1702719)
+[PASS] testAssetAndManaRecipientsAreRejectedWithoutBurn() (gas: 102696)
+[PASS] testBurnCompletesBeforeTheFirstAssetTransfer() (gas: 1975650)
+[PASS] testFuzzSequenceConservationAndNoDilution(uint96,uint96,uint96,uint96,uint96) (runs: 2048, μ: 385778, ~: 394760)
+[PASS] testModuleHoldsNothingAndDonationsToItAreNotPaidOut() (gas: 216062)
+[PASS] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2065178)
+[PASS] testReentrancyIsBlockedByTheGuardNotByAccident() (gas: 2059547)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 1.11s (1.12s CPU time)
+
+Ran 1 test suite in 1.12s (1.11s CPU time): 7 tests passed, 0 failed, 0 skipped (7 total tests)

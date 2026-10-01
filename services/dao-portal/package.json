@@ -17,7 +17,7 @@
     "contracts:build": "forge build && node --experimental-strip-types scripts/export-abis.mjs",
     "db:local": "wrangler d1 migrations apply DAO_DB --local",
     "deploy:check": "npm run build && wrangler deploy --dry-run",
-    "check": "npm run typecheck && npm test && forge test && npm run build",
+    "check": "npm run typecheck && npm test && forge test && node scripts/check-ragequit-release.mjs && npm run build",
     "test:browser": "playwright test",
     "rehearse": "node scripts/rehearse-existing.mjs",
     "format": "prettier --write src worker shared tests scripts *.json *.ts *.html",

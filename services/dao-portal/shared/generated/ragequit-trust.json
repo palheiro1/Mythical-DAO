@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "chainId": 137,
+  "moduleAddress": null,
+  "runtimeHash": "0x3a4c043fc5bac256e18e0c1f1fe2931cdd506f6c38ea22b00a4c3a41783dd73c",
+  "addresses": {
+    "treasury": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
+    "mana": "0x2caCCa1266653bB090D3Fb511456EBCA33150562",
+    "gem": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+    "weth": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+    "usdcNative": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+  }
+}

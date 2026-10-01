@@ -254,7 +254,7 @@ test("wallet menu avoids accidental disconnect and account changes invalidate a 
     "Wallet or network changed",
   );
 });
-test("exit edits and expiration invalidate burn acknowledgment and transaction review", async ({
+test("exit edits and expiration invalidate acknowledgment; an unpinned module cannot reach signing", async ({
   page,
 }) => {
   await controlledPortal(page);
@@ -285,20 +285,49 @@ test("exit edits and expiration invalidate burn acknowledgment and transaction r
   await page
     .getByRole("button", { name: "Review permanent exit", exact: true })
     .click();
-  await expect(page.getByRole("dialog")).toContainText(
-    "Review MANA burn and assets to receive",
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+  await expect(page.getByRole("alert")).toContainText(
+    "awaiting a verified deployment",
   );
   await page.clock.fastForward(121000);
   await expect(
-    page.getByRole("button", { name: "Confirm in wallet" }),
+    page.getByRole("button", { name: "Review permanent exit", exact: true }),
   ).toBeDisabled();
-  await expect(page.getByRole("dialog")).toContainText("The preview expired.");
-  await page.getByRole("button", { name: "Close review" }).click();
+  await expect(
+    page.getByText(
+      "Preview expired or changed. Refresh it before continuing.",
+      { exact: true },
+    ),
+  ).toBeVisible();
   await expect(acknowledgment).not.toBeChecked();
   await page.getByLabel("MANA to burn", { exact: true }).fill("2");
   await expect(
     page.getByRole("button", { name: "Review permanent exit", exact: true }),
   ).toBeDisabled();
+});
+
+test("an API-approved but unpinned module cannot obtain MANA authorization", async ({
+  page,
+}) => {
+  await controlledPortal(page);
+  await injectWallet(page);
+  await page.goto("/#ragequit");
+  await page
+    .getByRole("button", { name: "Connect wallet", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Injected", exact: true }).click();
+  await page.getByLabel("MANA to burn", { exact: true }).fill("2");
+  await page.getByRole("button", { name: "Preview my exit" }).click();
+  await page
+    .getByRole("button", { name: "1. Authorize 2 MANA", exact: true })
+    .click();
+  await expect(page.getByRole("alert")).toContainText(
+    "awaiting a verified deployment",
+  );
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Confirm in wallet" }),
+  ).not.toBeVisible();
 });
 
 test("reviewed proposal text and choices reach the wallet unchanged", async ({

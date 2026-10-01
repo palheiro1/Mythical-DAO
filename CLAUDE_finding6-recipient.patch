@@ -1,0 +1,15 @@
+--- /tmp/orig.sol	2026-10-01 11:44:33.345609507 +0000
++++ contracts/src/MythicalRagequitModule.sol	2026-10-01 11:44:33.356678386 +0000
+@@ -71,7 +71,11 @@
+         nonReentrant
+         returns (uint256[3] memory amounts)
+     {
+-        if (recipient == address(0) || recipient == treasury || recipient == address(this)) revert InvalidRecipient();
++        if (
++            recipient == address(0) || recipient == treasury || recipient == address(this)
++                || recipient == address(mana) || recipient == address(gem) || recipient == address(weth)
++                || recipient == address(usdc)
++        ) revert InvalidRecipient();
+         if (block.timestamp > deadline) revert Expired();
+         uint256 supply = mana.totalSupply();
+         uint256 memberBalance = mana.balanceOf(msg.sender);

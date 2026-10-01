@@ -17,13 +17,43 @@ const fixture = vi.hoisted(() => ({
   secondarySimulationError: 0,
   simulations: [] as unknown[],
   reads: [] as string[],
+  code: "0x6000",
+  codeFails: false,
+  codeBlocks: [] as bigint[],
+  blockReads: 0,
+  reorgAt: 0,
 }));
+vi.mock("../shared/generated/ragequit-trust.json", async () => {
+  const { default: original } = await vi.importActual<{
+    default: typeof import("../shared/generated/ragequit-trust.json");
+  }>("../shared/generated/ragequit-trust.json");
+  const { keccak256 } = await import("viem");
+  return {
+    default: {
+      ...original,
+      moduleAddress: fixture.module,
+      runtimeHash: keccak256("0x6000"),
+    },
+  };
+});
 vi.mock("../worker/rpc", async (original) => {
   const real = await original<typeof import("../worker/rpc")>();
   const client = {
+    getCode: async ({ blockNumber }: { blockNumber: bigint }) => {
+      fixture.codeBlocks.push(blockNumber);
+      if (fixture.codeFails) throw Error("RPC unavailable");
+      return fixture.code;
+    },
     getBlockNumber: async () => 1000n,
     getChainId: async () => 137,
-    getBlock: async () => ({ hash: "0x" + "a".repeat(64) }),
+    getBlock: async () => ({
+      hash:
+        "0x" +
+        (fixture.reorgAt && ++fixture.blockReads >= fixture.reorgAt
+          ? "b"
+          : "a"
+        ).repeat(64),
+    }),
     getBalance: async () => 0n,
     readContract: async ({
       address,
@@ -139,6 +169,11 @@ beforeEach(async () => {
   fixture.secondarySimulationError = 0;
   fixture.reads = [];
   fixture.simulations = [];
+  fixture.code = "0x6000";
+  fixture.codeFails = false;
+  fixture.codeBlocks = [];
+  fixture.blockReads = 0;
+  fixture.reorgAt = 0;
   env = {
     ...db.bindings,
     ENVIRONMENT: "local",
@@ -176,6 +211,61 @@ it("governance signs with no module, allowances or asset cursors", async () => {
   const quote = await request("redeem-preview?amount=10");
   expect(quote.data.available).toBe(false);
   expect(quote.data.module).toBeNull();
+});
+it.each(["0x", "0x6001", "rpc-error"])(
+  "blocks preview and MANA approval for unverified runtime %s while delegation still works",
+  async (code) => {
+    withModule();
+    fixture.code = code;
+    fixture.codeFails = code === "rpc-error";
+    const quote = await request("redeem-preview?amount=10");
+    expect(quote.status).toBe(200);
+    expect(quote.data.available).toBe(false);
+    expect(quote.data.reasons.join(" ")).toContain("could not be verified");
+    const tx = {
+      account: fixture.module,
+      to: manifest.contracts.mana.address,
+      value: "0",
+    };
+    expect(
+      (
+        await request("preflight", {
+          ...tx,
+          data: encodeFunctionData({
+            abi: tokenAbi,
+            functionName: "approve",
+            args: [fixture.module as Address, 10n],
+          }),
+        })
+      ).status,
+    ).not.toBe(200);
+    expect(
+      (
+        await request("preflight", {
+          ...tx,
+          data: encodeFunctionData({
+            abi: tokenAbi,
+            functionName: "delegate",
+            args: [fixture.module as Address],
+          }),
+        })
+      ).status,
+    ).toBe(200);
+  },
+);
+it("attests code at the confirmed block and discards a preview whose anchor changes", async () => {
+  withModule();
+  const quote = await request("redeem-preview?amount=10");
+  expect(quote.data.available).toBe(true);
+  expect(quote.data.block).toBe("936");
+  expect(fixture.codeBlocks).toEqual([936n, 936n]);
+  const { redeemPreview } = await import("../worker/ragequit");
+  const { clients } = await import("../worker/rpc");
+  fixture.reorgAt = 3;
+  fixture.blockReads = 0;
+  await expect(
+    redeemPreview(config(env), clients(env), 10n, 936n),
+  ).rejects.toThrow("RAGEQUIT_BLOCK_CHANGED");
 });
 it("accepts the configured portal origin through a proxy and rejects unrelated origins", async () => {
   env.PORTAL_ORIGIN = "https://mythical-dao-preview.vercel.app";

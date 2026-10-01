@@ -71,7 +71,11 @@ contract MythicalRagequitModule is ReentrancyGuard {
         nonReentrant
         returns (uint256[3] memory amounts)
     {
-        if (recipient == address(0) || recipient == treasury || recipient == address(this)) revert InvalidRecipient();
+        if (
+            recipient == address(0) || recipient == treasury || recipient == address(this)
+                || recipient == address(mana) || recipient == address(gem) || recipient == address(weth)
+                || recipient == address(usdc)
+        ) revert InvalidRecipient();
         if (block.timestamp > deadline) revert Expired();
         uint256 supply = mana.totalSupply();
         uint256 memberBalance = mana.balanceOf(msg.sender);

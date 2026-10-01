@@ -1,0 +1,22 @@
+Compiling 2 files with Solc 0.8.30
+Solc 0.8.30 finished in 546.95ms
+Compiler run successful!
+
+Ran 7 tests for contracts/test/RagequitAudit.t.sol:RagequitAuditTest
+[PASS] testAllowanceDriftsBelowMaxWithDecrementingToken() (gas: 1703125)
+[PASS] testAssetAndManaRecipientsAreRejectedWithoutBurn() (gas: 102696)
+[FAIL: MANA supply not burned before payout] testBurnCompletesBeforeTheFirstAssetTransfer() (gas: 1857748)
+[PASS] testFuzzSequenceConservationAndNoDilution(uint96,uint96,uint96,uint96,uint96) (runs: 2048, μ: 385131, ~: 394784)
+[PASS] testModuleHoldsNothingAndDonationsToItAreNotPaidOut() (gas: 216068)
+[FAIL: preview unchanged mid-exit] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2085570)
+[PASS] testReentrancyIsBlockedByTheGuardNotByAccident() (gas: 2059953)
+Suite result: FAILED. 5 passed; 2 failed; 0 skipped; finished in 1.09s (1.09s CPU time)
+
+Ran 1 test suite in 1.09s (1.09s CPU time): 5 tests passed, 2 failed, 0 skipped (7 total tests)
+
+Failing tests:
+Encountered 2 failing tests in contracts/test/RagequitAudit.t.sol:RagequitAuditTest
+[FAIL: MANA supply not burned before payout] testBurnCompletesBeforeTheFirstAssetTransfer() (gas: 1857748)
+[FAIL: preview unchanged mid-exit] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2085570)
+
+Encountered a total of 2 failing tests, 5 tests succeeded

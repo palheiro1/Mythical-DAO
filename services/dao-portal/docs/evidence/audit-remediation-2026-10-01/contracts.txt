@@ -1,0 +1,66 @@
+Compiling 1 files with Solc 0.8.30
+Solc 0.8.30 finished in 225.86ms
+Compiler run successful!
+
+Ran 1 test for contracts/test/PolygonCompatibility.t.sol:PolygonCompatibilityTest
+[SKIP] testPolygonCompatibilityWhenRPCProvided() (gas: 0)
+Suite result: ok. 0 passed; 0 failed; 1 skipped; finished in 215.57µs (63.69µs CPU time)
+
+Ran 1 test for contracts/test/ExistingGovernorFork.t.sol:ExistingGovernorForkTest
+[SKIP] testRealGovernorAuthorizationCycleAndRealTokenExits() (gas: 0)
+Suite result: ok. 0 passed; 0 failed; 1 skipped; finished in 227.53µs (33.32µs CPU time)
+
+Ran 15 tests for contracts/test/RagequitModule.t.sol:RagequitModuleTest
+[PASS] testAllZeroRejected() (gas: 108246)
+[PASS] testBlockedOrFeeTokenRollsBackEverything() (gas: 434102)
+[PASS] testDelegatedVoterCanBurnOnlyOwnBalanceEvenWithAllowance() (gas: 302888)
+[PASS] testFaultyBurnSupplyAndBalanceChangesRollBackPaymentsAndAllowance() (gas: 2002432)
+[PASS] testFuzzConservationAndRounding(uint96) (runs: 256, μ: 189578, ~: 182471)
+[PASS] testInsufficientAndRevokedAllowanceRollBackAllAssetsAndBurn() (gas: 365829)
+[PASS] testInvalidAmountAndConstructor() (gas: 98556)
+[PASS] testLaterAssetHookCannotAlterAnEarlierPayout() (gas: 1780745)
+[PASS] testMinimumsAreEnforcedForEachAssetBeforeAnyBurn() (gas: 136931)
+[PASS] testNoDelegatedBurnAndReentrancyBlocked() (gas: 340060)
+[PASS] testProportionIncludesTreasuryManaAndExactApproval() (gas: 209279)
+[PASS] testProportionalMathHandlesIntermediateUint256Overflow() (gas: 2481208)
+[PASS] testRecipientExpiryAndMinimums() (gas: 190665)
+[PASS] testSuccessiveExitsAndNewRevenue() (gas: 378338)
+[PASS] testZeroQuotaAllowedEvenWithoutAllowance() (gas: 145082)
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 51.00ms (44.98ms CPU time)
+
+Ran 22 tests for contracts/test/Governance.t.sol:GovernanceTest
+[PASS] testAbstentionOnlyCannotPass() (gas: 145262)
+[PASS] testAllowanceBalanceSlippageAndDeadline() (gas: 133162)
+[PASS] testBallotFrozenRulesAndCancelBoundary() (gas: 197442)
+[PASS] testBallotTieNoQuorumAndAbstain() (gas: 554199)
+[PASS] testBallotValidationAndUnauthorizedRules() (gas: 33573)
+[PASS] testBallotWinnerAndDuplicate() (gas: 310375)
+[PASS] testBelowThresholdAndExactThreshold() (gas: 233124)
+[PASS] testEmptyAndDustRejectBeforeBurn() (gas: 137835)
+[PASS] testExitCanMakeApprovedPaymentFailAtomically() (gas: 588227)
+[PASS] testFullLifecycleWithExitDuringTimelock() (gas: 598866)
+[PASS] testFuzzConservation(uint96,uint96) (runs: 256, μ: 355041, ~: 332359)
+[PASS] testGovernanceCannotIntroduceAnOperationalSpendingKey() (gas: 34275)
+[PASS] testLessThanTwoThirdsFails() (gas: 239552)
+[PASS] testNoAdminSpendOrRoleGrant() (gas: 26017)
+[PASS] testPartialTotalAndSuccessiveRedeems() (gas: 579498)
+[PASS] testPausedTokenAndFeeRollbackAllAssets() (gas: 423144)
+[PASS] testQuorumExactAndDelegationAfterSnapshot() (gas: 223705)
+[PASS] testReentrancyAndRecipient() (gas: 394612)
+[PASS] testRejectNativeRollsBackBurn() (gas: 195559)
+[PASS] testTimelockFloorAndReplacement() (gas: 23629)
+[PASS] testTimingDuplicateAndSnapshotAfterBurn() (gas: 438279)
+[PASS] testTreasuryMANAIsIncludedInSupply() (gas: 98488)
+Suite result: ok. 22 passed; 0 failed; 0 skipped; finished in 50.97ms (54.41ms CPU time)
+
+Ran 7 tests for contracts/test/RagequitAudit.t.sol:RagequitAuditTest
+[PASS] testAllowanceDriftsBelowMaxWithDecrementingToken() (gas: 1702719)
+[PASS] testAssetAndManaRecipientsAreRejectedWithoutBurn() (gas: 102696)
+[PASS] testBurnCompletesBeforeTheFirstAssetTransfer() (gas: 1975650)
+[PASS] testFuzzSequenceConservationAndNoDilution(uint96,uint96,uint96,uint96,uint96) (runs: 256, μ: 385145, ~: 391259)
+[PASS] testModuleHoldsNothingAndDonationsToItAreNotPaidOut() (gas: 216062)
+[PASS] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2065178)
+[PASS] testReentrancyIsBlockedByTheGuardNotByAccident() (gas: 2059547)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 139.78ms (141.72ms CPU time)
+
+Ran 5 test suites in 140.65ms (242.19ms CPU time): 44 tests passed, 0 failed, 2 skipped (46 total tests)
