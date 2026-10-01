@@ -1,7 +1,7 @@
 {
   "version": 1,
   "chainId": 137,
-  "moduleAddress": null,
+  "moduleAddress": "0xef06E163F65807872e62b4AB186EffcAFca7C8C9",
   "runtimeHash": "0x3a4c043fc5bac256e18e0c1f1fe2931cdd506f6c38ea22b00a4c3a41783dd73c",
   "addresses": {
     "treasury": "0x7B9e327748462F1038c9D081c98d189b22C60A27",

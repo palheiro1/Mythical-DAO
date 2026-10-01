@@ -1,6 +1,6 @@
 # Ragequit — pacote para revisão independente
 
-Preparado em 29 de setembro de 2026. **A revisão independente ainda não foi realizada.** Este documento define o trabalho para um revisor externo; não foi enviado a terceiros, contratado um serviço ou implantado o módulo.
+Preparado em 29 de setembro de 2026. Este documento define o escopo pedido ao revisor. **Atualização de 1 de outubro:** depois das revisões e correções, o utilizador comunicou que o auditor aprova e autorizou a implantação e a proposta. Essa confirmação está registada em [review-acceptance.json](../deployments/ragequit-release/review-acceptance.json), associada aos hashes do pacote corrigido. Não foi fornecida identidade do auditor nem um relatório adicional com esta confirmação. Consultar o [estado da ativação](RAGEQUIT_ACTIVATION_2026_10_01.md).
 
 Histórico, antes das correções de 1 de outubro: [preflight da carteira e nova evidência](RAGEQUIT_PREFLIGHT.md), ensaio recente do Governor real e análise Slither com todos os 51 alertas preservados e triagem interna explícita. O [Standard JSON](../deployments/ragequit-release/compiler-input.json) inclui as 12 fontes completas; a recompilação com solc 0.8.30 reproduziu o bytecode exato. A análise automática e a compilação por outra ferramenta não são apresentadas como revisão independente.
 
@@ -14,7 +14,7 @@ O alvo é `MythicalRagequitModule` e os scripts de preparação, verificação e
 
 Init code atual: `0x4180449b7b77b9cad40d742b653aaca16d71f39810a5dd62904d4d2d8abe7324`, 5318 bytes. Runtime com os argumentos aprovados: `0x3a4c043fc5bac256e18e0c1f1fe2931cdd506f6c38ea22b00a4c3a41783dd73c`. Os artefactos existentes e a revisão interna estão ligados no [README do pacote](../deployments/ragequit-release/README.md).
 
-Pedir ao revisor: relatório com ficheiros/hashes e commit exatos, achados por gravidade, provas de reprodução, correções propostas e confirmação de reteste. Registar os achados sem alterar `independentReview: pending` até existir efetivamente um relatório independente aceite.
+O pedido ao revisor inclui relatório com ficheiros/hashes e commit exatos, achados por gravidade, provas de reprodução, correções propostas e confirmação de reteste. A aceitação agora comunicada pelo utilizador foi registada como `approved-as-reported-by-user`, distinguindo-a dos relatórios recebidos anteriormente.
 
 ## Escopo
 

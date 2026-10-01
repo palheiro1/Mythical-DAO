@@ -185,7 +185,7 @@ it("keeps Graph off by default and requires a scope policy and a private key", a
   ).json();
   expect(JSON.stringify(cfg)).not.toContain(env.GRAPH_API_KEY);
   expect(cfg).toMatchObject({
-    capabilities: { governance: "existing-governor", ragequit: false },
+    capabilities: { governance: "existing-governor" },
   });
 });
 it("allows the explicit server-only exception without claiming provider scope or bypassing other guards", async () => {

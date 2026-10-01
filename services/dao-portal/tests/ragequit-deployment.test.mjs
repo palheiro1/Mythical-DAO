@@ -9,6 +9,8 @@ import {
 } from "../scripts/ragequit-deployment-checks.mjs";
 
 const manifest = JSON.parse(readFileSync("deployments/polygon.json", "utf8"));
+// These cases model the pre-deployment state even after the live module is pinned.
+delete manifest.contracts.ragequitModule;
 const from = "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9";
 function fixture() {
   const roles = ["treasury", "mana", "gem", "weth", "usdcNative"];

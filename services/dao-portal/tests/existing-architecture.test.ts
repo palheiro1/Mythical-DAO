@@ -1,7 +1,10 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { encodeFunctionData, type Address } from "viem";
 import { config } from "../worker/config";
-import manifest from "../deployments/polygon.json";
+import activeManifest from "../deployments/polygon.json";
+const { ragequitModule: _deployedModule, ...preDeploymentContracts } =
+  activeManifest.contracts;
+const manifest = { ...activeManifest, contracts: preDeploymentContracts };
 import { database } from "./db-fixture";
 import { eventProposal } from "../worker/data";
 import { relevantLog } from "../worker/indexer";

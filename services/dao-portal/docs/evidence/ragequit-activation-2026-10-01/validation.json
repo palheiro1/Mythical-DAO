@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-10-01T14:50:06.257Z",
+  "typecheck": "passed",
+  "unitTests": {
+    "passed": 155,
+    "files": 23
+  },
+  "build": "passed",
+  "workerDryRun": "passed",
+  "reviewedCreationAndRuntime": "passed; contract sources unchanged",
+  "sourceVerification": "Sourcify exact creation and runtime match",
+  "workerVersion": "f1259842-669b-4ab8-af57-1e1b0d8ed1b6",
+  "vercel": {
+    "id": "dpl_Fce86AymFL1UhLPmPbjvnuJbqVtw",
+    "state": "READY",
+    "project": "mythical-dao-preview",
+    "url": "https://mythical-dao-preview-2nkjyjkh5-palheiro1s-projects.vercel.app",
+    "alias": "https://dao-preview.mythicalbeings.io",
+    "scope": "Isolated preview project; production target within that project"
+  },
+  "liveChecks": {
+    "governanceSigning": true,
+    "module": "0xef06E163F65807872e62b4AB186EffcAFca7C8C9",
+    "ragequitAvailable": false,
+    "treasuryAllowances": [
+      "0",
+      "0",
+      "0"
+    ],
+    "oneManaPreview": [
+      "657100440000000000",
+      "80000000",
+      "0"
+    ],
+    "usdcNativeZeroConfirmed": true
+  },
+  "publicBundleCredentialCheck": "passed",
+  "proposalStatus": "prepared and simulated; wallet connection pending; not submitted",
+  "diskPreflight": {
+    "additionalGb": 1,
+    "availableBytesBefore": 355066204160,
+    "reserveBytes": 40000000000
+  },
+  "liveBrowserCheck": {
+    "moduleLink": "0xef06e163f65807872e62b4ab186effcafca7c8c9",
+    "screenshot": "portal-module.jpg",
+    "governanceHistoryContinues": true
+  }
+}

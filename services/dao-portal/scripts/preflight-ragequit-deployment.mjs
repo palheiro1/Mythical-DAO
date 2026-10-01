@@ -203,7 +203,7 @@ async function main() {
       maximumGasCostWei: priced.maximumGasCost,
       maximumGasCostPOL: formatEther(priced.maximumGasCost),
     },
-    note: "Creation of only MythicalRagequitModule, no to address, zero native value. Nonce and fee estimates are temporary: repeat preflight immediately before signing. refreshAfter is a review reminder, not an on-chain expiry. Independent review and human signature remain pending.",
+    note: "Creation of only MythicalRagequitModule, no to address, zero native value. Nonce and fee estimates are temporary: repeat preflight immediately before signing. refreshAfter is a review reminder, not an on-chain expiry. See independentReview and its evidence for the review status. Human signature remains pending.",
     signed: false,
     broadcast: false,
   };

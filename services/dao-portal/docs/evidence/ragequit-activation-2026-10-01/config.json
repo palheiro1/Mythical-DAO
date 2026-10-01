@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "architecture": "existing-governor",
+  "snapshotUrl": "https://snapshot.box/#/s:mythicalbeings.eth",
+  "capabilities": {
+    "governance": "existing-governor",
+    "snapshot": "external",
+    "timelock": false,
+    "ragequit": true
+  },
+  "chainId": 137,
+  "environment": "staging",
+  "contracts": {
+    "treasury": {
+      "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "startBlock": "48674443"
+    },
+    "ragequitModule": {
+      "address": "0xef06e163f65807872e62b4ab186effcafca7c8c9",
+      "startBlock": "94773613"
+    },
+    "gem": {
+      "address": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+      "startBlock": "48674443"
+    },
+    "usdcNative": {
+      "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+      "startBlock": "48674443"
+    },
+    "usdcBridged": {
+      "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+      "startBlock": "48674443"
+    },
+    "mana": {
+      "address": "0x2cacca1266653bb090d3fb511456ebca33150562",
+      "startBlock": "45785116"
+    },
+    "legacyGovernor": {
+      "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "startBlock": "48674443"
+    },
+    "governor": {
+      "address": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "startBlock": "48674443"
+    },
+    "weth": {
+      "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "startBlock": "48674443"
+    },
+    "usdc": {
+      "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+      "startBlock": "48674443"
+    }
+  },
+  "confirmations": 64,
+  "enabled": true,
+  "portalUrl": "https://dao-preview.mythicalbeings.io"
+}

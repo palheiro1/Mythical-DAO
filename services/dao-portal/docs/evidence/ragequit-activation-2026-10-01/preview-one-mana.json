@@ -1,0 +1,50 @@
+{
+  "module": "0xef06e163f65807872e62b4ab186effcafca7c8c9",
+  "treasury": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+  "mana": "0x2cacca1266653bb090d3fb511456ebca33150562",
+  "basket": [
+    {
+      "symbol": "GEM",
+      "address": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+      "decimals": 18,
+      "ragequit": true,
+      "balance": "657100440000000000000000",
+      "allowance": "0",
+      "amount": "657100440000000000"
+    },
+    {
+      "symbol": "WETH",
+      "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "decimals": 18,
+      "ragequit": true,
+      "balance": "80000000000000",
+      "allowance": "0",
+      "amount": "80000000"
+    },
+    {
+      "symbol": "USDC",
+      "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+      "decimals": 6,
+      "ragequit": true,
+      "balance": "0",
+      "allowance": "0",
+      "amount": "0"
+    }
+  ],
+  "amounts": [
+    "657100440000000000",
+    "80000000",
+    "0"
+  ],
+  "supply": "1000000000000000000000000",
+  "block": "94773876",
+  "blockHash": "0x8d3555887f4c7734db73049bca1b6606de3d067a69340393437bb14bbfc73441",
+  "attestationBlock": "94773876",
+  "attestationBlockHash": "0x8d3555887f4c7734db73049bca1b6606de3d067a69340393437bb14bbfc73441",
+  "available": false,
+  "reasons": [
+    "GEM: the exit exceeds the treasury allowance. A DAO authorization is required.",
+    "WETH: the exit exceeds the treasury allowance. A DAO authorization is required."
+  ],
+  "checkedAt": "2026-10-01T14:47:30.561Z"
+}

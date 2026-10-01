@@ -2,8 +2,8 @@
   "preparedAt": "2026-10-01T12:33:35.687Z",
   "chainId": 137,
   "contract": "MythicalRagequitModule",
-  "deploymentAddress": null,
-  "independentReview": "pending",
+  "deploymentAddress": "0xef06E163F65807872e62b4AB186EffcAFca7C8C9",
+  "independentReview": "approved-as-reported-by-user",
   "compiler": {
     "version": "0.8.30+commit.73712a01"
   },
@@ -162,5 +162,7 @@
     "Verify deployed runtime and all immutable addresses",
     "DAO proposal, vote and execution of the three allowances",
     "Confirmed allowances and a small consented real exit"
-  ]
+  ],
+  "reviewAcceptance": "review-acceptance.json",
+  "deploymentReceipt": "deployment-receipt.json"
 }

@@ -1,5 +1,7 @@
 # Entrega — Governor atual e ragequit sem migração
 
+**1 de outubro — módulo implantado e verificado:** `0xef06E163F65807872e62b4AB186EffcAFca7C8C9`, bloco 94773613, código idêntico ao pacote aprovado. Fontes verificadas no Sourcify; endereço fixado e publicado no preview e Worker. A proposta das três autorizações está preparada e simulada, aguardando ligação/assinatura da carteira. Autorizações a zero; ragequit ainda indisponível. [Estado e evidências atuais](RAGEQUIT_ACTIVATION_2026_10_01.md). As entradas seguintes conservam o histórico anterior.
+
 1 de outubro, após Claude/Grok: [correções aplicadas e pacote substituído](AUDIT_REMEDIATION_2026_10_01.md). Novo contrato rejeita os quatro tokens como destinatários; frontend e Worker exigem código e endereço fixados; compilação reproduzível; verificador distingue aprovação inicial e suficiência operacional. [USDC.e e USDT0 avaliados](RAGEQUIT_CANDIDATE_ASSETS.md), sem ampliação da cesta. Portal de teste e Worker de staging atualizados e verificados publicamente (governação disponível, módulo ausente). Reteste independente e ativação financeira continuam pendentes. Os registos abaixo conservam os resultados históricos.
 
 1 de outubro, ragequit: [implantação preparada para a carteira escolhida](RAGEQUIT_PREFLIGHT.md), com transação sem assinatura, fontes completas para compilação reproduzível, concordância de dois RPCs e simulação do script de implantação. Novo ensaio do Governor real passou no bloco 94764463; 16 testes Solidity/2048 casos de fuzz e 140 testes portal/scripts passaram, assim como tipos/build. Slither executado e 51 alertas documentados com triagem interna. Revisão independente, implantação pública, autorizações e saída real continuam pendentes.
@@ -62,11 +64,11 @@ O fork move 50000 MANA da tesouraria para um membro de teste e delega esse saldo
 ## Ativação que falta fora do código
 
 1. Completar a indexação histórica para métricas/listas completas e feed de notificações. O preview com D1/RPCs de staging já permite governação mediante verificação direta; o ensaio web de assinatura foi realizado no fork, sem transações públicas.
-2. Concluir revisão independente e implantar **apenas** o módulo; registar e verificar endereço, bloco, código e argumentos.
-3. Materializar a proposta com esse endereço real; submeter, votar e executar pela DAO; confirmar as três autorizações efetivas.
+2. Concluído em 1 de outubro: aprovação comunicada pelo utilizador; módulo implantado, verificado e integrado no preview.
+3. Proposta materializada e simulada com o endereço real; falta submeter, votar e executar pela DAO e confirmar as três autorizações efetivas.
 4. Realizar uma pequena saída real consentida e guardar evidência antes de anunciar disponibilidade geral.
 
-O endereço real do módulo é a única variável pendente da proposta parametrizada. A ausência dele não bloqueia a governação na implementação. `enabled: true` no manifesto habilita a arquitetura atual quando os dados forem verificados; não afirma que a instância local sem RPCs esteja pronta para assinar.
+O endereço real do módulo já está verificado e fixado no manifesto. A falta de autorizações não bloqueia a governação na implementação. `enabled: true` no manifesto habilita a arquitetura atual quando os dados forem verificados; não afirma que a instância local sem RPCs esteja pronta para assinar.
 
 Nenhuma migração, alteração de MANA/delegações, redirecionamento de receitas, modificação de regras do Governor ou mudança automática de notificações foi realizada. O plano V2, os contratos e a configuração histórica foram preservados, juntamente com os documentos antigos em `docs/historical`.
 

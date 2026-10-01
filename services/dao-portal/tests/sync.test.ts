@@ -4,6 +4,8 @@ import { indexSources, syncProgress } from "../shared/sync";
 import { config } from "../worker/config";
 
 const cfg = config({ ENVIRONMENT: "staging", DEPLOYMENT_MANIFEST: "" } as Env);
+// Keep the historical six-source fixture; the module case below adds its four sources.
+delete cfg.contracts.ragequitModule;
 const cursor = (role: "governor" | "mana", block: string) => ({
   contract: cfg.contracts[role]!.address,
   block,

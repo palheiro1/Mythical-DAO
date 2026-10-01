@@ -11,6 +11,7 @@ import {
 } from "../shared/domain";
 import { newDraft, validateDraft, description, fields } from "../src/drafts";
 import { config } from "../worker/config";
+import trust from "../shared/generated/ragequit-trust.json";
 const address = "0x0000000000000000000000000000000000000001" as const;
 describe("integer economic model", () => {
   it("keeps 256-bit values exact in API JSON", () => {
@@ -102,9 +103,14 @@ describe("portable drafts", () => {
 });
 describe("release gates", () => {
   it("activates the existing Governor independently of the missing exit module", () => {
-    const cfg = config({
+    const beforeDeployment = config({
       ENVIRONMENT: "local",
       DEPLOYMENT_MANIFEST: "",
+    } as Env);
+    delete beforeDeployment.contracts.ragequitModule;
+    const cfg = config({
+      ENVIRONMENT: "local",
+      DEPLOYMENT_MANIFEST: JSON.stringify(beforeDeployment),
     } as Env);
     expect(cfg.enabled).toBe(true);
     expect(cfg.contracts.governor?.address).toBe(
@@ -115,6 +121,17 @@ describe("release gates", () => {
       cfg.contracts.usdcBridged?.address,
     );
     expect(cfg.chainId).toBe(137);
+  });
+  it("publishes only the module address pinned in this release", () => {
+    const cfg = config({
+      ENVIRONMENT: "staging",
+      DEPLOYMENT_MANIFEST: "",
+    } as Env);
+    expect(cfg.contracts.ragequitModule?.address).toBe(
+      trust.moduleAddress.toLowerCase(),
+    );
+    expect(cfg.capabilities?.ragequit).toBe(true);
+    expect(cfg.capabilities?.governance).toBe("existing-governor");
   });
   it("rejects lowering finality in production", () =>
     expect(() =>

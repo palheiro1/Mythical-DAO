@@ -1,0 +1,49 @@
+{
+  "status": "syncing",
+  "signingAllowed": true,
+  "historyComplete": false,
+  "checkedAt": "2026-10-01T14:47:01.681Z",
+  "head": "94773921",
+  "confirmedHead": "94773857",
+  "syncPercent": 1.71,
+  "sources": [
+    {
+      "contract": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+      "block": "49288436",
+      "updatedAt": 1790861639656
+    },
+    {
+      "contract": "0x2cacca1266653bb090d3fb511456ebca33150562",
+      "block": "46869666",
+      "updatedAt": 1790861819195
+    },
+    {
+      "contract": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+      "block": "49281114",
+      "updatedAt": 1790861698456
+    },
+    {
+      "contract": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+      "block": "49330524",
+      "updatedAt": 1790861459344
+    },
+    {
+      "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+      "block": "49850900",
+      "updatedAt": 1790861757406
+    },
+    {
+      "contract": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "block": "49328065",
+      "updatedAt": 1790861518624
+    }
+  ],
+  "graphHistory": {
+    "source": "The Graph + RPC",
+    "complete": false,
+    "status": "ready",
+    "checkedAt": 1790861337160,
+    "asOfBlock": "94770728"
+  },
+  "note": "Compact public health response; expanded per-source internal identifiers omitted. Complete original response retained locally."
+}
