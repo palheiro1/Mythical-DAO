@@ -1,6 +1,6 @@
 # Studio deployment and network publication — 30 September 2026
 
-The existing-Governor/MANA pilot is published on The Graph Network, has caught up, and passed real authenticated Gateway comparisons against two Polygon RPCs and existing D1 proposal rows. The API key restriction in Studio and the remaining full-history/reorg acceptance gates are still pending. The portal continues to use its existing D1/RPC backend.
+The existing-Governor/MANA pilot is published on The Graph Network, has caught up, and passed real authenticated Gateway comparisons against two Polygon RPCs and existing D1 proposal rows. The API key restriction in Studio and full-history omission checks remain pending. The controlled local reorg acceptance passed on 1 October; see the update below. The portal continues to use its existing D1/RPC backend.
 
 | Field | Value |
 |---|---|
@@ -102,4 +102,4 @@ The isolated Graph Node rehearsal was attempted in [CI](https://github.com/palhe
 
 ## 1 October — supplemental history preparation
 
-The controlled local reorg rehearsal passed for MANA and Governor proposal/execution rollback. Graph Node did not reject an orphan-hash query; the application must enforce canonical RPC anchors. See [evidence](evidence/reorg-acceptance-2026-10-01.json) and [portal integration](../dao-portal/docs/GRAPH_HISTORY.md). Provider subgraph scope remains unconfirmed because Studio requires wallet reconnection. Read/comparison modes remain off; full-history omission checks are still pending.
+The controlled local reorg rehearsal passed for MANA and Governor proposal/execution rollback. Graph Node did not reject an orphan-hash query; the application must enforce canonical RPC anchors. See [evidence](evidence/reorg-acceptance-2026-10-01.json) and [portal integration](../dao-portal/docs/GRAPH_HISTORY.md). The wallet session is connected, but provider subgraph scope remains unconfirmed because Studio’s selector still returns no results and disables authorization, including after a fresh reload. Read/comparison modes remain off; full-history omission checks are still pending.
