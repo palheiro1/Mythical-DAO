@@ -235,7 +235,7 @@ test.describe("visual acceptance matrix", () => {
           .click();
         await expect(page.getByRole("dialog")).not.toBeVisible();
         await expect(page.getByRole("alert")).toContainText(
-          "awaiting a verified deployment",
+          "configuration differs from the deployment reviewed",
         );
         await check("exit-blocked");
         await page

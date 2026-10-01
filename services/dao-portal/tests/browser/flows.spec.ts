@@ -287,13 +287,13 @@ test("exit edits and expiration invalidate acknowledgment; an unpinned module ca
     .click();
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(page.getByRole("alert")).toContainText(
-    "awaiting a verified deployment",
+    "configuration differs from the deployment reviewed",
   );
   await expect(
     page
       .getByRole("alert")
       .getByText(
-        "Ragequit is awaiting a verified deployment in this portal release.",
+        "Ragequit configuration differs from the deployment reviewed for this portal release.",
         { exact: true },
       ),
   ).toBeVisible();
@@ -330,7 +330,7 @@ test("an API-approved but unpinned module cannot obtain MANA authorization", asy
     .getByRole("button", { name: "1. Authorize 2 MANA", exact: true })
     .click();
   await expect(page.getByRole("alert")).toContainText(
-    "awaiting a verified deployment",
+    "configuration differs from the deployment reviewed",
   );
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(
