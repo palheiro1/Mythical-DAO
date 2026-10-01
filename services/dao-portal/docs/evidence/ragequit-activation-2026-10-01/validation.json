@@ -35,15 +35,42 @@
     "usdcNativeZeroConfirmed": true
   },
   "publicBundleCredentialCheck": "passed",
-  "proposalStatus": "prepared and simulated; wallet connection pending; not submitted",
+  "proposalStatus": "submitted by the user through Firefox; confirmed by two independent RPCs; pending voting start",
   "diskPreflight": {
     "additionalGb": 1,
     "availableBytesBefore": 355066204160,
-    "reserveBytes": 40000000000
+    "reserveBytes": 40000000000,
+    "availableBytesAfter": 355122561024
   },
   "liveBrowserCheck": {
     "moduleLink": "0xef06e163f65807872e62b4ab186effcafca7c8c9",
     "screenshot": "portal-module.jpg",
-    "governanceHistoryContinues": true
-  }
+    "governanceHistoryContinues": true,
+    "proposal": {
+      "state": "Voting not started",
+      "actions": [
+        "GEM unlimited allowance",
+        "WETH unlimited allowance",
+        "native USDC unlimited allowance"
+      ],
+      "nativeValues": [
+        "0 POL",
+        "0 POL",
+        "0 POL"
+      ],
+      "screenshot": "proposal-published.jpg"
+    }
+  },
+  "proposal": {
+    "id": "28380386844107398034034691570755427638127941114420426233333446520814279739334",
+    "transactionHash": "0x2eed86cf4eee92383d0e5b6a86bdc2a46e0b097fadef64fc73d98622d3cd8480",
+    "portalUrl": "https://dao-preview.mythicalbeings.io/#proposal/0x7b9e327748462f1038c9d081c98d189b22c60a27/28380386844107398034034691570755427638127941114420426233333446520814279739334",
+    "creationBlock": "94773983",
+    "voteStart": "94815126",
+    "voteEnd": "95103126",
+    "state": "Pending",
+    "gasCostWei": "46346287445605440"
+  },
+  "updatedAt": "2026-10-01T14:56:21.677Z",
+  "secretScan": "passed; only public evidence and addresses committed"
 }

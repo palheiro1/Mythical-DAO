@@ -48,10 +48,10 @@
     }
   },
   "release": {
-    "portalVerification": null,
+    "portalVerification": "../docs/evidence/ragequit-activation-2026-10-01/validation.json",
     "moduleReview": "ragequit-release/review-acceptance.json",
     "moduleDeployment": "ragequit-release/deployment-receipt.json",
-    "authorizationProposal": null,
+    "authorizationProposal": "ragequit-authorization-receipt.json",
     "allowancesVerified": false,
     "smallExitVerified": false
   },
