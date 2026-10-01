@@ -27,6 +27,7 @@
     "verify:deployment": "node scripts/verify-ragequit.mjs",
     "proposal:ragequit": "node scripts/ragequit-proposal.mjs",
     "prepare:ragequit-release": "forge build --quiet && node scripts/prepare-ragequit-release.mjs",
+    "preflight:ragequit": "node --env-file-if-exists=.dev.vars scripts/preflight-ragequit-deployment.mjs",
     "probe:archive": "node scripts/probe-archive-rpcs.mjs",
     "probe:infura": "node --env-file-if-exists=.dev.vars scripts/probe-archive-rpcs.mjs --infura"
   },

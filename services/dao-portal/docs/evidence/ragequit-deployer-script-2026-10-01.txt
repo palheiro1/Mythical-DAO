@@ -1,0 +1,27 @@
+No files changed, compilation skipped
+2026-10-01T10:59:53.819161Z  WARN foundry_fork_db::cache: Failed to read cache file err=Os { code: 2, kind: NotFound, message: "No such file or directory" } path="/home/usuario/.foundry/cache/rpc/polygon/94764727"
+2026-10-01T10:59:56.101708Z  WARN traces::etherscan: etherscan config not found
+Script ran successfully.
+
+== Return ==
+module: contract MythicalRagequitModule 0xef06E163F65807872e62b4AB186EffcAFca7C8C9
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 137
+
+Estimated gas price: 572.676072584 gwei
+
+Estimated total gas used for script: 1309672
+
+Estimated amount required: 0.750017817333232448 POL
+
+==========================
+
+SIMULATION COMPLETE. To broadcast these transactions, add --broadcast and wallet configuration(s) to the previous command. See forge script --help for more.
+
+Transactions saved to: /home/usuario/Documentos/GitHub/Mythical DAO/services/dao-portal/broadcast/DeployRagequit.s.sol/137/dry-run/run-latest.json
+
+Sensitive values saved to: /home/usuario/Documentos/GitHub/Mythical DAO/services/dao-portal/cache/DeployRagequit.s.sol/137/dry-run/run-latest.json

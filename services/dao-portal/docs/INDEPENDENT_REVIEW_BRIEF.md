@@ -2,6 +2,8 @@
 
 Preparado em 29 de setembro de 2026. **A revisão independente ainda não foi realizada.** Este documento define o trabalho para um revisor externo; não foi enviado a terceiros, contratado um serviço ou implantado o módulo.
 
+Atualizado em 1 de outubro: [preflight da carteira e nova evidência](RAGEQUIT_PREFLIGHT.md), ensaio recente do Governor real e análise Slither com todos os 51 alertas preservados e triagem interna explícita. O [Standard JSON](../deployments/ragequit-release/compiler-input.json) inclui as 12 fontes completas; a recompilação com solc 0.8.30 reproduziu o bytecode exato. A análise automática e a compilação por outra ferramenta não são apresentadas como revisão independente.
+
 ## Versão e entregáveis
 
 O alvo é `MythicalRagequitModule` e os scripts de preparação, verificação e autorização associados. O [manifesto congelado](../deployments/ragequit-release/review-manifest.json) contém os hashes keccak256 das 12 fontes Solidity, compilador 0.8.30, optimizer 200, EVM Cancun e os cinco endereços imutáveis. Os hashes foram novamente conferidos contra os ficheiros locais nesta entrega.
@@ -15,7 +17,7 @@ Pedir ao revisor: relatório com ficheiros/hashes e commit exatos, achados por g
 | Área | Ficheiros principais |
 |---|---|
 | Pagamentos e queima | `contracts/src/MythicalRagequitModule.sol`, dependências OpenZeppelin fixadas no manifesto |
-| Implantação | `contracts/script/DeployRagequit.s.sol`, `scripts/prepare-ragequit-release.mjs` |
+| Implantação | `contracts/script/DeployRagequit.s.sol`, `scripts/prepare-ragequit-release.mjs`, `scripts/preflight-ragequit-deployment.mjs`, `scripts/ragequit-deployment-checks.mjs` |
 | Identidade e runtime | `scripts/ragequit-policy.mjs`, `scripts/verify-ragequit.mjs` |
 | Autorizar e revogar | `scripts/ragequit-proposal.mjs`, `deployments/ragequit-authorization.template.json` |
 | Integração | `worker/ragequit.ts`, `worker/live.ts`, fluxo de saída e confirmação no frontend |

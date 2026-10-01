@@ -24,6 +24,8 @@ O bot Telegram existente continua a seguir Governor e Snapshot. Não mudar autom
 
 Revisão independente do contrato, dos tokens externos e do relatório de ensaio é uma condição de lançamento do ragequit. Os testes locais não substituem essa revisão.
 
+O [preflight de 1 de outubro](RAGEQUIT_PREFLIGHT.md) inclui a carteira escolhida, fontes completas recompiláveis e o script `npm run preflight:ragequit -- <deployer-address>`. Repetir esse comando antes de assinar: exige correspondência com o pacote revisto, concordância de dois RPCs, ausência de nonce pendente e saldo para o teto de gas. O resultado é apenas uma transação sem assinatura; o endereço previsto nunca deve ser usado no manifesto ou na proposta antes de existir recibo verificado. As taxas/nonce são temporários e o lembrete de atualização não cria expiração on-chain.
+
 ```sh
 npm run contracts:build
 POLYGON_FORK_RPC=<archive-polygon-rpc> npm run rehearse

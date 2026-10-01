@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-01T10:57:11.132Z",
+  "compiler": "solc, the solidity compiler commandline interface\nVersion: 0.8.30+commit.73712a01.Linux.g++",
+  "selfContainedInput": true,
+  "creationMatch": true,
+  "runtimeMatch": true,
+  "initCodeKeccak256": "0x710a2b7369fd614a83b89366d3cf7bb57150fec3a54161795fe7fa744f99b24c",
+  "runtimeTemplateKeccak256": "0x8e34aecff375d02996f3dc18c0bd8bc1afbffcde839a7e24389ff271c85d05f1",
+  "warnings": []
+}

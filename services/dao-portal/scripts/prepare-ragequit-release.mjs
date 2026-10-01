@@ -22,11 +22,14 @@ const metadata =
     ? JSON.parse(artifact.metadata)
     : artifact.metadata;
 const sources = {};
+const compilerSources = {};
 for (const [path, entry] of Object.entries(metadata.sources)) {
-  const hash = keccak256(toHex(readFileSync(path)));
+  const content = readFileSync(path, "utf8");
+  const hash = keccak256(toHex(content));
   if (hash !== entry.keccak256)
     throw Error(`Compiled source differs from disk: ${path}. Run forge build.`);
   sources[path] = hash;
+  compilerSources[path] = { content };
 }
 const roles = ["treasury", "mana", "gem", "weth", "usdcNative"];
 const args = roles.map((role) => manifest.contracts[role].address);
@@ -51,6 +54,20 @@ const directory = "deployments/ragequit-release";
 mkdirSync(directory, { recursive: true });
 const write = (name, value) =>
   writeFileSync(`${directory}/${name}`, JSON.stringify(value, null, 2) + "\n");
+// Self-contained Standard JSON input: an external reviewer needs no dependency
+// installation. compilationTarget belongs to output metadata, not compiler input.
+const { compilationTarget: _target, ...compilerSettings } = metadata.settings;
+const compilerInput = {
+  language: "Solidity",
+  sources: compilerSources,
+  settings: {
+    ...compilerSettings,
+    outputSelection: {
+      "*": { "*": ["abi", "metadata", "evm.bytecode", "evm.deployedBytecode"] },
+    },
+  },
+};
+write("compiler-input.json", compilerInput);
 write("deployment-unsigned.json", {
   status: "unsigned-review-only",
   transaction: { chainId: "0x89", value: "0x0", data },
@@ -74,6 +91,9 @@ write("review-manifest.json", {
   runtimeTemplateKeccak256: keccak256(artifact.deployedBytecode.object),
   immutableReferences: artifact.deployedBytecode.immutableReferences,
   sources,
+  compilerInputKeccak256: keccak256(
+    toHex(readFileSync(`${directory}/compiler-input.json`)),
+  ),
   authorization: "../ragequit-authorization.template.json",
   requirements: [
     "Independent review of these exact sources and init code",

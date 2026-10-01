@@ -1,6 +1,8 @@
-# Módulo pronto para revisão — 29 de setembro de 2026
+# Módulo pronto para revisão — atualizado em 1 de outubro de 2026
 
 Este pacote é material de revisão e simulação. Não existe implantação pública registada e nenhuma transação foi assinada ou enviada.
+
+[Preparação de 1 de outubro](../../docs/RAGEQUIT_PREFLIGHT.md): carteira escolhida `0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9`, transação completa sem assinatura, fontes para recompilação reproduzível, novo ensaio do Governor real e triagem dos alertas Slither. O contrato e o init code permanecem iguais; a revisão independente continua pendente.
 
 [Revisão técnica de 29 de setembro](../../docs/RAGEQUIT_REVIEW.md) concluída: verificador de imutáveis reforçado, endereços aprovados fixados nos scripts e 15 testes do módulo aprovados, com 2048 casos de fuzz. O init code permanece igual. A [nova simulação no bloco 94662614](../../docs/evidence/ragequit-review-creation-2026-09-29.json) verificou também todas as cópias imutáveis. A revisão independente continua pendente.
 
@@ -8,6 +10,8 @@ Este pacote é material de revisão e simulação. Não existe implantação pú
 - `deployment-unsigned.json`: transação de criação para a Polygon, com valor nativo zero. A carteira de implantação terá de definir remetente, nonce e taxas atuais. A ausência de `to` é intencional: cria apenas o módulo.
 - `deployment-simulation.json`: dois RPCs executaram o mesmo código de criação em `eth_call`, no mesmo bloco, e devolveram o mesmo runtime. É uma simulação, sem publicação.
 - `abi.json`: ABI exata do artefacto compilado.
+- `compiler-input.json`: fontes completas e configuração Standard JSON para solc 0.8.30, recompiladas com bytecode idêntico; inclui as dependências e respetivas licenças nas fontes.
+- `deployment-wallet-unsigned.json`: transação para a carteira escolhida, com nonce e estimativas de gas/taxas. Repetir `npm run preflight:ragequit -- 0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9` imediatamente antes de assinar. O endereço previsto não é uma implantação pública e o ficheiro não expira on-chain.
 
 Init code: 5050 bytes; hash `0x710a2b7369fd614a83b89366d3cf7bb57150fec3a54161795fe7fa744f99b24c`.
 
@@ -21,7 +25,7 @@ As autorizações contínuas permitem pagamentos diretos da tesouraria; a DAO ma
 
 ## Ativação
 
-1. Registar a revisão dos hashes exatos deste pacote e escolher a carteira de implantação.
+1. Registar a revisão independente dos hashes exatos deste pacote. A carteira foi escolhida em 1 de outubro; a revisão continua pendente.
 2. Simular novamente `DeployRagequit.s.sol` com esse remetente e conferir o custo apresentado pela carteira.
 3. Assinar a implantação de apenas este contrato; guardar endereço, recibo, bloco e verificar o código-fonte e os imutáveis.
 4. Inserir o endereço/bloco reais em `deployments/polygon.json` e gerar as propostas de autorização e revogação com `scripts/ragequit-proposal.mjs`.
