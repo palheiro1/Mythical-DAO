@@ -12,7 +12,7 @@ import {
   type PilotSnapshot,
 } from "../shared/graph-pilot.mjs";
 import type { EventRow } from "./data";
-import { agreed } from "./rpc";
+import { agreed, settledValues } from "./rpc";
 
 export const historySnapshotQuery = `query($hash:Bytes!){
   eventRecords(first:101,orderBy:id,orderDirection:asc,block:{hash:$hash},where:{contract:"${GOVERNOR}"}){
@@ -70,65 +70,72 @@ export async function verifyGraphHistory(
   const blocks = [...new Set<number>(input.map((e) => Number(e.blockNumber)))];
   requireValue(blocks.length <= 15, "GRAPH_HISTORY_BLOCK_LIMIT");
   const events: EventRow[] = [];
-  for (const block of blocks) {
-    checkTime();
-    const canonical = await agreed(pair, async (c) => {
-      const logs = await c.getLogs({
-        address: GOVERNOR,
-        fromBlock: BigInt(block),
-        toBlock: BigInt(block),
-      });
-      return logs.flatMap((log) => {
-        let decoded;
-        try {
-          decoded = decodeEventLog({
-            abi: governorAbi,
-            data: log.data,
-            topics: log.topics,
-            strict: true,
+  // Three independent blocks per provider fit its existing JSON-RPC batch.
+  // This saves HTTP subrequests without weakening either provider's checks.
+  for (let offset = 0; offset < blocks.length; offset += 3) {
+    const group = await settledValues(
+      blocks.slice(offset, offset + 3).map(async (block) => {
+        checkTime();
+        const canonical = await agreed(pair, async (c) => {
+          const logs = await c.getLogs({
+            address: GOVERNOR,
+            fromBlock: BigInt(block),
+            toBlock: BigInt(block),
           });
-        } catch {
-          return [];
-        }
-        if (!names.includes(decoded.eventName)) return [];
+          return logs.flatMap((log) => {
+            let decoded;
+            try {
+              decoded = decodeEventLog({
+                abi: governorAbi,
+                data: log.data,
+                topics: log.topics,
+                strict: true,
+              });
+            } catch {
+              return [];
+            }
+            if (!names.includes(decoded.eventName)) return [];
+            requireValue(
+              !log.removed &&
+                log.blockNumber === BigInt(block) &&
+                hex32(log.blockHash) &&
+                hex32(log.transactionHash) &&
+                log.logIndex !== null &&
+                log.address.toLowerCase() === GOVERNOR,
+              "GRAPH_HISTORY_RPC_LOG_INVALID",
+            );
+            return [
+              {
+                chain_id: 137,
+                contract: GOVERNOR,
+                block_number: block,
+                block_hash: log.blockHash,
+                tx_hash: log.transactionHash,
+                log_index: log.logIndex,
+                event_name: decoded.eventName,
+                args_json: stringify(decoded.args),
+              },
+            ];
+          });
+        });
+        const claimed = input.filter((e) => Number(e.blockNumber) === block);
         requireValue(
-          !log.removed &&
-            log.blockNumber === BigInt(block) &&
-            hex32(log.blockHash) &&
-            hex32(log.transactionHash) &&
-            log.logIndex !== null &&
-            log.address.toLowerCase() === GOVERNOR,
-          "GRAPH_HISTORY_RPC_LOG_INVALID",
+          canonical.length === claimed.length &&
+            canonical.every((e) =>
+              claimed.some(
+                (x) =>
+                  x.transactionHash === e.tx_hash &&
+                  Number(x.logIndex) === e.log_index &&
+                  x.blockHash === e.block_hash &&
+                  x.name === e.event_name,
+              ),
+            ),
+          "GRAPH_HISTORY_LOG_MISMATCH",
         );
-        return [
-          {
-            chain_id: 137,
-            contract: GOVERNOR,
-            block_number: block,
-            block_hash: log.blockHash,
-            tx_hash: log.transactionHash,
-            log_index: log.logIndex,
-            event_name: decoded.eventName,
-            args_json: stringify(decoded.args),
-          },
-        ];
-      });
-    });
-    const claimed = input.filter((e) => Number(e.blockNumber) === block);
-    requireValue(
-      canonical.length === claimed.length &&
-        canonical.every((e) =>
-          claimed.some(
-            (x) =>
-              x.transactionHash === e.tx_hash &&
-              Number(x.logIndex) === e.log_index &&
-              x.blockHash === e.block_hash &&
-              x.name === e.event_name,
-          ),
-        ),
-      "GRAPH_HISTORY_LOG_MISMATCH",
+        return canonical;
+      }),
     );
-    events.push(...canonical);
+    events.push(...group.flat());
   }
   const created = events.filter((e) => e.event_name === "ProposalCreated");
   requireValue(

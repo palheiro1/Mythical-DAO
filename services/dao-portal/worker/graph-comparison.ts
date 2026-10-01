@@ -38,7 +38,12 @@ function graphCredential(env: Env): string | undefined {
 // Comparisons never authorize a signature. Optional history reads have their own gate.
 export function graphComparisonGate(env: Env): string | null {
   if (env.GRAPH_COMPARE_MODE !== "shadow") return "GRAPH_COMPARISON_OFF";
-  if (env.GRAPH_SUBGRAPH_RESTRICTED !== "true")
+  // Provider scope remains a separate fact. The explicit server-only exception
+  // accepts quota-abuse risk; it does not attest that the provider enforces scope.
+  if (
+    env.GRAPH_SUBGRAPH_RESTRICTED !== "true" &&
+    env.GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY !== "true"
+  )
     return "GRAPH_KEY_RESTRICTION_PENDING";
   if (!/^[a-zA-Z0-9_-]{16,256}$/.test(graphCredential(env) ?? ""))
     return "GRAPH_KEY_MISSING";
@@ -75,37 +80,38 @@ export async function readPilotProposal(
   const observation = await agreed(pair, async (c) => {
     const args = [BigInt(p.proposalId)] as const;
     checkTime();
-    const state = await c.readContract({
-      address: GOVERNOR,
-      abi: governorAbi,
-      functionName: "state",
-      args,
-      blockNumber,
-    });
+    // Independent reads share the existing three-request RPC batch limit.
+    const [state, voteStart, voteEnd, votes] = await Promise.all([
+      c.readContract({
+        address: GOVERNOR,
+        abi: governorAbi,
+        functionName: "state",
+        args,
+        blockNumber,
+      }),
+      c.readContract({
+        address: GOVERNOR,
+        abi: governorAbi,
+        functionName: "proposalSnapshot",
+        args,
+        blockNumber,
+      }),
+      c.readContract({
+        address: GOVERNOR,
+        abi: governorAbi,
+        functionName: "proposalDeadline",
+        args,
+        blockNumber,
+      }),
+      c.readContract({
+        address: GOVERNOR,
+        abi: governorAbi,
+        functionName: "proposalVotes",
+        args,
+        blockNumber,
+      }),
+    ]);
     checkTime();
-    const voteStart = await c.readContract({
-      address: GOVERNOR,
-      abi: governorAbi,
-      functionName: "proposalSnapshot",
-      args,
-      blockNumber,
-    });
-    checkTime();
-    const voteEnd = await c.readContract({
-      address: GOVERNOR,
-      abi: governorAbi,
-      functionName: "proposalDeadline",
-      args,
-      blockNumber,
-    });
-    checkTime();
-    const votes = await c.readContract({
-      address: GOVERNOR,
-      abi: governorAbi,
-      functionName: "proposalVotes",
-      args,
-      blockNumber,
-    });
     return {
       proposalId: proposalDigest(p),
       voteStart: String(voteStart),
@@ -170,33 +176,36 @@ export async function compareGraph(env: Env) {
     { ...snapshot, manaAccounts: selected },
     (id) => {
       checkTime();
-      return agreed(pair, async (c) => ({
-        balance: String(
-          await c.readContract({
+      return agreed(pair, async (c) => {
+        const [balance, votingPower, delegate] = await Promise.all([
+          c.readContract({
             address: MANA,
             abi: tokenAbi,
             functionName: "balanceOf",
             args: [id],
             blockNumber,
           }),
-        ),
-        votingPower: String(
-          await c.readContract({
+          c.readContract({
             address: MANA,
             abi: tokenAbi,
             functionName: "getVotes",
             args: [id],
             blockNumber,
           }),
-        ),
-        delegate: await c.readContract({
-          address: MANA,
-          abi: tokenAbi,
-          functionName: "delegates",
-          args: [id],
-          blockNumber,
-        }),
-      }));
+          c.readContract({
+            address: MANA,
+            abi: tokenAbi,
+            functionName: "delegates",
+            args: [id],
+            blockNumber,
+          }),
+        ]);
+        return {
+          balance: String(balance),
+          votingPower: String(votingPower),
+          delegate,
+        };
+      });
     },
     (p) => readPilotProposal(pair, p, blockNumber, checkTime),
   );
@@ -348,6 +357,10 @@ export async function graphComparisonStatus(env: Env) {
     fullHistoryVerified: false,
     historyReadMode: env.GRAPH_READ_MODE === "verified" ? "verified" : "off",
     reorgAcceptance: env.GRAPH_REORG_VERIFIED === "true",
+    keyPolicy: {
+      subgraphRestricted: env.GRAPH_SUBGRAPH_RESTRICTED === "true",
+      serverOnlyException: env.GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY === "true",
+    },
   };
   if (reason) return { ...base, status: "disabled", reason };
   const row = await env.DAO_DB.prepare(

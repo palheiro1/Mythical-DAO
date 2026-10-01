@@ -103,3 +103,7 @@ The isolated Graph Node rehearsal was attempted in [CI](https://github.com/palhe
 ## 1 October — supplemental history preparation
 
 The controlled local reorg rehearsal passed for MANA and Governor proposal/execution rollback. Graph Node did not reject an orphan-hash query; the application must enforce canonical RPC anchors. See [evidence](evidence/reorg-acceptance-2026-10-01.json) and [portal integration](../dao-portal/docs/GRAPH_HISTORY.md). The wallet session is connected, but provider subgraph scope remains unconfirmed because Studio’s selector still returns no results and disables authorization, including after a fresh reload. Read/comparison modes remain off; full-history omission checks are still pending.
+
+## 1 October — accepted server-only query-key exception
+
+The user accepted proceeding while Studio cannot save a subgraph restriction. The preview keeps `GRAPH_SUBGRAPH_RESTRICTED=false` and uses a separate explicit exception, with a private backend key, a fixed subgraph destination, bounded scheduled queries and independent RPC validation. Provider scope remains recommended hardening, not a claimed completed setting. Full-history omission checks are unchanged. See [activation and live verification](../dao-portal/docs/GRAPH_ACTIVATION.md).

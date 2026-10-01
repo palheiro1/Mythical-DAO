@@ -155,7 +155,7 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-it("keeps Graph off by default and requires both scope attestation and a private key", async () => {
+it("keeps Graph off by default and requires a scope policy and a private key", async () => {
   const compare = vi.fn();
   for (const overrides of [
     { GRAPH_COMPARE_MODE: "off" },
@@ -186,6 +186,45 @@ it("keeps Graph off by default and requires both scope attestation and a private
   expect(JSON.stringify(cfg)).not.toContain(env.GRAPH_API_KEY);
   expect(cfg).toMatchObject({
     capabilities: { governance: "existing-governor", ragequit: false },
+  });
+});
+it("allows the explicit server-only exception without claiming provider scope or bypassing other guards", async () => {
+  env.GRAPH_SUBGRAPH_RESTRICTED = "false";
+  for (const value of ["", "false", "true "]) {
+    expect(
+      graphComparisonGate({
+        ...env,
+        GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY: value,
+      }),
+    ).toBe("GRAPH_KEY_RESTRICTION_PENDING");
+  }
+  env.GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY = "true";
+  const missingKey = { ...env, GRAPH_API_KEY: "" };
+  expect(graphComparisonGate(missingKey)).toBe("GRAPH_KEY_MISSING");
+  expect(graphComparisonGate({ ...env, GRAPH_COMPARE_MODE: "off" })).toBe(
+    "GRAPH_COMPARISON_OFF",
+  );
+  await runGraphComparison(env);
+  await runGraphComparison(env);
+  expect(requests).toHaveLength(3);
+  expect(requests.every((r) => r.url === GATEWAY_URL)).toBe(true);
+  const status = await graphComparisonStatus(env);
+  expect(status).toMatchObject({
+    keyPolicy: { subgraphRestricted: false, serverOnlyException: true },
+    comparison: { status: "compared" },
+    fullHistoryVerified: false,
+  });
+  expect(JSON.stringify(status)).not.toContain(env.GRAPH_API_KEY);
+  expect(
+    await setup.db
+      .prepare("SELECT reserved_queries FROM graph_comparison")
+      .first(),
+  ).toEqual({ reserved_queries: 3 });
+  snapshot.proposals[0].description += " altered";
+  await setup.db.prepare("UPDATE graph_comparison SET next_attempt=0").run();
+  await runGraphComparison(env);
+  expect(await graphComparisonStatus(env)).toMatchObject({
+    comparison: { status: "failed", reason: "GRAPH_PROPOSAL_RPC_MISMATCH" },
   });
 });
 it("compares anchored entities and D1 without editing history or querying from status requests", async () => {
@@ -224,7 +263,7 @@ it("compares anchored entities and D1 without editing history or querying from s
       Authorization: `Bearer ${env.GRAPH_API_KEY}`,
       Origin: "https://dao-preview.mythicalbeings.io",
     });
-    expect(r.init.redirect).toBe("error");
+    expect(r.init.redirect).toBe("manual");
   }
   expect(
     (await setup.db.prepare("SELECT * FROM events").all()).results,

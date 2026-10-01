@@ -1,0 +1,376 @@
+{
+  "checkedAt": "2026-10-01T10:28:03.751Z",
+  "workerVersion": "6a9a3f23-5b90-466e-85ee-c63068c0694e",
+  "origin": "https://dao-preview.mythicalbeings.io",
+  "fullHistoryVerified": false,
+  "endpoints": {
+    "/api/graph-status": {
+      "status": 200,
+      "data": {
+        "mode": "shadow",
+        "activeBackend": "D1/RPC",
+        "subgraphId": "56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
+        "fullHistoryVerified": false,
+        "historyReadMode": "verified",
+        "reorgAcceptance": true,
+        "keyPolicy": {
+          "subgraphRestricted": false,
+          "serverOnlyException": true
+        },
+        "checkedAt": 1790850446803,
+        "comparison": {
+          "status": "compared",
+          "anchor": 94763472,
+          "hash": "0x5c3e6507713557379dbcdd4940d22a6d9e4ab10e46b6a15f7e0551a5f9f2e3d7",
+          "verified": {
+            "accounts": 2,
+            "proposals": 2,
+            "fullHistoryVerified": false
+          },
+          "d1": {
+            "matchedProposals": 2,
+            "historyComplete": false
+          },
+          "fullHistoryVerified": false
+        }
+      }
+    },
+    "/api/health": {
+      "status": 200,
+      "data": {
+        "status": "syncing",
+        "signingAllowed": true,
+        "historyComplete": false,
+        "syncPercent": 1.52,
+        "graphHistory": {
+          "source": "The Graph + RPC",
+          "complete": false,
+          "status": "ready",
+          "checkedAt": 1790850446803,
+          "asOfBlock": "94763472"
+        }
+      }
+    },
+    "/api/overview": {
+      "status": 200,
+      "data": {
+        "activeVotes": 0,
+        "queuedExecutions": 0,
+        "readyForExecution": 0,
+        "indexedProposals": 2,
+        "countsVerified": true,
+        "complete": false,
+        "asOfBlock": "94763498",
+        "history": {
+          "source": "The Graph + RPC",
+          "complete": false,
+          "status": "ready",
+          "checkedAt": 1790850446803,
+          "asOfBlock": "94763472"
+        }
+      }
+    },
+    "/api/proposals?kind=executable": {
+      "status": 200,
+      "data": {
+        "count": 2,
+        "history": {
+          "source": "The Graph + RPC",
+          "complete": false,
+          "status": "ready",
+          "checkedAt": 1790850446803,
+          "asOfBlock": "94763472"
+        },
+        "items": [
+          {
+            "id": "75457034832782812829619008240925853346288766231940027002641282537521561335180",
+            "state": "Executed",
+            "votes": [
+              "0",
+              "53939944555246236983048",
+              "0"
+            ]
+          },
+          {
+            "id": "48844407342116835452564597067000717639217187351786596578093461697847982212499",
+            "state": "Executed",
+            "votes": [
+              "0",
+              "57073192982564036579313",
+              "0"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/events": {
+      "status": 200,
+      "data": {
+        "count": 45,
+        "history": {
+          "source": "The Graph + RPC",
+          "complete": false,
+          "status": "ready",
+          "checkedAt": 1790850446803,
+          "asOfBlock": "94763472"
+        },
+        "items": [
+          {
+            "event": "ProposalExecuted",
+            "block": 89532760
+          },
+          {
+            "event": "VoteCast",
+            "block": 89223445
+          },
+          {
+            "event": "ProposalCreated",
+            "block": 89169940
+          },
+          {
+            "event": "ProposalExecuted",
+            "block": 58984871
+          },
+          {
+            "event": "VoteCast",
+            "block": 58663809
+          },
+          {
+            "event": "VoteCast",
+            "block": 58635761
+          },
+          {
+            "event": "VoteCast",
+            "block": 58628044
+          },
+          {
+            "event": "VoteCast",
+            "block": 58560692
+          },
+          {
+            "event": "VoteCast",
+            "block": 58544373
+          },
+          {
+            "event": "ProposalCreated",
+            "block": 58427770
+          },
+          {
+            "event": "Transfer",
+            "block": 49223787
+          },
+          {
+            "event": "Transfer",
+            "block": 48940393
+          },
+          {
+            "event": "Transfer",
+            "block": 48940144
+          },
+          {
+            "event": "Transfer",
+            "block": 48876783
+          },
+          {
+            "event": "Transfer",
+            "block": 48876525
+          },
+          {
+            "event": "Transfer",
+            "block": 48876390
+          },
+          {
+            "event": "Transfer",
+            "block": 48876390
+          },
+          {
+            "event": "Transfer",
+            "block": 48876354
+          },
+          {
+            "event": "Transfer",
+            "block": 48876144
+          },
+          {
+            "event": "Transfer",
+            "block": 48873442
+          },
+          {
+            "event": "Transfer",
+            "block": 48873220
+          },
+          {
+            "event": "Transfer",
+            "block": 48873114
+          },
+          {
+            "event": "Transfer",
+            "block": 48873058
+          },
+          {
+            "event": "Transfer",
+            "block": 48872945
+          },
+          {
+            "event": "Transfer",
+            "block": 48872678
+          },
+          {
+            "event": "Transfer",
+            "block": 48869187
+          },
+          {
+            "event": "Transfer",
+            "block": 48838020
+          },
+          {
+            "event": "Transfer",
+            "block": 48837993
+          },
+          {
+            "event": "Transfer",
+            "block": 48837979
+          },
+          {
+            "event": "Transfer",
+            "block": 45791243
+          },
+          {
+            "event": "Transfer",
+            "block": 45791139
+          },
+          {
+            "event": "Transfer",
+            "block": 45791138
+          },
+          {
+            "event": "Transfer",
+            "block": 45790906
+          },
+          {
+            "event": "Transfer",
+            "block": 45790452
+          },
+          {
+            "event": "Transfer",
+            "block": 45790292
+          },
+          {
+            "event": "Transfer",
+            "block": 45790275
+          },
+          {
+            "event": "Transfer",
+            "block": 45790118
+          },
+          {
+            "event": "Transfer",
+            "block": 45790032
+          },
+          {
+            "event": "Transfer",
+            "block": 45790026
+          },
+          {
+            "event": "Transfer",
+            "block": 45789975
+          },
+          {
+            "event": "Transfer",
+            "block": 45789517
+          },
+          {
+            "event": "Transfer",
+            "block": 45789470
+          },
+          {
+            "event": "Transfer",
+            "block": 45786590
+          },
+          {
+            "event": "Transfer",
+            "block": 45786361
+          },
+          {
+            "event": "Transfer",
+            "block": 45785116
+          }
+        ]
+      }
+    },
+    "/api/delegates": {
+      "status": 200,
+      "data": {
+        "count": 10,
+        "history": {
+          "source": "The Graph + RPC",
+          "complete": false,
+          "status": "ready",
+          "checkedAt": 1790850446803,
+          "asOfBlock": "94763472"
+        },
+        "items": [
+          {
+            "address": "0x9e32ff89a4d9fc288384751cb30308dcc93e86ec",
+            "votes": "59903256011135446882200"
+          },
+          {
+            "address": "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9",
+            "votes": "33670936971428589697113"
+          },
+          {
+            "address": "0x0314c7fbf0bd957f65925ba49a868ef9029c24f1",
+            "votes": "15000000000000000000000"
+          },
+          {
+            "address": "0x5942dee7389402aa33aa589ffefee51dd765e459",
+            "votes": "7340000000000000000000"
+          },
+          {
+            "address": "0x09bff4758b652309704079f8a3cf271a2cf6220e",
+            "votes": "1000000000000000000000"
+          },
+          {
+            "address": "0x0629b955338222e2b833394422639c4108a2ea4d",
+            "votes": "893917884200000000000"
+          },
+          {
+            "address": "0xd64c5043ab83c2390a6e5fab31ff44304f0a5de1",
+            "votes": "500000000000000000000"
+          },
+          {
+            "address": "0x491b1831d200478d303d4157d9f33c30607ff165",
+            "votes": "252000000000000000000"
+          },
+          {
+            "address": "0x2d41211fc8a4a1639032ead5c8ee6b867ef70a49",
+            "votes": "100194882854118408260"
+          },
+          {
+            "address": "0x0fdd9f147117d627eb88fbc4c161b088ea64e0ca",
+            "votes": "3000000000000000000"
+          }
+        ]
+      }
+    }
+  },
+  "cacheInventory": {
+    "reserved_queries": 8,
+    "month": "2026-10",
+    "next_attempt": 1790854043337,
+    "checked_at": 1790850446803,
+    "verified_events": 10,
+    "d1_events": 37,
+    "independent_cursors": 6
+  },
+  "readOnlyInventory": {
+    "rowsWritten": 0,
+    "changes": 0
+  },
+  "acceptanceRetry": {
+    "firstFailure": "GRAPH_REQUEST_FAILED",
+    "cause": "workerd rejects redirect:error",
+    "manualRetryAfterFix": true,
+    "reservedQuotaPreserved": true
+  }
+}

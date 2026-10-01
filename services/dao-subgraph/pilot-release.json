@@ -79,7 +79,7 @@
   "networkQueryAvailability": "verified",
   "networkQueryEndpoint": "https://gateway.thegraph.com/api/subgraphs/id/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
   "networkQueryAuthentication": "Authorization: Bearer GRAPH_API_KEY",
-  "queryCredentialStatus": "stored-locally-and-worker-subgraph-restriction-pending",
+  "queryCredentialStatus": "private-server-key-active-with-explicit-scope-exception",
   "validatedAt": "2026-09-30T10:43:00.017Z",
   "fullHistoryVerified": false,
   "studioCaughtUpAt": "2026-09-30T09:45:40.315Z",
@@ -94,7 +94,7 @@
     "name": "GRAPH_API_KEY",
     "worker": "mythical-dao-portal-staging",
     "configured": true,
-    "usedByRuntime": false
+    "usedByRuntime": true
   },
   "entityValidation": {
     "accounts": 73,
@@ -111,16 +111,20 @@
     "requestWithOrigin": "passed"
   },
   "portalIntegration": {
-    "mode": "off",
+    "mode": "shadow",
     "implementation": "verified-supplemental-history",
     "documentation": "../dao-portal/docs/GRAPH_HISTORY.md",
     "graphNodeReorgAcceptance": "local-rollback-passed-rpc-anchor-guard-required",
-    "workerVersion": "80e970cf-60ca-4250-8f4b-951c89d45e2a",
+    "workerVersion": "6a9a3f23-5b90-466e-85ee-c63068c0694e",
     "previewEvidence": "../dao-portal/docs/evidence/graph-history-preview-2026-10-01.json",
     "graphNodeReorgEvidence": "evidence/reorg-acceptance-2026-10-01.json",
     "graphNodeReorgWorkflow": ".github/workflows/graph-reorg.yml",
-    "readMode": "off",
+    "readMode": "verified",
     "previewFrontendDeployment": "dpl_99MTxRBX1BTnmB2XvupffW9b4JVo",
-    "historyAcceptanceEvidence": "../dao-portal/docs/evidence/graph-history-acceptance-2026-10-01.json"
+    "historyAcceptanceEvidence": "../dao-portal/docs/evidence/graph-history-acceptance-2026-10-01.json",
+    "activationEvidence": "../dao-portal/docs/evidence/graph-activation-2026-10-01.json",
+    "activationDocumentation": "../dao-portal/docs/GRAPH_ACTIVATION.md",
+    "providerSubgraphRestricted": false,
+    "allowUnrestrictedServerKey": true
   }
 }

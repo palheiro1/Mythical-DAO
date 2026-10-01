@@ -13,9 +13,12 @@ RPC_SECONDARY_URL=https://tenderly.rpc.polygon.community
 
 # Optional private Graph query key (never a VITE_ variable).
 # GRAPH_API_KEY=your_query_key
-# Comparison remains off until provider-side subgraph restriction is verified.
+# Defaults require provider scope; the explicit server-only exception accepts
+# query-quota abuse risk if this private credential leaks. Never mark scope true
+# unless provider enforcement has actually been verified.
 # GRAPH_COMPARE_MODE=off
 # GRAPH_SUBGRAPH_RESTRICTED=false
-# Supplemental reads require the completed reorg acceptance and scope restriction.
+# GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY=false
+# Supplemental reads also require the completed reorg acceptance.
 # GRAPH_READ_MODE=off
 # GRAPH_REORG_VERIFIED=false

@@ -1,6 +1,6 @@
 # Entrega — Governor atual e ragequit sem migração
 
-1 de outubro: [leitura suplementar verificada](GRAPH_HISTORY.md) implementada, com 124 testes do portal e seis verificações de browser aprovados. O ensaio real de reorg local passou para MANA e propostas do Governor; a aplicação rejeita hashes órfãos via RPC, pois o Graph Node pode responder a essas consultas. A sessão do Studio está ligada, mas o seletor de subgraphs continua vazio e impede guardar a restrição da chave; a ativação aguarda a resolução desse bloqueio. O histórico completo continua por demonstrar.
+1 de outubro: [leitura suplementar verificada](GRAPH_HISTORY.md) implementada, com 127 testes do portal e seis verificações de browser aprovados. O ensaio real de reorg local passou para MANA e propostas do Governor; a aplicação rejeita hashes órfãos via RPC, pois o Graph Node pode responder a essas consultas. O utilizador aceitou a [exceção de chave privada no backend](GRAPH_ACTIVATION.md), mantendo a ausência de restrição no fornecedor explícita; o seletor vazio do Studio deixa de bloquear a ativação. O histórico completo continua por demonstrar.
 
 Atualização: [recuperação do sync, validação do portal e preparação do piloto The Graph](SYNC_RECOVERY.md). A versão do Worker é agora `851124ed-f7f3-46bd-a668-6c1eaa5f8609`. Abaixo mantém-se a descrição da entrega anterior; os resultados e limites mais recentes estão no relatório ligado.
 

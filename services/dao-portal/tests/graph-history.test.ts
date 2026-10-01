@@ -209,6 +209,27 @@ const get = async (path: string) => {
   expect(r.status).toBe(200);
   return r.json() as Promise<Record<string, any>>;
 };
+it("serves verified data under the server-only exception and still rejects reorgs or withdrawn permission", async () => {
+  env.GRAPH_SUBGRAPH_RESTRICTED = "false";
+  env.GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY = "true";
+  await runGraphComparison(env);
+  expect((await read()).status.status).toBe("ready");
+  vi.mocked(fetch).mockClear();
+  expect((await get("proposals?kind=executable")).items).toHaveLength(1);
+  expect(fetch).not.toHaveBeenCalled();
+  rpc.hash = `0x${"c".repeat(64)}`;
+  expect((await read()).status).toMatchObject({
+    status: "fallback",
+    reason: "GRAPH_ANCHOR_CHANGED",
+  });
+  env.GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY = "false";
+  expect((await read()).status.status).toBe("disabled");
+  expect(await get(`members/${member}`)).toMatchObject({
+    balance: "1",
+    votes: "1",
+    delegate: member,
+  });
+});
 it("verifies logs before publishing a fenced cache, with no index or cursor changes", async () => {
   await runGraphComparison(env);
   expect((await read()).status).toMatchObject({

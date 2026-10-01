@@ -155,7 +155,7 @@ test("Gateway credentials require explicit opt-in and never enter the query URL"
         `Bearer ${env.GRAPH_API_KEY}`,
       );
       assert.equal(options.headers.Origin, "https://dao-preview.mythicalbeings.io");
-      assert.equal(options.redirect, "error");
+      assert.equal(options.redirect, "manual");
       return Response.json({ data: { ok: true } });
     },
     connection,

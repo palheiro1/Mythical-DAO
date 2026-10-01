@@ -82,12 +82,18 @@ export async function graphQuery(
     response = await fetcher(url, {
       method: "POST",
       headers,
-      redirect: "error",
+      // Workerd rejects redirect:"error". Manual plus an explicit status check
+      // prevents forwarding the credential to any redirect destination.
+      redirect: "manual",
       body: JSON.stringify({ query, variables }),
       signal: AbortSignal.timeout(30_000),
     });
   } catch {
     throw new Error("GRAPH_REQUEST_FAILED");
+  }
+  if (response.status >= 300 && response.status < 400) {
+    await response.body?.cancel();
+    throw new Error("GRAPH_REDIRECT_REJECTED");
   }
   requireValue(response.ok, "GRAPH_HTTP_FAILED");
   requireValue(response.body, "GRAPH_BODY_MISSING");

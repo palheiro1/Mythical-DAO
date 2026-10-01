@@ -531,10 +531,10 @@
     },
     "/api/graph-status": {
       "get": {
-        "summary": "Read comparison-only Graph pilot diagnostics; never triggers a query or changes the active data source",
+        "summary": "Read Graph comparison, supplemental-history mode and key policy diagnostics; never triggers a Graph query",
         "responses": {
           "200": {
-            "description": "Disabled, pending, stale or latest sanitized comparison; D1/RPC remains active"
+            "description": "Disabled, pending, stale or latest sanitized comparison. keyPolicy distinguishes provider subgraph restriction from an explicit server-only exception; D1 and RPC remain independent."
           }
         }
       }

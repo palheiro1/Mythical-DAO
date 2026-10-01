@@ -1,8 +1,12 @@
 # Verified supplemental history — 1 October 2026
 
-The portal can supplement the independent D1 index with Governor events discovered through The Graph and decoded from matching RPC logs. This is an additive read path, not a replacement for D1 or wallet preflight. Activation is gated on a verified provider subgraph restriction. The wallet session is now connected, but Studio’s subgraph selector still returns no candidates by exact ID or name, including after reloading. Its authorization button remains disabled; see the [UI evidence](evidence/graph-studio-selector-2026-10-01.jpg). Comparison and history reading remain **off** until the restriction is saved and verified.
+The portal can supplement the independent D1 index with Governor events discovered through The Graph and decoded from matching RPC logs. This is an additive read path, not a replacement for D1 or wallet preflight.
 
-Published to the preview: Worker `80e970cf-60ca-4250-8f4b-951c89d45e2a`, Vercel `dpl_99MTxRBX1BTnmB2XvupffW9b4JVo`. [Live HTTP verification](evidence/graph-history-preview-2026-10-01.json). The additive migration was applied; remote D1 contains 37 events, six independent cursors and eight Snapshot records. The live portal was inspected with no console errors observed.
+On 1 October the user accepted proceeding with a private, server-only query key without a provider subgraph restriction. `GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY=true` explicitly records this exception in staging; `GRAPH_SUBGRAPH_RESTRICTED=false` remains truthful. Local and production defaults retain the restriction gate. The Studio selector is still empty ([UI evidence](evidence/graph-studio-selector-2026-10-01.jpg)), but fixing it is now hardening work rather than an activation prerequisite. See [activation evidence](GRAPH_ACTIVATION.md).
+
+This key permits querying public subgraphs, not signing transactions, spending DAO funds or updating mappings. If it leaks, an attacker could consume the account's query allowance. Restricting it to one subgraph reduces its usefulness elsewhere but cannot prevent quota exhaustion by repeated allowed queries. The domain allowlist checks client-supplied headers; it is not proof that an arbitrary server request originates from our website. The 3,000-query monthly guard limits this Worker's scheduled usage, not a stolen key's external use. The key stays in ignored private files/Worker secrets, is sent only to the fixed approved Gateway in a Bearer header, and is never available to the browser. No billing upgrade or new credential is part of this exception. [Provider access controls](https://thegraph.com/docs/en/gateways/subgraphs/consumer-side/serving-queries/).
+
+Initial publication with reads disabled: Worker `80e970cf-60ca-4250-8f4b-951c89d45e2a`, Vercel `dpl_99MTxRBX1BTnmB2XvupffW9b4JVo`. [Live HTTP verification](evidence/graph-history-preview-2026-10-01.json). The additive migration was applied; remote D1 contains 37 events, six independent cursors and eight Snapshot records. The live portal was inspected with no console errors observed.
 
 ## Acceptance
 
@@ -14,7 +18,7 @@ Published to the preview: Worker `80e970cf-60ca-4250-8f4b-951c89d45e2a`, Vercel 
 
 ## Serving behavior
 
-`GRAPH_COMPARE_MODE=shadow`, `GRAPH_SUBGRAPH_RESTRICTED=true`, a private `GRAPH_API_KEY`, `GRAPH_READ_MODE=verified`, and `GRAPH_REORG_VERIFIED=true` are required for the optional read path. The reorg flag attests only to the controlled acceptance above, not full history or long-term Gateway retention. Defaults remain off; only staging records the completed reorg acceptance.
+`GRAPH_COMPARE_MODE=shadow`, a private `GRAPH_API_KEY`, `GRAPH_READ_MODE=verified`, and `GRAPH_REORG_VERIFIED=true` are required for the optional read path. Key policy requires either verified `GRAPH_SUBGRAPH_RESTRICTED=true` or the explicit `GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY=true` exception. `/api/graph-status.keyPolicy` reports these separately; the exception never claims provider enforcement. The reorg flag attests only to the controlled acceptance above, not full history or long-term Gateway retention. Local/production defaults remain off. Staging enables comparison and verified reads under the server-only exception; it cannot serve supplemental history until a scheduled comparison successfully publishes the verified cache.
 
 The scheduled job reserves four Graph queries when collecting history (three in comparison-only mode), at most once per hour and 3,000 per month. Public endpoints cannot cause Graph queries. A comparison uses its own cron invocation rather than sharing the invocation with the heavy D1 backfill. Other invocations continue the existing scan; a scheduling failure falls back to the independent indexer.
 
@@ -35,7 +39,7 @@ Wallet membership/balances, treasury, rules, signatures, simulations and the not
 
 ## Validation and operation
 
-124 portal tests passed, including seven new tests covering the real D1 cache, route integration, deduplication/pagination, false metadata, missing logs, failure clearing, reorg rejection, quota edges and preserved membership access. Type checking, build and Worker dry-run passed. Six selected browser checks passed on desktop/mobile, including light/dark layouts at 320/390/768/1440 px and automated accessibility checks. Screenshots `graph-history-*.png` use controlled fixtures, not live DAO balances. The existing large-bundle warning remains.
+127 portal tests passed, including eight history tests covering the real D1 cache, route integration, deduplication/pagination, false metadata, missing logs, failure clearing, reorg rejection, quota edges and preserved membership access. Type checking, build and Worker dry-run passed. Six selected browser checks passed on desktop/mobile, including light/dark layouts at 320/390/768/1440 px and automated accessibility checks. Screenshots `graph-history-*.png` use controlled fixtures, not live DAO balances. The existing large-bundle warning remains.
 
 Run the live acceptance from `services/dao-portal` using ignored local environment files:
 
@@ -45,6 +49,6 @@ node --env-file=.dev.vars --env-file=../dao-subgraph/.env scripts/check-graph-hi
 
 It uses four manually requested Graph queries, outside the scheduled quota counter. Local `.dev.vars` was aligned with staging's public Tenderly secondary after its old PublicNode endpoint timed out. No query key is included in the report or URL.
 
-For activation: resolve the empty Studio selector and authorize only our published subgraph, verify allowed/denied queries, then enable comparison with restriction attestation and inspect a real scheduled result. Enable the verified read mode and verify `/api/health`, proposals/events/delegates, counts and fallback. No automatic full-history cutover is implied. To disable reads, set `GRAPH_READ_MODE=off`; to stop comparisons too, set `GRAPH_COMPARE_MODE=off`. Preserve D1 and the evidence.
+Activation under the accepted exception requires a real successful scheduled comparison and verification of `/api/health`, proposals/events/delegates and scoped counts. Later, when Studio permits it, restrict the key to our subgraph, verify enforcement, set `GRAPH_SUBGRAPH_RESTRICTED=true` and remove the exception. No automatic full-history cutover is implied. To disable reads, set `GRAPH_READ_MODE=off`; to stop comparisons too, set `GRAPH_COMPARE_MODE=off`. Preserve D1 and the evidence.
 
 The local checkout was fast-forwarded to GitHub before editing. A cumulative 5 GB disk preflight passed with 358.730 GB free. Existing Node dependencies and Chromium were reused. Docker Compose v5.5.1 was installed from its official release with checksum verification; downloaded Graph Node/IPFS/PostgreSQL images are retained for reproducible testing. Only this rehearsal's containers/volumes were removed; unrelated services were preserved. Free space after the main work was approximately 357.9 GB, within budget and above the 40 GB reserve.
