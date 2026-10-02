@@ -1,3 +1,4 @@
+import { TokenAmount } from "./TokenAmount";
 import { useState } from "react";
 import {
   encodeFunctionData,
@@ -263,9 +264,15 @@ export function ProposalDetail({
                 <div className="section-top">
                   <strong>{c}</strong>
                   <span>
-                    {votes[i] !== undefined
-                      ? amount(votes[i]) + m(" MANA")
-                      : m("Not verified")}
+                    {votes[i] !== undefined ? (
+                      <TokenAmount
+                        value={votes[i]}
+                        token={config.contracts.mana?.address}
+                        showSymbol
+                      />
+                    ) : (
+                      m("Not verified")
+                    )}
                   </span>
                 </div>
                 <progress
@@ -294,9 +301,15 @@ export function ProposalDetail({
             ) : (
               <p>
                 {m("Quorum:")}{" "}
-                {p.quorum
-                  ? amount(p.quorum) + m(" MANA")
-                  : m("Available after snapshot")}
+                {p.quorum ? (
+                  <TokenAmount
+                    value={p.quorum}
+                    token={config.contracts.mana?.address}
+                    showSymbol
+                  />
+                ) : (
+                  m("Available after snapshot")
+                )}
                 {m(
                   ". The Governor determines the outcome under its current rules.",
                 )}

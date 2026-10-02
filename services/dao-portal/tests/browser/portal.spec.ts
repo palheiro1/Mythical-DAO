@@ -12,7 +12,7 @@ test("public routes render without governance platforms, fonts or horizontal ove
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   for (const [route, heading] of [
-    ["overview", "Help shape the world of Mythical Beings."],
+    ["overview", "The Seekers’ Camp"],
     ["governance", "Governance"],
     ["treasury", "Treasury"],
     ["delegation", "Delegation"],

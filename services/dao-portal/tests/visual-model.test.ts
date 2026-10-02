@@ -80,6 +80,12 @@ describe("identified treasury payments", () => {
         },
         config,
       ),
-    ).toEqual({ recipient, symbol: "POL", quantity: "1.23456789" });
+    ).toEqual({
+      recipient,
+      symbol: "POL",
+      quantity: "1.23456789",
+      raw: "1234567890000000000",
+      decimals: 18,
+    });
   });
 });

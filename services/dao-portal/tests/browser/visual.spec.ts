@@ -54,7 +54,7 @@ test.describe("visual acceptance matrix", () => {
           await page.locator("#main-content").focus();
           await page.screenshot({
             path:
-              "docs/evidence/visual/controlled-" +
+              "docs/evidence/seekers-camp-2026-10-02/controlled-" +
               name +
               "-" +
               theme +
@@ -116,6 +116,7 @@ test.describe("visual acceptance matrix", () => {
           test.setTimeout(120000);
           await page.setViewportSize({ width, height: 1000 });
           await page.emulateMedia({ colorScheme: theme });
+          await controlledPortal(page);
           const remote: string[] = [];
           page.on("request", (r) => {
             if (/fonts\.google|fonts\.gstatic/.test(r.url()))
@@ -148,22 +149,27 @@ test.describe("visual acceptance matrix", () => {
               })),
               route,
             ).toEqual([]);
-            const missing = await page
-              .locator("img")
-              .evaluateAll((images) =>
-                images
-                  .filter(
-                    (i) =>
-                      !(i as HTMLImageElement).complete ||
-                      !(i as HTMLImageElement).naturalWidth,
-                  )
-                  .map((i) => i.getAttribute("src")),
-              );
-            expect(missing).toEqual([]);
-            mkdirSync("docs/evidence/visual", { recursive: true });
+            await expect
+              .poll(() =>
+                page
+                  .locator("img")
+                  .evaluateAll((images) =>
+                    images
+                      .filter(
+                        (i) =>
+                          !(i as HTMLImageElement).complete ||
+                          !(i as HTMLImageElement).naturalWidth,
+                      )
+                      .map((i) => i.getAttribute("src")),
+                  ),
+              )
+              .toEqual([]);
+            mkdirSync("docs/evidence/seekers-camp-2026-10-02", {
+              recursive: true,
+            });
             await page.screenshot({
               path:
-                "docs/evidence/visual/" +
+                "docs/evidence/seekers-camp-2026-10-02/" +
                 route +
                 "-" +
                 theme +
@@ -219,7 +225,7 @@ test.describe("visual acceptance matrix", () => {
           await page.evaluate(() => window.scrollTo(0, 0));
           await page.screenshot({
             path:
-              "docs/evidence/visual/controlled-" +
+              "docs/evidence/seekers-camp-2026-10-02/controlled-" +
               name +
               "-" +
               theme +
@@ -307,7 +313,7 @@ test.describe("visual acceptance matrix", () => {
     await page.getByRole("button", { name: "Open navigation" }).click();
     await page
       .getByRole("dialog")
-      .getByRole("link", { name: "Treasury", exact: true })
+      .getByRole("link", { name: "Treasury · DAO funds", exact: true })
       .click();
     await expect(
       page.getByRole("heading", { name: "Treasury", exact: true }),

@@ -17,6 +17,12 @@ export function Icon({
   className?: string;
 }) {
   const paths: Record<string, string> = {
+    council:
+      "M12 3c2 4-1 5 2 7 2-2 3-2 3-4 6 8 2 14-5 14-7 0-10-7-4-13 0 3 2 3 4 5 0-3-2-4 0-9z",
+    planning: "M3 5l6-2 6 2 6-2v16l-6 2-6-2-6 2z M9 3v16 M15 5v16",
+    chronicle:
+      "M4 4h12a3 3 0 0 1 3 3v14H6a3 3 0 0 1-3-3V6a2 2 0 0 1 2-2 M3 17h16 M8 8h7 M8 12h5",
+    compass: "M22 12a10 10 0 1 1-20 0 10 10 0 1 1 20 0 M15 9l-2 4-4 2 2-4z",
     overview: "M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z",
     governance: "m5 3 4 4-4 4 M11 7h9 M5 16h15 M5 21h10",
     treasury: "m3 8 9-5 9 5z M5 11v7 M10 11v7 M15 11v7 M20 11v7 M3 21h18",

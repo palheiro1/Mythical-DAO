@@ -1,3 +1,5 @@
+import { CampMap, CampBreadcrumb, campPlaces } from "./Camp";
+import { TokenAmount } from "./TokenAmount";
 import { RecoverProposal } from "./RecoverProposal";
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
@@ -14,15 +16,7 @@ import type {
 } from "./data-types";
 import { useApi } from "./api";
 import { SyncStatus } from "./SyncStatus";
-import {
-  Wallet,
-  Status,
-  Empty,
-  ProposalCard,
-  AddressLink,
-  amount,
-  allowanceAmount,
-} from "./components";
+import { Wallet, Status, Empty, ProposalCard, AddressLink } from "./components";
 import { TransactionProvider } from "./Transaction";
 import { CreateProposal } from "./CreateProposal";
 import { ProposalDetail } from "./ProposalDetail";
@@ -73,7 +67,7 @@ function Navigation({
 }) {
   return (
     <>
-      <p className="nav-label">{m("DAO portal")}</p>
+      <p className="nav-label">{m("Around the camp")}</p>
       <nav aria-label={m("Main navigation")}>
         {links.map((key) => (
           <a
@@ -84,12 +78,33 @@ function Navigation({
                 ? "current"
                 : ""
             }
-            aria-current={route === key ? "page" : undefined}
+            aria-label={
+              key === "overview"
+                ? m("Camp · Overview")
+                : `${campPlaces.find((p) => p.route === key)?.name} · ${campPlaces.find((p) => p.route === key)?.task}`
+            }
+            aria-current={
+              route === key ||
+              (key === "governance" && route.startsWith("proposal/"))
+                ? "page"
+                : undefined
+            }
             href={"#" + key}
             onClick={onNavigate}
           >
             <Icon name={key} />
-            {t(key)}
+            <span className="nav-destination">
+              <strong>
+                {key === "overview"
+                  ? m("Camp")
+                  : campPlaces.find((p) => p.route === key)?.name}
+              </strong>
+              <small>
+                {key === "overview"
+                  ? t(key)
+                  : campPlaces.find((p) => p.route === key)?.task}
+              </small>
+            </span>
           </a>
         ))}
       </nav>
@@ -196,7 +211,7 @@ export function App() {
             <Wallet config={config} />
           </div>
         </header>
-        <div className="app-shell">
+        <div className={"app-shell" + (route === "overview" ? " is-camp" : "")}>
           <aside className="sidebar">
             <Navigation route={route} />
           </aside>
@@ -215,18 +230,20 @@ export function App() {
             {(health?.status !== "ok" || health?.liveReason) && (
               <div className="setup-banner" role="status">
                 <Icon name="info" />
-                <div>
-                  <strong>
-                    {health?.liveReason
-                      ? m("We couldn’t verify the latest data.")
-                      : health?.status === "setup"
-                        ? m("The portal is being prepared.")
-                        : health?.status === "syncing"
-                          ? m("History is synchronizing.")
-                          : health?.head
-                            ? m("History is incomplete.")
-                            : m("We couldn’t verify the latest data.")}
-                  </strong>
+                <details>
+                  <summary>
+                    <strong>
+                      {health?.liveReason
+                        ? m("We couldn’t verify the latest data.")
+                        : health?.status === "setup"
+                          ? m("The portal is being prepared.")
+                          : health?.status === "syncing"
+                            ? m("History is synchronizing.")
+                            : health?.head
+                              ? m("History is incomplete.")
+                              : m("We couldn’t verify the latest data.")}
+                    </strong>
+                  </summary>
                   <span>
                     {health?.status === "setup"
                       ? m("Explore the portal and save a proposal draft.")
@@ -238,7 +255,14 @@ export function App() {
                             "Previously retrieved data may be out of date. Wallet operations require verified data.",
                           )}
                   </span>
-                </div>
+                  {(health?.reason || health?.liveReason) && (
+                    <code>
+                      {[health.liveReason, health.reason]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </code>
+                  )}
+                </details>
                 {(health?.status === "degraded" || health?.liveReason) && (
                   <button
                     className="button small"
@@ -247,20 +271,11 @@ export function App() {
                     {m("Try again")}
                   </button>
                 )}
-                {(health?.reason || health?.liveReason) && (
-                  <details>
-                    <summary>{m("Details")}</summary>
-                    <code>
-                      {[health.liveReason, health.reason]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </code>
-                  </details>
-                )}
               </div>
             )}
             {config.enabled && <SyncStatus health={health} />}
             <main id="main-content" tabIndex={-1}>
+              {route !== "overview" && <CampBreadcrumb route={route} />}
               {route === "overview" ? (
                 <Overview />
               ) : route === "governance" ? (
@@ -340,6 +355,7 @@ export function App() {
   );
 }
 function Overview() {
+  const { config } = usePortal();
   const proposals = useApi<ProposalList>("proposals?kind=executable"),
     ballots = useApi<ProposalList>("ballots"),
     treasury = useApi<TreasuryResponse>("treasury"),
@@ -362,33 +378,20 @@ function Overview() {
     vault = treasury.data?.accounts.find((a) => a.role === "treasury");
   return (
     <>
-      <section className="welcome">
-        <div>
-          <p className="eyebrow">{m("Community-governed. Powered by MANA.")}</p>
-          <h1>{m("Help shape the world of Mythical Beings.")}</h1>
-          <p>
-            {m(
-              "Explore proposals, vote with MANA and follow the DAO treasury.",
-            )}
-          </p>
-          <div className="button-row">
-            <a className="button primary" href="#create">
-              <Icon name="plus" />
-              {t("create")}
-            </a>
-            <a className="button" href="#guide">
-              {m("How governance works")}
-            </a>
-          </div>
-        </div>
-        <img
-          src="/brand/mana.png"
-          alt="MANA"
-          className="welcome-mana"
-          width="90"
-          height="90"
-        />
-      </section>
+      <CampMap
+        activeVotes={
+          !totals.error &&
+          (totals.data?.complete || totals.data?.countsVerified)
+            ? totals.data.activeVotes
+            : undefined
+        }
+        ready={
+          !totals.error &&
+          (totals.data?.complete || totals.data?.countsVerified)
+            ? (totals.data.readyForExecution ?? undefined)
+            : undefined
+        }
+      />
       <section className="metric-grid" aria-label={m("Governance summary")}>
         <div className="metric">
           <span>
@@ -433,7 +436,12 @@ function Overview() {
                 <div key={a.symbol}>
                   <AssetIcon symbol={a.symbol} />
                   <span>
-                    {amount(a.balance, a.decimals)} {a.symbol}
+                    <TokenAmount
+                      value={a.balance}
+                      token={a.address ?? null}
+                      decimals={a.decimals}
+                      showSymbol
+                    />
                   </span>
                 </div>
               ))}
@@ -491,7 +499,11 @@ function Overview() {
           ) : member.data ? (
             <>
               <p className="participation-balance">
-                {amount(member.data.votes)} MANA
+                <TokenAmount
+                  value={member.data.votes}
+                  token={config.contracts.mana?.address}
+                  showSymbol
+                />
               </p>
               <p>{m("Voting power received")}</p>
               <p>
@@ -723,7 +735,13 @@ function TreasuryPage() {
                       <AssetIcon symbol={asset.symbol} />
                       {asset.symbol}
                     </span>
-                    <strong>{amount(asset.balance, asset.decimals)}</strong>
+                    <strong>
+                      <TokenAmount
+                        value={asset.balance}
+                        token={asset.address ?? null}
+                        decimals={asset.decimals}
+                      />
+                    </strong>
                     <p>
                       {asset.ragequit
                         ? m("Included in ragequit")
@@ -732,9 +750,12 @@ function TreasuryPage() {
                     {asset.ragequit && (
                       <p>
                         {m("Treasury allowance")}:{" "}
-                        {asset.allowance
-                          ? allowanceAmount(asset.allowance, asset.decimals)
-                          : "0"}
+                        <TokenAmount
+                          value={asset.allowance}
+                          token={asset.address ?? null}
+                          decimals={asset.decimals}
+                          allowance
+                        />
                       </p>
                     )}
                     {asset.address ? (
@@ -780,7 +801,12 @@ function TreasuryPage() {
                 {payments.map((payment, i) => (
                   <p key={i}>
                     <strong>
-                      {payment!.quantity} {payment!.symbol}
+                      <TokenAmount
+                        value={payment!.raw}
+                        token={payment!.token ?? null}
+                        decimals={payment!.decimals}
+                        showSymbol
+                      />
                     </strong>{" "}
                     →{" "}
                     <AddressLink
@@ -963,6 +989,7 @@ function History() {
   );
 }
 function Guide() {
+  const { config } = usePortal();
   const rules = useApi<GovernanceParameters>("governance-parameters");
   return (
     <>
@@ -975,7 +1002,13 @@ function Guide() {
         {rules.data ? (
           <dl>
             <dt>{m("Proposal threshold")}</dt>
-            <dd>{amount(rules.data.proposalThreshold)} MANA</dd>
+            <dd>
+              <TokenAmount
+                value={rules.data.proposalThreshold}
+                token={config.contracts.mana?.address}
+                showSymbol
+              />
+            </dd>
             <dt>{m("Voting delay / period")}</dt>
             <dd>
               {rules.data.votingDelay} / {rules.data.votingPeriod} blocks

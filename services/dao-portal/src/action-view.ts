@@ -6,6 +6,8 @@ export interface Payment {
   recipient: string;
   symbol: string;
   quantity: string;
+  raw: string;
+  decimals: number;
   token?: string;
 }
 export function paymentFor(
@@ -17,6 +19,8 @@ export function paymentFor(
       recipient: action.target,
       symbol: "POL",
       quantity: formatUnits(BigInt(action.value), 18),
+      raw: action.value,
+      decimals: 18,
     };
   try {
     const call = decodeFunctionData({ abi: tokenAbi, data: action.data });
@@ -25,6 +29,8 @@ export function paymentFor(
       return {
         recipient: call.args[0],
         token: action.target,
+        raw: String(call.args[1]),
+        decimals: asset?.decimals ?? 0,
         symbol: asset?.symbol ?? "token base units",
         quantity: asset
           ? formatUnits(call.args[1], asset.decimals)
@@ -46,6 +52,8 @@ export function paymentFor(
         recipient: decoded.args[0],
         symbol: "POL",
         quantity: formatUnits(decoded.args[1], 18),
+        raw: String(decoded.args[1]),
+        decimals: 18,
       };
     if (decoded.functionName === "payToken") {
       const [token, recipient, value] = decoded.args;
@@ -57,6 +65,8 @@ export function paymentFor(
             : null;
       return {
         recipient,
+        raw: String(value),
+        decimals: known === "USDC.e" ? 6 : known ? 18 : 0,
         symbol: known ?? "token base units",
         quantity: known
           ? formatUnits(value, known === "USDC.e" ? 6 : 18)

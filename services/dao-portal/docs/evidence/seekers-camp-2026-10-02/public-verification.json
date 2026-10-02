@@ -1,0 +1,103 @@
+{
+  "url": "https://dao-preview.mythicalbeings.io",
+  "checkedAt": "2026-10-02T08:20:10.162Z",
+  "deployment": "dpl_B3bGjqjkX6EAUsqvLHJtBXjaNf1z",
+  "assets": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 686,
+      "type": "text/html; charset=utf-8",
+      "matchesLocal": true,
+      "sha256": "60635d16f0c41f303e631ed8068d2cfe5549c26ba210fc0e8c7c499ab3887a0b"
+    },
+    {
+      "path": "/camp/day.webp",
+      "status": 200,
+      "bytes": 458154,
+      "type": "image/webp",
+      "matchesLocal": true,
+      "sha256": "31aff7d1f54e76549860e10a91d55cb7c7e080fa705c82abbc8b29d303b5552e"
+    },
+    {
+      "path": "/camp/night.webp",
+      "status": 200,
+      "bytes": 308888,
+      "type": "image/webp",
+      "matchesLocal": true,
+      "sha256": "10d1865c2b31fe3a14b447122d944bc4c1729586a4108cebf13b65c5a634d998"
+    },
+    {
+      "path": "/camp/day-small.webp",
+      "status": 200,
+      "bytes": 130080,
+      "type": "image/webp",
+      "matchesLocal": true,
+      "sha256": "6f6fae46b84a95d0b8729488b51b923100c6ec2ff4f98d0f536966d93d149e3d"
+    },
+    {
+      "path": "/camp/night-small.webp",
+      "status": 200,
+      "bytes": 99358,
+      "type": "image/webp",
+      "matchesLocal": true,
+      "sha256": "eba01a69767725bc25e1f99cd23d8d410d5289b7203e0a97932b7cdfaaa6841e"
+    },
+    {
+      "path": "/fonts/cinzel-decorative-700.ttf",
+      "status": 200,
+      "bytes": 60312,
+      "type": "font/ttf",
+      "matchesLocal": true,
+      "sha256": "33af29b321940453ee21556c041452d4a84337568505780e0d3c08a6cd1f16fd"
+    }
+  ],
+  "api": {
+    "health": {
+      "httpStatus": 200,
+      "status": "syncing",
+      "head": "94816048",
+      "liveReason": null,
+      "syncPercent": 2.27,
+      "governancePercent": 2.91
+    },
+    "treasury": {
+      "httpStatus": 200,
+      "asOfBlock": "94815985",
+      "unavailable": false,
+      "accounts": [
+        {
+          "role": "treasury",
+          "assets": [
+            {
+              "symbol": "GEM",
+              "balance": "657100440000000000000000"
+            },
+            {
+              "symbol": "WETH",
+              "balance": "80000000000000"
+            },
+            {
+              "symbol": "USDC",
+              "balance": "0"
+            },
+            {
+              "symbol": "POL",
+              "balance": "0"
+            },
+            {
+              "symbol": "USDC.e",
+              "balance": "0"
+            }
+          ]
+        }
+      ]
+    },
+    "overview": {
+      "httpStatus": 200,
+      "activeVotes": 1,
+      "readyForExecution": 0,
+      "complete": false
+    }
+  }
+}

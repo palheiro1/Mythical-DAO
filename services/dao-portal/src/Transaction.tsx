@@ -1,3 +1,4 @@
+import { formatTokenAmount } from "./token-format";
 import {
   createContext,
   useContext,
@@ -322,8 +323,18 @@ export function TransactionProvider({
               <div>
                 <dt>{m("Estimated network fee")}</dt>
                 <dd>
-                  {formatEther(BigInt(review.estimatedFee))}
+                  {
+                    formatTokenAmount(
+                      review.estimatedFee,
+                      { symbol: "POL", decimals: 18 },
+                      true,
+                    ).text
+                  }{" "}
                   {m("POL")}
+                  <span className="token-exact">
+                    {m("Exact amount")}:{" "}
+                    {formatEther(BigInt(review.estimatedFee))} {m("POL")}
+                  </span>
                 </dd>
               </div>
             </dl>

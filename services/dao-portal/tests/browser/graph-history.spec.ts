@@ -77,7 +77,7 @@ test("supplemental history shows scoped real counts, provenance and safe fallbac
       ).toBe(true);
       if (width === 390 || width === 1440)
         await page.screenshot({
-          path: `docs/evidence/graph-history-${theme}-${width}.png`,
+          path: `docs/evidence/seekers-camp-2026-10-02/graph-history-${theme}-${width}.png`,
           fullPage: true,
         });
     }

@@ -1,3 +1,4 @@
+import { TokenAmount } from "./TokenAmount";
 import { useState } from "react";
 import {
   encodeFunctionData,
@@ -284,7 +285,12 @@ export function CreateProposal({
             {payments.map((p, i) => (
               <li key={i}>
                 <strong>
-                  {p!.quantity} {p!.symbol}
+                  <TokenAmount
+                    value={p!.raw}
+                    token={p!.token ?? null}
+                    decimals={p!.decimals}
+                    showSymbol
+                  />
                 </strong>{" "}
                 → <AddressLink address={p!.recipient as Address} />
               </li>

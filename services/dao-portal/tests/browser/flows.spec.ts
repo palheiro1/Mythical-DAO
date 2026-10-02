@@ -177,7 +177,7 @@ test("proposal detail presents direct execution and preserved advisory results",
   expect(axe.violations.map((v) => v.id)).toEqual([]);
   await page.screenshot({
     path:
-      "docs/evidence/visual/proposal-controlled-" +
+      "docs/evidence/seekers-camp-2026-10-02/proposal-controlled-" +
       test.info().project.name +
       ".png",
     fullPage: true,

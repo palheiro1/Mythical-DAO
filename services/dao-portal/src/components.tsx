@@ -1,3 +1,4 @@
+import { displayAsset, formatTokenAmount } from "./token-format";
 import {
   useConnect,
   useAccount,
@@ -191,8 +192,17 @@ export function ProposalCard({ p }: { p: Proposal }) {
               count: p.options.length,
             })
           : payments.length
-            ? payments.map((a) => a!.quantity + " " + a!.symbol).join(" + ") +
-              m(" · treasury payment")
+            ? payments
+                .map(
+                  (a) =>
+                    formatTokenAmount(
+                      a!.raw,
+                      displayAsset(config, a!.token ?? null, a!.decimals),
+                    ).text +
+                    " " +
+                    a!.symbol,
+                )
+                .join(" + ") + m(" · treasury payment")
             : m("{count} on-chain actions", { count: p.targets.length })}
       </p>
       <p className="muted">

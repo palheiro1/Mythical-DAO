@@ -1,3 +1,4 @@
+import { TokenAmount } from "./TokenAmount";
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 import {
@@ -13,7 +14,7 @@ import { basketAssets } from "../shared/assets";
 import { validRagequitRecipient } from "../shared/ragequit-security";
 import type { RedeemPreview, Member, ListResponse } from "./data-types";
 import { api, useApi } from "./api";
-import { amount, allowanceAmount, AddressLink } from "./components";
+import { amount, AddressLink } from "./components";
 import { useTransaction } from "./Transaction";
 import { t, m } from "./i18n";
 import {
@@ -84,12 +85,22 @@ export function Delegation({
             <AssetIcon symbol="MANA" />
             {m("Your MANA balance")}
           </span>
-          <strong>{member ? amount(member.balance) : "—"}</strong>
+          <strong>
+            <TokenAmount
+              value={member?.balance}
+              token={config.contracts.mana?.address}
+            />
+          </strong>
           <p>{m("Tokens held in your wallet")}</p>
         </div>
         <div className="metric">
           <span>{m("Voting power received")}</span>
-          <strong>{member ? amount(member.votes) : "—"}</strong>
+          <strong>
+            <TokenAmount
+              value={member?.votes}
+              token={config.contracts.mana?.address}
+            />
+          </strong>
           <p>{m("Delegated power for future snapshots")}</p>
         </div>
         <div className="metric">
@@ -192,7 +203,11 @@ export function Delegation({
             {delegates.data?.items.map((d) => (
               <div className="table-row" key={d.address}>
                 <AddressLink address={d.address} />
-                <span>{amount(d.votes)} MANA</span>
+                <TokenAmount
+                  value={d.votes}
+                  token={config.contracts.mana?.address}
+                  showSymbol
+                />
                 <button
                   aria-label={m("Choose {address}", { address: d.address })}
                   onClick={() => setDelegate(d.address)}
@@ -450,11 +465,18 @@ export function Ragequit({
             </button>
           </div>
           <p className="field-help">
-            {member
-              ? m("Available: {amount} MANA", {
-                  amount: amount(member.balance),
-                })
-              : m("Connect your wallet to check your available MANA.")}
+            {member ? (
+              <>
+                {m("Available")}:{" "}
+                <TokenAmount
+                  value={member.balance}
+                  token={config.contracts.mana?.address}
+                  showSymbol
+                />
+              </>
+            ) : (
+              m("Connect your wallet to check your available MANA.")
+            )}
           </p>
           <label className="checkbox">
             <input
@@ -542,33 +564,45 @@ export function Ragequit({
                 {quote?.basket[i] && (
                   <p className="muted">
                     {m("Treasury balance")}:{" "}
-                    {amount(quote.basket[i].balance, i === 2 ? 6 : 18)} ·{" "}
-                    {m("Treasury allowance")}:{" "}
-                    {allowanceAmount(
-                      quote.basket[i].allowance,
-                      i === 2 ? 6 : 18,
-                    )}
+                    <TokenAmount
+                      value={quote.basket[i].balance}
+                      token={quote.basket[i].address}
+                    />{" "}
+                    · {m("Treasury allowance")}:{" "}
+                    <TokenAmount
+                      value={quote.basket[i].allowance}
+                      token={quote.basket[i].address}
+                      allowance
+                    />
                   </p>
                 )}
                 <p className="muted">
                   {m("Minimum")}:{" "}
-                  {minimums[i] !== undefined
-                    ? amount(minimums[i], i === 2 ? 6 : 18)
-                    : "—"}
+                  <TokenAmount
+                    value={minimums[i]}
+                    token={basketAssets(config)[i].address}
+                  />
                 </p>
               </div>
               <strong>
-                {quote ? amount(quote.amounts[i], i === 2 ? 6 : 18) : "—"}
+                <TokenAmount
+                  value={quote?.amounts[i]}
+                  token={basketAssets(config)[i].address}
+                />
               </strong>
             </div>
           ))}
           {quote && (
             <>
               <p className="field-help">
-                {m("Preview block {block} · total supply {supply} MANA", {
+                {m("Preview block {block} · total supply", {
                   block: quote.block,
-                  supply: amount(quote.supply),
-                })}
+                })}{" "}
+                <TokenAmount
+                  value={quote.supply}
+                  token={config.contracts.mana?.address}
+                  showSymbol
+                />
               </p>
               <p
                 className={validQuote ? "muted" : "quote-invalid"}
