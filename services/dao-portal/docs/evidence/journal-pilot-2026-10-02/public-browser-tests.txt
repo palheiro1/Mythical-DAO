@@ -1,0 +1,15 @@
+
+> @mythical/dao-portal@0.1.0 test:browser
+> playwright test tests/browser/portal.spec.ts
+
+
+Running 6 tests using 1 worker
+
+  ✓  1 [desktop] › tests/browser/portal.spec.ts:9:1 › public routes render without governance platforms, fonts or horizontal overflow (801ms)
+  ✓  2 [desktop] › tests/browser/portal.spec.ts:37:1 › old drafts and multi-step edits persist without a wallet (1.3s)
+  ✓  3 [desktop] › tests/browser/portal.spec.ts:80:1 › overview meets automated accessibility checks (1.0s)
+  ✓  4 [mobile] › tests/browser/portal.spec.ts:9:1 › public routes render without governance platforms, fonts or horizontal overflow (806ms)
+  ✓  5 [mobile] › tests/browser/portal.spec.ts:37:1 › old drafts and multi-step edits persist without a wallet (1.1s)
+  ✓  6 [mobile] › tests/browser/portal.spec.ts:80:1 › overview meets automated accessibility checks (934ms)
+
+  6 passed (7.4s)

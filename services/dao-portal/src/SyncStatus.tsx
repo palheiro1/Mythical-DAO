@@ -8,8 +8,9 @@ const blockText = (value: string) => BigInt(value).toLocaleString("en-US");
 export function SyncStatus({ health }: { health?: Health }) {
   const sync = health?.sync;
   const failed = health?.status === "degraded";
-  const label =
-    !sync || sync.percent === null
+  const label = !health
+    ? m("Checking sync progress…")
+    : !sync || sync.percent === null
       ? m("Sync status unavailable")
       : failed
         ? m("Retrying after an error")

@@ -31,29 +31,33 @@ test("all six map locations open their existing routes and return to camp", asyn
   }
 });
 
-test("day/night map follows the saved theme and remains usable without the artwork", async ({
+test("camp follows the saved theme and remains usable without the artwork", async ({
   page,
 }) => {
   await controlledPortal(page);
   await page.goto("/");
   await page.getByLabel("Theme", { exact: true }).selectOption("dark");
-  await expect(page.locator(".camp-map img")).toHaveAttribute(
+  await expect(page.locator(".camp-map:visible img")).toHaveAttribute(
     "src",
-    "/camp/night.webp",
+    "/journal/map-small.webp",
   );
   await page.reload();
-  await expect(page.locator(".camp-map img")).toHaveAttribute(
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator(".camp-map:visible img")).toHaveAttribute(
     "src",
-    "/camp/night.webp",
+    "/journal/map-small.webp",
   );
   await page.getByLabel("Theme", { exact: true }).selectOption("light");
-  await expect(page.locator(".camp-map img")).toHaveAttribute(
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator(".camp-map:visible img")).toHaveAttribute(
     "src",
-    "/camp/day.webp",
+    "/journal/map-small.webp",
   );
-  await page.route("**/camp/*.webp", (r) => r.abort());
+  await page.route("**/journal/map*.webp", (r) => r.abort());
   await page.reload();
-  await expect(page.locator(".camp-map")).toHaveClass(/camp-map-fallback/);
+  await expect(page.locator(".camp-map:visible")).toHaveClass(
+    /camp-map-fallback/,
+  );
   await page
     .getByRole("navigation", { name: "Camp destinations" })
     .getByRole("link", { name: /Treasury/ })
@@ -72,7 +76,7 @@ test("map has accessible mobile targets, reflows and respects reduced motion", a
   await page.goto("/");
   for (const theme of ["light", "dark"]) {
     await page.getByLabel("Theme", { exact: true }).selectOption(theme);
-    for (const target of await page.locator(".camp-hotspot").all()) {
+    for (const target of await page.locator(".camp-hotspot:visible").all()) {
       const box = await target.boundingBox();
       expect(box!.width).toBeGreaterThanOrEqual(44);
       expect(box!.height).toBeGreaterThanOrEqual(44);

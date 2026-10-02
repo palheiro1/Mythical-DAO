@@ -52,7 +52,7 @@ test("live governance banner and recovery form fit both themes and reflow", asyn
       ).toBe(true);
       if (width !== 320)
         await page.screenshot({
-          path: `docs/evidence/seekers-camp-2026-10-02/live-governance-${theme}-${width}-2026-09-29.png`,
+          path: `docs/evidence/journal-pilot-2026-10-02/live-governance-${theme}-${width}-2026-09-29.png`,
           fullPage: true,
         });
       if (width === 390) {

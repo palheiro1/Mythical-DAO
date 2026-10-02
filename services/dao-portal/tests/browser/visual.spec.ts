@@ -54,7 +54,7 @@ test.describe("visual acceptance matrix", () => {
           await page.locator("#main-content").focus();
           await page.screenshot({
             path:
-              "docs/evidence/seekers-camp-2026-10-02/controlled-" +
+              "docs/evidence/journal-pilot-2026-10-02/controlled-" +
               name +
               "-" +
               theme +
@@ -152,7 +152,7 @@ test.describe("visual acceptance matrix", () => {
             await expect
               .poll(() =>
                 page
-                  .locator("img")
+                  .locator("img:visible")
                   .evaluateAll((images) =>
                     images
                       .filter(
@@ -164,12 +164,12 @@ test.describe("visual acceptance matrix", () => {
                   ),
               )
               .toEqual([]);
-            mkdirSync("docs/evidence/seekers-camp-2026-10-02", {
+            mkdirSync("docs/evidence/journal-pilot-2026-10-02", {
               recursive: true,
             });
             await page.screenshot({
               path:
-                "docs/evidence/seekers-camp-2026-10-02/" +
+                "docs/evidence/journal-pilot-2026-10-02/" +
                 route +
                 "-" +
                 theme +
@@ -225,7 +225,7 @@ test.describe("visual acceptance matrix", () => {
           await page.evaluate(() => window.scrollTo(0, 0));
           await page.screenshot({
             path:
-              "docs/evidence/seekers-camp-2026-10-02/controlled-" +
+              "docs/evidence/journal-pilot-2026-10-02/controlled-" +
               name +
               "-" +
               theme +

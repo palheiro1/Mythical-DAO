@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-02T09:12:00.726Z",
+  "origin": "https://dao-preview.mythicalbeings.io",
+  "health": {
+    "status": "degraded",
+    "signingAllowed": false,
+    "historyComplete": false,
+    "syncPercent": null,
+    "head": null
+  },
+  "followup": "health-followup.json"
+}

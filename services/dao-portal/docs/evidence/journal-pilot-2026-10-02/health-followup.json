@@ -1,0 +1,74 @@
+{
+  "status": "syncing",
+  "signingAllowed": true,
+  "historyComplete": false,
+  "head": "94818146",
+  "confirmedHead": "94818082",
+  "checkedAt": "2026-10-02T09:12:40.205Z",
+  "reason": "The confirmed index is catching up.",
+  "sync": {
+    "percent": 2.31,
+    "sources": [
+      {
+        "label": "Governor / treasury",
+        "indexedBlock": "50127900",
+        "targetBlock": "94818082",
+        "percent": 3.14
+      },
+      {
+        "label": "Ragequit",
+        "indexedBlock": "94817569",
+        "targetBlock": "94818082",
+        "percent": 98.84
+      },
+      {
+        "label": "GEM",
+        "indexedBlock": "49572774",
+        "targetBlock": "94818082",
+        "percent": 1.94
+      },
+      {
+        "label": "USDC",
+        "indexedBlock": "49512364",
+        "targetBlock": "94818082",
+        "percent": 1.81
+      },
+      {
+        "label": "USDC.e",
+        "indexedBlock": "49534436",
+        "targetBlock": "94818082",
+        "percent": 1.86
+      },
+      {
+        "label": "MANA",
+        "indexedBlock": "47145666",
+        "targetBlock": "94818082",
+        "percent": 2.77
+      },
+      {
+        "label": "WETH",
+        "indexedBlock": "49555065",
+        "targetBlock": "94818082",
+        "percent": 1.9
+      },
+      {
+        "label": "GEM authorizations",
+        "indexedBlock": "94817488",
+        "targetBlock": "94818082",
+        "percent": 98.66
+      },
+      {
+        "label": "WETH authorizations",
+        "indexedBlock": "94817529",
+        "targetBlock": "94818082",
+        "percent": 98.75
+      },
+      {
+        "label": "USDC authorizations",
+        "indexedBlock": "94817408",
+        "targetBlock": "94818082",
+        "percent": 98.48
+      }
+    ]
+  }
+}

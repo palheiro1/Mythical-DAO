@@ -1,0 +1,352 @@
+{
+  "checkedAt": "2026-10-02T09:16:24.557Z",
+  "origin": "https://dao-preview.mythicalbeings.io",
+  "deployment": "dpl_CWnV4jmjE3LqanxTQcBoSxc7dT1r",
+  "artifacts": [
+    {
+      "file": "index.html",
+      "status": 200,
+      "bytes": 686,
+      "sha256": "f9060d37029e48ecceb9c5a879e7c87db8eaf6847c2f2b0b3e15bfa597f10653",
+      "matches": true
+    },
+    {
+      "file": "journal/garuda.webp",
+      "status": 200,
+      "bytes": 53400,
+      "sha256": "0ed4016dbb0c5bd207d81405c01e313a3330c537017e6ce9e1fb7b9992f66360",
+      "matches": true
+    },
+    {
+      "file": "journal/garuda-small.webp",
+      "status": 200,
+      "bytes": 23352,
+      "sha256": "1e049ee9b27341710686df10b37414fe2ee9edc6d98e2fec321730483c4c2c46",
+      "matches": true
+    },
+    {
+      "file": "journal/bahana.webp",
+      "status": 200,
+      "bytes": 62482,
+      "sha256": "ed68709ca580a1e180ac15e922a51ef85dc85cbfe57117d2d621e9efb019034f",
+      "matches": true
+    },
+    {
+      "file": "journal/golden-fronds.webp",
+      "status": 200,
+      "bytes": 45680,
+      "sha256": "5d826bc070f20477bd3a635bc61cb5d7c73ff2c807d606363a38103b33638b81",
+      "matches": true
+    },
+    {
+      "file": "journal/sumanga.webp",
+      "status": 200,
+      "bytes": 58944,
+      "sha256": "11b826adc0721c593476128ad8ce10875c3b3d4495dc2f51d800572fa0bbe40f",
+      "matches": true
+    },
+    {
+      "file": "journal/map.webp",
+      "status": 200,
+      "bytes": 307658,
+      "sha256": "a98f3e619ff365a02e78ea4246c5d5f5fb9b6086a1bc6bf0e63406add9febbaf",
+      "matches": true
+    },
+    {
+      "file": "journal/map-small.webp",
+      "status": 200,
+      "bytes": 90840,
+      "sha256": "31345d6b8fd99ebd674dba6bdb9154434ebb7dc8e37d0a8ad6c59d4175a7b0eb",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/account.png",
+      "status": 200,
+      "bytes": 19800,
+      "sha256": "88c0cee60b45c6b36c688c09b5b7830b9b59b3d1d8e9f2543f671ad1f0ba5097",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/book.png",
+      "status": 200,
+      "bytes": 26794,
+      "sha256": "3b0372da1cba87701134fdac3ae26b6ca0f06e486993d3d6ed471898204078b3",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/history.png",
+      "status": 200,
+      "bytes": 20871,
+      "sha256": "fe90afb86d55c1deb9d2a2f43208e90b4711d1ee9754b88f7fdea65f980447d7",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/inventory.png",
+      "status": 200,
+      "bytes": 38781,
+      "sha256": "90d29802d9a647e665f5227203d07418f8217e72af2bfd57008db1d0d9f85d12",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/messages.png",
+      "status": 200,
+      "bytes": 28715,
+      "sha256": "671e243e5488254a2868e08b9cd69f27b5cfb9a7c22dc5b23ffd61e4a5b5077c",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/overview.png",
+      "status": 200,
+      "bytes": 28936,
+      "sha256": "bf9ea16fe13903acb35816265cb93d251177e5be0c41dfe1dca22a053ee44f7a",
+      "matches": true
+    },
+    {
+      "file": "brand/gem.png",
+      "status": 200,
+      "bytes": 89712,
+      "sha256": "66571c19f0bc992f79664f8dd23107ae4d8a6fae340affbab4abc0b3e55e4514",
+      "matches": true
+    },
+    {
+      "file": "brand/logo-black.png",
+      "status": 200,
+      "bytes": 101551,
+      "sha256": "77fde0050a4948d05532dbce716f4adcbf163e49d74f33faf27c2af4ac38a816",
+      "matches": true
+    },
+    {
+      "file": "brand/logo-white.png",
+      "status": 200,
+      "bytes": 117439,
+      "sha256": "0599a2d30b3e44e2fde2179d58cc59dd789abfd4348550576b4ba6896800c1ad",
+      "matches": true
+    },
+    {
+      "file": "brand/mana.png",
+      "status": 200,
+      "bytes": 104990,
+      "sha256": "26d002e3f41c1e914da2b0c8832d4d3717c3dc740beb5b43a3c51825fa586c2d",
+      "matches": true
+    },
+    {
+      "file": "brand/polygon.png",
+      "status": 200,
+      "bytes": 4778,
+      "sha256": "9146df3f3fb40828811c013047890642a36bcfae325591e704c2f1bbc7cc4cb5",
+      "matches": true
+    },
+    {
+      "file": "brand/usdc.svg",
+      "status": 200,
+      "bytes": 1309,
+      "sha256": "fe4f9d5f34ef4ebeb5d80e1f5ff63dcaf5a0d5495f4adf206e4c3011d1f5c57d",
+      "matches": true
+    },
+    {
+      "file": "brand/weth.png",
+      "status": 200,
+      "bytes": 89239,
+      "sha256": "33752ceaa265daefcbe313fa7d7049030767180981f9b35f628a0f7a3e806793",
+      "matches": true
+    },
+    {
+      "file": "fonts/cinzel-decorative-700.ttf",
+      "status": 200,
+      "bytes": 60312,
+      "sha256": "33af29b321940453ee21556c041452d4a84337568505780e0d3c08a6cd1f16fd",
+      "matches": true
+    },
+    {
+      "file": "assets/ccip-T0-DTG0Y.js",
+      "status": 200,
+      "bytes": 2840,
+      "sha256": "ea74c0dc1f98bfded250ee0b7d9b9e75a79cfff1230f2300bd0d5ed3fa51bfc5",
+      "matches": true
+    },
+    {
+      "file": "assets/index-CwNUPCWH.js",
+      "status": 200,
+      "bytes": 728037,
+      "sha256": "e73d298608c60e9e042d4a835c3e785585e177b20089d8d58131046673dbe319",
+      "matches": true
+    },
+    {
+      "file": "assets/index-DDT2EM6Y.css",
+      "status": 200,
+      "bytes": 60023,
+      "sha256": "9e7232c0eec02f195af34f311cbea56a09bf29343b1105dc9b2c5329f654a4ab",
+      "matches": true
+    }
+  ],
+  "pages": [
+    {
+      "route": "overview",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "The Seekers’ Camp",
+      "sync": "2.31%",
+      "screenshot": "public-overview-light-390.png"
+    },
+    {
+      "route": "governance",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Governance",
+      "sync": "2.31%",
+      "screenshot": "public-governance-light-390.png"
+    },
+    {
+      "route": "treasury",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Treasury",
+      "sync": "2.31%",
+      "screenshot": "public-treasury-light-390.png"
+    },
+    {
+      "route": "overview",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "The Seekers’ Camp",
+      "sync": "2.31%",
+      "screenshot": "public-overview-light-1440.png"
+    },
+    {
+      "route": "governance",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Governance",
+      "sync": "2.31%",
+      "screenshot": "public-governance-light-1440.png"
+    },
+    {
+      "route": "treasury",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Treasury",
+      "sync": "2.31%",
+      "screenshot": "public-treasury-light-1440.png"
+    },
+    {
+      "route": "overview",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "The Seekers’ Camp",
+      "sync": "2.31%",
+      "screenshot": "public-overview-dark-390.png"
+    },
+    {
+      "route": "governance",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Governance",
+      "sync": "2.31%",
+      "screenshot": "public-governance-dark-390.png"
+    },
+    {
+      "route": "treasury",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Treasury",
+      "sync": "2.31%",
+      "screenshot": "public-treasury-dark-390.png"
+    },
+    {
+      "route": "overview",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "The Seekers’ Camp",
+      "sync": "2.31%",
+      "screenshot": "public-overview-dark-1440.png"
+    },
+    {
+      "route": "governance",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Governance",
+      "sync": "2.31%",
+      "screenshot": "public-governance-dark-1440.png"
+    },
+    {
+      "route": "treasury",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Treasury",
+      "sync": "2.31%",
+      "screenshot": "public-treasury-dark-1440.png"
+    }
+  ],
+  "errors": [],
+  "api": {
+    "health": {
+      "status": "syncing",
+      "signingAllowed": true,
+      "historyComplete": false,
+      "syncPercent": 2.31,
+      "head": "94818300"
+    },
+    "config": {
+      "enabled": true,
+      "architecture": "existing-governor",
+      "chainId": 137
+    },
+    "treasury": {
+      "asOfBlock": "94818236",
+      "accounts": [
+        {
+          "role": "treasury",
+          "assets": [
+            {
+              "symbol": "GEM",
+              "address": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+              "balance": "657100440000000000000000",
+              "allowance": "0",
+              "ragequit": true
+            },
+            {
+              "symbol": "WETH",
+              "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+              "balance": "80000000000000",
+              "allowance": "0",
+              "ragequit": true
+            },
+            {
+              "symbol": "USDC",
+              "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+              "balance": "0",
+              "allowance": "0",
+              "ragequit": true
+            },
+            {
+              "symbol": "POL",
+              "address": null,
+              "balance": "0",
+              "allowance": "0",
+              "ragequit": false
+            },
+            {
+              "symbol": "USDC.e",
+              "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+              "balance": "0",
+              "allowance": "0",
+              "ragequit": false
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

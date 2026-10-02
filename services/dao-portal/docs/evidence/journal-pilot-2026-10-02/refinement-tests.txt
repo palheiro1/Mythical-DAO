@@ -1,0 +1,52 @@
+
+> @mythical/dao-portal@0.1.0 test:browser
+> playwright test tests/browser/journal.spec.ts tests/browser/flows.spec.ts tests/browser/camp.spec.ts
+
+
+Running 42 tests using 1 worker
+
+  ✓   1 [desktop] › tests/browser/camp.spec.ts:5:1 › all six map locations open their existing routes and return to camp (1.6s)
+  ✓   2 [desktop] › tests/browser/camp.spec.ts:34:1 › camp follows the saved theme and remains usable without the artwork (1.0s)
+  ✓   3 [desktop] › tests/browser/camp.spec.ts:70:1 › map has accessible mobile targets, reflows and respects reduced motion (1.5s)
+  ✓   4 [desktop] › tests/browser/camp.spec.ts:102:1 › treasury numbers expose exact fractions and distinguish zero, dust and revocable allowance (466ms)
+  ✓   5 [desktop] › tests/browser/camp.spec.ts:180:1 › Max and exit quote keep every MANA decimal even when the balance is rounded (650ms)
+  ✓   6 [desktop] › tests/browser/flows.spec.ts:15:1 › verified treasury identifies payments and preserves exact balances (430ms)
+  ✓   7 [desktop] › tests/browser/flows.spec.ts:32:1 › unavailable, syncing, empty and stale data stay distinct (1.2s)
+  ✓   8 [desktop] › tests/browser/flows.spec.ts:79:1 › live membership stays visible while history syncs and can recover after an RPC failure (668ms)
+  ✓   9 [desktop] › tests/browser/flows.spec.ts:135:1 › history keeps the original date separate from import provenance (547ms)
+  ✓  10 [desktop] › tests/browser/flows.spec.ts:159:1 › proposal detail presents direct execution and preserved advisory results (1.0s)
+  ✓  11 [desktop] › tests/browser/flows.spec.ts:191:1 › draft import, export and reviewed text keep the existing format (527ms)
+  ✓  12 [desktop] › tests/browser/flows.spec.ts:220:1 › wallet menu avoids accidental disconnect and account changes invalidate a review (617ms)
+  ✓  13 [desktop] › tests/browser/flows.spec.ts:257:1 › exit edits and expiration invalidate acknowledgment; an unpinned module cannot reach signing (798ms)
+  ✓  14 [desktop] › tests/browser/flows.spec.ts:317:1 › an API-approved but unpinned module cannot obtain MANA authorization (623ms)
+  ✓  15 [desktop] › tests/browser/flows.spec.ts:341:1 › reviewed proposal text and choices reach the wallet unchanged (708ms)
+  ✓  16 [desktop] › tests/browser/flows.spec.ts:399:1 › failed final simulation prevents a wallet submission (673ms)
+  ✓  17 [desktop] › tests/browser/journal.spec.ts:12:1 › decision summaries add exact payments by address and keep approvals distinct (465ms)
+  ✓  18 [desktop] › tests/browser/journal.spec.ts:62:1 › compact map expands, traps focus, closes with Escape and keeps the original destinations (694ms)
+  ✓  19 [desktop] › tests/browser/journal.spec.ts:96:1 › initial health loading is not presented as a confirmed failure (486ms)
+  ✓  20 [desktop] › tests/browser/journal.spec.ts:127:1 › the pilot is limited to three pages and does not change operational pages (568ms)
+  ✓  21 [desktop] › tests/browser/journal.spec.ts:150:1 › official artwork, layouts and map dialog pass the pilot visual matrix (10.8s)
+  ✓  22 [mobile] › tests/browser/camp.spec.ts:5:1 › all six map locations open their existing routes and return to camp (1.2s)
+  ✓  23 [mobile] › tests/browser/camp.spec.ts:34:1 › camp follows the saved theme and remains usable without the artwork (925ms)
+  ✓  24 [mobile] › tests/browser/camp.spec.ts:70:1 › map has accessible mobile targets, reflows and respects reduced motion (1.4s)
+  ✓  25 [mobile] › tests/browser/camp.spec.ts:102:1 › treasury numbers expose exact fractions and distinguish zero, dust and revocable allowance (416ms)
+  ✓  26 [mobile] › tests/browser/camp.spec.ts:180:1 › Max and exit quote keep every MANA decimal even when the balance is rounded (573ms)
+  ✓  27 [mobile] › tests/browser/flows.spec.ts:15:1 › verified treasury identifies payments and preserves exact balances (398ms)
+  ✓  28 [mobile] › tests/browser/flows.spec.ts:32:1 › unavailable, syncing, empty and stale data stay distinct (1.1s)
+  ✓  29 [mobile] › tests/browser/flows.spec.ts:79:1 › live membership stays visible while history syncs and can recover after an RPC failure (1.9s)
+  ✓  30 [mobile] › tests/browser/flows.spec.ts:135:1 › history keeps the original date separate from import provenance (520ms)
+  ✓  31 [mobile] › tests/browser/flows.spec.ts:159:1 › proposal detail presents direct execution and preserved advisory results (995ms)
+  ✓  32 [mobile] › tests/browser/flows.spec.ts:191:1 › draft import, export and reviewed text keep the existing format (528ms)
+  ✓  33 [mobile] › tests/browser/flows.spec.ts:220:1 › wallet menu avoids accidental disconnect and account changes invalidate a review (697ms)
+  ✓  34 [mobile] › tests/browser/flows.spec.ts:257:1 › exit edits and expiration invalidate acknowledgment; an unpinned module cannot reach signing (911ms)
+  ✓  35 [mobile] › tests/browser/flows.spec.ts:317:1 › an API-approved but unpinned module cannot obtain MANA authorization (654ms)
+  ✓  36 [mobile] › tests/browser/flows.spec.ts:341:1 › reviewed proposal text and choices reach the wallet unchanged (736ms)
+  ✓  37 [mobile] › tests/browser/flows.spec.ts:399:1 › failed final simulation prevents a wallet submission (656ms)
+  ✓  38 [mobile] › tests/browser/journal.spec.ts:12:1 › decision summaries add exact payments by address and keep approvals distinct (473ms)
+  ✓  39 [mobile] › tests/browser/journal.spec.ts:62:1 › compact map expands, traps focus, closes with Escape and keeps the original destinations (617ms)
+  ✓  40 [mobile] › tests/browser/journal.spec.ts:96:1 › initial health loading is not presented as a confirmed failure (422ms)
+  ✓  41 [mobile] › tests/browser/journal.spec.ts:127:1 › the pilot is limited to three pages and does not change operational pages (494ms)
+  -  42 [mobile] › tests/browser/journal.spec.ts:150:1 › official artwork, layouts and map dialog pass the pilot visual matrix
+
+  1 skipped
+  41 passed (44.4s)

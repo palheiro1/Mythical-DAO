@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-02",
+  "scope": [
+    "Camp",
+    "Governance",
+    "Treasury"
+  ],
+  "assets": [
+    {
+      "id": "garuda",
+      "file": "public/journal/garuda.webp",
+      "kind": "official",
+      "source": "wallet/public/images/criatures/garuda.webp",
+      "sourceInfo": {
+        "width": 3001,
+        "height": 2940,
+        "bytes": 344510,
+        "sha256": "4cbcb6b382067a55fbb04fb9937f802b8d2cc8a8d3c62e54253c422e1392c5a4"
+      },
+      "output": {
+        "width": 720,
+        "height": 705,
+        "bytes": 53400,
+        "sha256": "0ed4016dbb0c5bd207d81405c01e313a3330c537017e6ce9e1fb7b9992f66360"
+      },
+      "use": "Camp opening",
+      "transform": "Proportional resize and WebP encoding; original colors and alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "garuda-small",
+      "file": "public/journal/garuda-small.webp",
+      "kind": "official",
+      "source": "wallet/public/images/criatures/garuda.webp",
+      "sourceInfo": {
+        "width": 3001,
+        "height": 2940,
+        "bytes": 344510,
+        "sha256": "4cbcb6b382067a55fbb04fb9937f802b8d2cc8a8d3c62e54253c422e1392c5a4"
+      },
+      "output": {
+        "width": 360,
+        "height": 353,
+        "bytes": 23352,
+        "sha256": "1e049ee9b27341710686df10b37414fe2ee9edc6d98e2fec321730483c4c2c46"
+      },
+      "use": "Camp opening, mobile",
+      "transform": "Proportional resize and WebP encoding; original colors and alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "bahana",
+      "file": "public/journal/bahana.webp",
+      "kind": "official",
+      "source": "wallet/public/images/criatures/bahana.png",
+      "sourceInfo": {
+        "width": 500,
+        "height": 382,
+        "bytes": 364862,
+        "sha256": "42dc144ba8232b0cf02067748f69dc0e231eeec19ce3f5b59e8b10062b9d96c5"
+      },
+      "output": {
+        "width": 500,
+        "height": 382,
+        "bytes": 62482,
+        "sha256": "ed68709ca580a1e180ac15e922a51ef85dc85cbfe57117d2d621e9efb019034f"
+      },
+      "use": "Governance opening",
+      "transform": "Proportional resize and WebP encoding; original colors and alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "golden-fronds",
+      "file": "public/journal/golden-fronds.webp",
+      "kind": "official",
+      "source": "wallet/public/images/criatures/fu.png",
+      "sourceInfo": {
+        "width": 1179,
+        "height": 681,
+        "bytes": 352284,
+        "sha256": "a3ac94594a8ea871c3b58b558becea8dc106dbb456a51973a1651ac45a574640"
+      },
+      "output": {
+        "width": 720,
+        "height": 416,
+        "bytes": 45680,
+        "sha256": "5d826bc070f20477bd3a635bc61cb5d7c73ff2c807d606363a38103b33638b81"
+      },
+      "use": "Treasury opening, Governance margin",
+      "transform": "Proportional resize and WebP encoding; original colors and alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "sumanga",
+      "file": "public/journal/sumanga.webp",
+      "kind": "official",
+      "source": "wallet/public/images/criatures/sumanga.png",
+      "sourceInfo": {
+        "width": 500,
+        "height": 500,
+        "bytes": 1046867,
+        "sha256": "23980d2822a6e625174a92e58f8d420a1f1b33e69c29d1db94ca30b08cd302e9"
+      },
+      "output": {
+        "width": 480,
+        "height": 480,
+        "bytes": 58944,
+        "sha256": "11b826adc0721c593476128ad8ce10875c3b3d4495dc2f51d800572fa0bbe40f"
+      },
+      "use": "Reserved for Field guide after pilot review",
+      "transform": "Proportional resize and WebP encoding; original colors and alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "map",
+      "file": "public/journal/map.webp",
+      "kind": "generated-complement",
+      "source": "/home/usuario/.codex/generated_images/01a0e7b7-7914-7f71-932b-8dced34414fd/exec-d5c542b0-abaf-4736-b4ff-e359f2906c7c.png",
+      "sourceInfo": {
+        "width": 1536,
+        "height": 1024,
+        "bytes": 2939277,
+        "sha256": "52e7308a78f7204f87672e14cc2bf960262002f944974df6e99903b7f43a9795"
+      },
+      "output": {
+        "width": 1536,
+        "height": 1024,
+        "bytes": 307658,
+        "sha256": "a98f3e619ff365a02e78ea4246c5d5f5fb9b6086a1bc6bf0e63406add9febbaf"
+      },
+      "use": "Expanded map",
+      "transform": "Proportional resize and WebP encoding",
+      "prompt": "JOURNAL_ART.md#generation-prompt",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "map-small",
+      "file": "public/journal/map-small.webp",
+      "kind": "generated-complement",
+      "source": "/home/usuario/.codex/generated_images/01a0e7b7-7914-7f71-932b-8dced34414fd/exec-d5c542b0-abaf-4736-b4ff-e359f2906c7c.png",
+      "sourceInfo": {
+        "width": 1536,
+        "height": 1024,
+        "bytes": 2939277,
+        "sha256": "52e7308a78f7204f87672e14cc2bf960262002f944974df6e99903b7f43a9795"
+      },
+      "output": {
+        "width": 768,
+        "height": 512,
+        "bytes": 90840,
+        "sha256": "31345d6b8fd99ebd674dba6bdb9154434ebb7dc8e37d0a8ad6c59d4175a7b0eb"
+      },
+      "use": "Compact map (up to 420 × 280 CSS px)",
+      "transform": "Proportional resize and WebP encoding",
+      "prompt": "JOURNAL_ART.md#generation-prompt",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "nav-account",
+      "file": "public/journal/nav/account.png",
+      "kind": "official",
+      "source": "wallet/public/images/icons/menu/blanco/account.png",
+      "sourceInfo": {
+        "width": 200,
+        "height": 163,
+        "bytes": 19800,
+        "sha256": "88c0cee60b45c6b36c688c09b5b7830b9b59b3d1d8e9f2543f671ad1f0ba5097"
+      },
+      "output": {
+        "width": 200,
+        "height": 163,
+        "bytes": 19800,
+        "sha256": "88c0cee60b45c6b36c688c09b5b7830b9b59b3d1d8e9f2543f671ad1f0ba5097"
+      },
+      "use": "Labeled navigation",
+      "transform": "Unmodified copy",
+      "theme": "Both"
+    },
+    {
+      "id": "nav-book",
+      "file": "public/journal/nav/book.png",
+      "kind": "official",
+      "source": "wallet/public/images/icons/menu/blanco/book.png",
+      "sourceInfo": {
+        "width": 200,
+        "height": 163,
+        "bytes": 26794,
+        "sha256": "3b0372da1cba87701134fdac3ae26b6ca0f06e486993d3d6ed471898204078b3"
+      },
+      "output": {
+        "width": 200,
+        "height": 163,
+        "bytes": 26794,
+        "sha256": "3b0372da1cba87701134fdac3ae26b6ca0f06e486993d3d6ed471898204078b3"
+      },
+      "use": "Labeled navigation",
+      "transform": "Unmodified copy",
+      "theme": "Both"
+    },
+    {
+      "id": "nav-history",
+      "file": "public/journal/nav/history.png",
+      "kind": "official",
+      "source": "wallet/public/images/icons/menu/blanco/history.png",
+      "sourceInfo": {
+        "width": 200,
+        "height": 163,
+        "bytes": 20871,
+        "sha256": "fe90afb86d55c1deb9d2a2f43208e90b4711d1ee9754b88f7fdea65f980447d7"
+      },
+      "output": {
+        "width": 200,
+        "height": 163,
+        "bytes": 20871,
+        "sha256": "fe90afb86d55c1deb9d2a2f43208e90b4711d1ee9754b88f7fdea65f980447d7"
+      },
+      "use": "Labeled navigation",
+      "transform": "Unmodified copy",
+      "theme": "Both"
+    },
+    {
+      "id": "nav-inventory",
+      "file": "public/journal/nav/inventory.png",
+      "kind": "official",
+      "source": "wallet/public/images/icons/menu/blanco/inventory.png",
+      "sourceInfo": {
+        "width": 200,
+        "height": 163,
+        "bytes": 38781,
+        "sha256": "90d29802d9a647e665f5227203d07418f8217e72af2bfd57008db1d0d9f85d12"
+      },
+      "output": {
+        "width": 200,
+        "height": 163,
+        "bytes": 38781,
+        "sha256": "90d29802d9a647e665f5227203d07418f8217e72af2bfd57008db1d0d9f85d12"
+      },
+      "use": "Labeled navigation",
+      "transform": "Unmodified copy",
+      "theme": "Both"
+    },
+    {
+      "id": "nav-messages",
+      "file": "public/journal/nav/messages.png",
+      "kind": "official",
+      "source": "wallet/public/images/icons/menu/blanco/messages.png",
+      "sourceInfo": {
+        "width": 198,
+        "height": 163,
+        "bytes": 28715,
+        "sha256": "671e243e5488254a2868e08b9cd69f27b5cfb9a7c22dc5b23ffd61e4a5b5077c"
+      },
+      "output": {
+        "width": 198,
+        "height": 163,
+        "bytes": 28715,
+        "sha256": "671e243e5488254a2868e08b9cd69f27b5cfb9a7c22dc5b23ffd61e4a5b5077c"
+      },
+      "use": "Labeled navigation",
+      "transform": "Unmodified copy",
+      "theme": "Both"
+    },
+    {
+      "id": "nav-overview",
+      "file": "public/journal/nav/overview.png",
+      "kind": "official",
+      "source": "wallet/public/images/icons/menu/blanco/overview.png",
+      "sourceInfo": {
+        "width": 200,
+        "height": 163,
+        "bytes": 28936,
+        "sha256": "bf9ea16fe13903acb35816265cb93d251177e5be0c41dfe1dca22a053ee44f7a"
+      },
+      "output": {
+        "width": 200,
+        "height": 163,
+        "bytes": 28936,
+        "sha256": "bf9ea16fe13903acb35816265cb93d251177e5be0c41dfe1dca22a053ee44f7a"
+      },
+      "use": "Labeled navigation",
+      "transform": "Unmodified copy",
+      "theme": "Both"
+    },
+    {
+      "id": "existing-gem",
+      "file": "public/brand/gem.png",
+      "kind": "existing-official",
+      "use": "Brand and token identity, unchanged",
+      "sha256": "66571c19f0bc992f79664f8dd23107ae4d8a6fae340affbab4abc0b3e55e4514",
+      "bytes": 89712,
+      "output": {
+        "width": 210,
+        "height": 210,
+        "bytes": 89712,
+        "sha256": "66571c19f0bc992f79664f8dd23107ae4d8a6fae340affbab4abc0b3e55e4514"
+      }
+    },
+    {
+      "id": "existing-logo-black",
+      "file": "public/brand/logo-black.png",
+      "kind": "existing-official",
+      "use": "Brand and token identity, unchanged",
+      "sha256": "77fde0050a4948d05532dbce716f4adcbf163e49d74f33faf27c2af4ac38a816",
+      "bytes": 101551,
+      "output": {
+        "width": 549,
+        "height": 549,
+        "bytes": 101551,
+        "sha256": "77fde0050a4948d05532dbce716f4adcbf163e49d74f33faf27c2af4ac38a816"
+      }
+    },
+    {
+      "id": "existing-logo-white",
+      "file": "public/brand/logo-white.png",
+      "kind": "existing-official",
+      "use": "Brand and token identity, unchanged",
+      "sha256": "0599a2d30b3e44e2fde2179d58cc59dd789abfd4348550576b4ba6896800c1ad",
+      "bytes": 117439,
+      "output": {
+        "width": 549,
+        "height": 549,
+        "bytes": 117439,
+        "sha256": "0599a2d30b3e44e2fde2179d58cc59dd789abfd4348550576b4ba6896800c1ad"
+      }
+    },
+    {
+      "id": "existing-mana",
+      "file": "public/brand/mana.png",
+      "kind": "existing-official",
+      "use": "Brand and token identity, unchanged",
+      "sha256": "26d002e3f41c1e914da2b0c8832d4d3717c3dc740beb5b43a3c51825fa586c2d",
+      "bytes": 104990,
+      "output": {
+        "width": 210,
+        "height": 210,
+        "bytes": 104990,
+        "sha256": "26d002e3f41c1e914da2b0c8832d4d3717c3dc740beb5b43a3c51825fa586c2d"
+      }
+    },
+    {
+      "id": "existing-polygon",
+      "file": "public/brand/polygon.png",
+      "kind": "existing-official",
+      "use": "Brand and token identity, unchanged",
+      "sha256": "9146df3f3fb40828811c013047890642a36bcfae325591e704c2f1bbc7cc4cb5",
+      "bytes": 4778,
+      "output": {
+        "width": 256,
+        "height": 256,
+        "bytes": 4778,
+        "sha256": "9146df3f3fb40828811c013047890642a36bcfae325591e704c2f1bbc7cc4cb5"
+      }
+    },
+    {
+      "id": "existing-usdc",
+      "file": "public/brand/usdc.svg",
+      "kind": "existing-official",
+      "use": "Brand and token identity, unchanged",
+      "sha256": "fe4f9d5f34ef4ebeb5d80e1f5ff63dcaf5a0d5495f4adf206e4c3011d1f5c57d",
+      "bytes": 1309,
+      "dimensions": {
+        "viewBox": "0 0 96 96",
+        "width": "96",
+        "height": "96"
+      }
+    },
+    {
+      "id": "existing-weth",
+      "file": "public/brand/weth.png",
+      "kind": "existing-official",
+      "use": "Brand and token identity, unchanged",
+      "sha256": "33752ceaa265daefcbe313fa7d7049030767180981f9b35f628a0f7a3e806793",
+      "bytes": 89239,
+      "output": {
+        "width": 210,
+        "height": 210,
+        "bytes": 89239,
+        "sha256": "33752ceaa265daefcbe313fa7d7049030767180981f9b35f628a0f7a3e806793"
+      }
+    },
+    {
+      "id": "cinzel-decorative-700",
+      "file": "public/fonts/cinzel-decorative-700.ttf",
+      "kind": "existing-font",
+      "sha256": "33af29b321940453ee21556c041452d4a84337568505780e0d3c08a6cd1f16fd",
+      "bytes": 60312,
+      "license": "public/fonts/CinzelDecorative-OFL.txt",
+      "use": "Narrative headings",
+      "source": "See CAMP_ASSETS.md"
+    }
+  ]
+}

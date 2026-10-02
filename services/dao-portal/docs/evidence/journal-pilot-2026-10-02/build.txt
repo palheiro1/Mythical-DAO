@@ -1,0 +1,20 @@
+
+> @mythical/dao-portal@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 1735 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.68 kB │ gzip:   0.40 kB
+dist/assets/index-DDT2EM6Y.css   60.02 kB │ gzip:  12.41 kB
+dist/assets/ccip-T0-DTG0Y.js      2.84 kB │ gzip:   1.31 kB
+dist/assets/index-CwNUPCWH.js   728.03 kB │ gzip: 212.96 kB
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 521ms

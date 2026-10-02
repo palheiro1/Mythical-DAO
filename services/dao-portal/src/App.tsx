@@ -1,15 +1,16 @@
-import { CampMap, CampBreadcrumb, campPlaces } from "./Camp";
+import { CampBreadcrumb, campPlaces } from "./Camp";
+import {
+  JournalCamp,
+  JournalGovernance,
+  JournalTreasury,
+  JournalIcon,
+} from "./Journal";
 import { TokenAmount } from "./TokenAmount";
-import { RecoverProposal } from "./RecoverProposal";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
-import { zeroAddress } from "viem";
-import type { Health, PortalConfig, Proposal } from "../shared/domain";
+import type { Health, PortalConfig } from "../shared/domain";
 import type {
   ProposalList,
-  TreasuryResponse,
-  EventList,
-  Member,
   SnapshotRecord,
   ListResponse,
   GovernanceParameters,
@@ -34,7 +35,6 @@ import {
   DateStamp,
   usePortal,
 } from "./ui";
-import { paymentFor, proposalActions } from "./action-view";
 const links: MessageKey[] = [
   "overview",
   "governance",
@@ -61,7 +61,9 @@ function useRoute() {
 function Navigation({
   route,
   onNavigate,
+  journal = false,
 }: {
+  journal?: boolean;
   route: string;
   onNavigate?: () => void;
 }) {
@@ -92,7 +94,7 @@ function Navigation({
             href={"#" + key}
             onClick={onNavigate}
           >
-            <Icon name={key} />
+            {journal ? <JournalIcon name={key} /> : <Icon name={key} />}
             <span className="nav-destination">
               <strong>
                 {key === "overview"
@@ -136,6 +138,13 @@ export function App() {
     configuration = useApi<PortalConfig>("config", true, 60000),
     healthQuery = useApi<Health>("health", true, 20000),
     { address, chainId } = useAccount();
+  const journal = ["overview", "governance", "treasury"].includes(route);
+  useLayoutEffect(() => {
+    document.documentElement.dataset.design = journal ? "journal" : "camp";
+    return () => {
+      delete document.documentElement.dataset.design;
+    };
+  }, [journal]);
   const menu = useRef<HTMLDialogElement>(null),
     menuButton = useRef<HTMLButtonElement>(null);
   const config = configuration.data,
@@ -181,469 +190,197 @@ export function App() {
   return (
     <PortalContext.Provider value={{ config, health }}>
       <TransactionProvider config={config}>
-        <a
-          href="#main-content"
-          className="skip-link"
-          onClick={(e) => {
-            e.preventDefault();
-            document.getElementById("main-content")?.focus();
-          }}
-        >
-          {t("skip")}
-        </a>
-        <header className="site-header">
-          <div className="header-brand">
-            <button
-              ref={menuButton}
-              className="icon-button mobile-menu-button"
-              aria-label={m("Open navigation")}
-              onClick={() => menu.current?.showModal()}
-            >
-              <Icon name="menu" />
-            </button>
-            <Brand />
+        <div className={journal ? "journal-root" : "portal-root"}>
+          <a
+            href="#main-content"
+            className="skip-link"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("main-content")?.focus();
+            }}
+          >
+            {t("skip")}
+          </a>
+          <header className="site-header">
+            <div className="header-brand">
+              <button
+                ref={menuButton}
+                className="icon-button mobile-menu-button"
+                aria-label={m("Open navigation")}
+                onClick={() => menu.current?.showModal()}
+              >
+                <Icon name="menu" />
+              </button>
+              <Brand />
+            </div>
+            <div className="header-actions">
+              <a className="back-to-game" href="https://my.mythicalbeings.io/">
+                {m("Back to Mythical Beings")} ↗
+              </a>
+              <ThemePicker />
+              <Wallet config={config} />
+            </div>
+          </header>
+          <div
+            className={"app-shell" + (route === "overview" ? " is-camp" : "")}
+          >
+            <aside className="sidebar">
+              <Navigation route={route} journal={journal} />
+            </aside>
+            <div className="main-column">
+              <div className={journal ? "journal-health" : undefined}>
+                <div className="network-bar">
+                  <span className="inline">
+                    <AssetIcon symbol="POL" />
+                    {config.chainId === 137
+                      ? m("Polygon")
+                      : config.chainId === 80002
+                        ? m("Polygon Amoy")
+                        : m("Local test chain")}
+                  </span>
+                  <Status health={health} />
+                </div>
+                {(health?.status !== "ok" || health?.liveReason) && (
+                  <div className="setup-banner" role="status">
+                    <Icon name="info" />
+                    <details>
+                      <summary>
+                        <strong>
+                          {!health && !healthQuery.error
+                            ? m("Checking live data…")
+                            : health?.liveReason
+                              ? m("We couldn’t verify the latest data.")
+                              : health?.status === "setup"
+                                ? m("The portal is being prepared.")
+                                : health?.status === "syncing"
+                                  ? m("History is synchronizing.")
+                                  : health?.head
+                                    ? m("History is incomplete.")
+                                    : m("We couldn’t verify the latest data.")}
+                        </strong>
+                      </summary>
+                      <span>
+                        {!health && !healthQuery.error
+                          ? m("Loading balances and governance status.")
+                          : health?.status === "setup"
+                            ? m("Explore the portal and save a proposal draft.")
+                            : health?.signingAllowed
+                              ? m(
+                                  "Wallet and treasury balances are read directly from the network. Each wallet operation is verified and simulated before signing; historical lists and metrics are incomplete.",
+                                )
+                              : m(
+                                  "Previously retrieved data may be out of date. Wallet operations require verified data.",
+                                )}
+                      </span>
+                      {(health?.reason || health?.liveReason) && (
+                        <code>
+                          {[health.liveReason, health.reason]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </code>
+                      )}
+                    </details>
+                    {(healthQuery.error ||
+                      health?.status === "degraded" ||
+                      health?.liveReason) && (
+                      <button
+                        className="button small"
+                        onClick={() => void healthQuery.refetch()}
+                      >
+                        {m("Try again")}
+                      </button>
+                    )}
+                  </div>
+                )}
+                {config.enabled && <SyncStatus health={health} />}
+              </div>
+              <main id="main-content" tabIndex={-1}>
+                {route !== "overview" && <CampBreadcrumb route={route} />}
+                {route === "overview" ? (
+                  <JournalCamp />
+                ) : route === "governance" ? (
+                  <JournalGovernance />
+                ) : route === "treasury" ? (
+                  <JournalTreasury />
+                ) : route === "delegation" ? (
+                  <Delegation config={config} canSign={canSign} />
+                ) : route === "ragequit" ? (
+                  <Ragequit config={config} canSign={canSign} />
+                ) : route === "create" ? (
+                  <CreateProposal config={config} canSign={canSign} />
+                ) : route.startsWith("proposal/") ? (
+                  <ProposalDetail
+                    contract={route.split("/")[1]}
+                    id={route.split("/")[2]}
+                    config={config}
+                    health={health}
+                    canSign={canSign}
+                  />
+                ) : route === "history" ? (
+                  <History />
+                ) : route === "guide" ? (
+                  <Guide />
+                ) : (
+                  <Empty title={m("Page not found")}>
+                    <a href="#overview">{m("Return to the overview")}</a>
+                  </Empty>
+                )}
+              </main>
+              <footer>
+                <span>
+                  {t("brand")} · {m("Community governance on Polygon")}
+                </span>
+                <div>
+                  <a
+                    href="https://mythicalbeings.io/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {m("Official website")} ↗
+                  </a>
+                  <a href="#history">{t("history")}</a>
+                  <details>
+                    <summary>{m("Technical resources")}</summary>
+                    <a
+                      href="/api/openapi.json"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {m("Public API")} ↗
+                    </a>
+                  </details>
+                </div>
+              </footer>
+            </div>
           </div>
-          <div className="header-actions">
-            <a className="back-to-game" href="https://my.mythicalbeings.io/">
+          <dialog
+            ref={menu}
+            className="navigation-dialog"
+            aria-labelledby="navigation-title"
+            onClose={() => menuButton.current?.focus()}
+          >
+            <div className="section-top">
+              <h2 id="navigation-title">{m("Navigation")}</h2>
+              <button
+                className="icon-button"
+                aria-label={m("Close navigation")}
+                onClick={() => menu.current?.close()}
+              >
+                <Icon name="close" />
+              </button>
+            </div>
+            <Navigation
+              route={route}
+              journal={journal}
+              onNavigate={() => menu.current?.close()}
+            />
+            <a href="https://my.mythicalbeings.io/">
               {m("Back to Mythical Beings")} ↗
             </a>
-            <ThemePicker />
-            <Wallet config={config} />
-          </div>
-        </header>
-        <div className={"app-shell" + (route === "overview" ? " is-camp" : "")}>
-          <aside className="sidebar">
-            <Navigation route={route} />
-          </aside>
-          <div className="main-column">
-            <div className="network-bar">
-              <span className="inline">
-                <AssetIcon symbol="POL" />
-                {config.chainId === 137
-                  ? m("Polygon")
-                  : config.chainId === 80002
-                    ? m("Polygon Amoy")
-                    : m("Local test chain")}
-              </span>
-              <Status health={health} />
-            </div>
-            {(health?.status !== "ok" || health?.liveReason) && (
-              <div className="setup-banner" role="status">
-                <Icon name="info" />
-                <details>
-                  <summary>
-                    <strong>
-                      {health?.liveReason
-                        ? m("We couldn’t verify the latest data.")
-                        : health?.status === "setup"
-                          ? m("The portal is being prepared.")
-                          : health?.status === "syncing"
-                            ? m("History is synchronizing.")
-                            : health?.head
-                              ? m("History is incomplete.")
-                              : m("We couldn’t verify the latest data.")}
-                    </strong>
-                  </summary>
-                  <span>
-                    {health?.status === "setup"
-                      ? m("Explore the portal and save a proposal draft.")
-                      : health?.signingAllowed
-                        ? m(
-                            "Wallet and treasury balances are read directly from the network. Each wallet operation is verified and simulated before signing; historical lists and metrics are incomplete.",
-                          )
-                        : m(
-                            "Previously retrieved data may be out of date. Wallet operations require verified data.",
-                          )}
-                  </span>
-                  {(health?.reason || health?.liveReason) && (
-                    <code>
-                      {[health.liveReason, health.reason]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </code>
-                  )}
-                </details>
-                {(health?.status === "degraded" || health?.liveReason) && (
-                  <button
-                    className="button small"
-                    onClick={() => void healthQuery.refetch()}
-                  >
-                    {m("Try again")}
-                  </button>
-                )}
-              </div>
-            )}
-            {config.enabled && <SyncStatus health={health} />}
-            <main id="main-content" tabIndex={-1}>
-              {route !== "overview" && <CampBreadcrumb route={route} />}
-              {route === "overview" ? (
-                <Overview />
-              ) : route === "governance" ? (
-                <Governance />
-              ) : route === "treasury" ? (
-                <TreasuryPage />
-              ) : route === "delegation" ? (
-                <Delegation config={config} canSign={canSign} />
-              ) : route === "ragequit" ? (
-                <Ragequit config={config} canSign={canSign} />
-              ) : route === "create" ? (
-                <CreateProposal config={config} canSign={canSign} />
-              ) : route.startsWith("proposal/") ? (
-                <ProposalDetail
-                  contract={route.split("/")[1]}
-                  id={route.split("/")[2]}
-                  config={config}
-                  health={health}
-                  canSign={canSign}
-                />
-              ) : route === "history" ? (
-                <History />
-              ) : route === "guide" ? (
-                <Guide />
-              ) : (
-                <Empty title={m("Page not found")}>
-                  <a href="#overview">{m("Return to the overview")}</a>
-                </Empty>
-              )}
-            </main>
-            <footer>
-              <span>
-                {t("brand")} · {m("Community governance on Polygon")}
-              </span>
-              <div>
-                <a
-                  href="https://mythicalbeings.io/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {m("Official website")} ↗
-                </a>
-                <a href="#history">{t("history")}</a>
-                <details>
-                  <summary>{m("Technical resources")}</summary>
-                  <a href="/api/openapi.json" target="_blank" rel="noreferrer">
-                    {m("Public API")} ↗
-                  </a>
-                </details>
-              </div>
-            </footer>
-          </div>
+          </dialog>
         </div>
-        <dialog
-          ref={menu}
-          className="navigation-dialog"
-          aria-labelledby="navigation-title"
-          onClose={() => menuButton.current?.focus()}
-        >
-          <div className="section-top">
-            <h2 id="navigation-title">{m("Navigation")}</h2>
-            <button
-              className="icon-button"
-              aria-label={m("Close navigation")}
-              onClick={() => menu.current?.close()}
-            >
-              <Icon name="close" />
-            </button>
-          </div>
-          <Navigation route={route} onNavigate={() => menu.current?.close()} />
-          <a href="https://my.mythicalbeings.io/">
-            {m("Back to Mythical Beings")} ↗
-          </a>
-        </dialog>
       </TransactionProvider>
     </PortalContext.Provider>
-  );
-}
-function Overview() {
-  const { config } = usePortal();
-  const proposals = useApi<ProposalList>("proposals?kind=executable"),
-    ballots = useApi<ProposalList>("ballots"),
-    treasury = useApi<TreasuryResponse>("treasury"),
-    totals = useApi<{
-      activeVotes: number;
-      queuedExecutions: number;
-      readyForExecution: number | null;
-      complete: boolean;
-      countsVerified?: boolean;
-      indexedProposals?: number;
-    }>("overview"),
-    { address } = useAccount(),
-    member = useApi<Member>("members/" + address, !!address);
-  const all = [
-      ...(proposals.data?.items ?? []).filter((p) => p.kind !== "legacy"),
-      ...(ballots.data?.items ?? []),
-    ]
-      .sort((a, b) => Number(BigInt(b.blockNumber) - BigInt(a.blockNumber)))
-      .slice(0, 4),
-    vault = treasury.data?.accounts.find((a) => a.role === "treasury");
-  return (
-    <>
-      <CampMap
-        activeVotes={
-          !totals.error &&
-          (totals.data?.complete || totals.data?.countsVerified)
-            ? totals.data.activeVotes
-            : undefined
-        }
-        ready={
-          !totals.error &&
-          (totals.data?.complete || totals.data?.countsVerified)
-            ? (totals.data.readyForExecution ?? undefined)
-            : undefined
-        }
-      />
-      <section className="metric-grid" aria-label={m("Governance summary")}>
-        <div className="metric">
-          <span>
-            <Icon name="governance" />
-            {m("Open votes")}
-          </span>
-          <strong>
-            {totals.data?.complete || totals.data?.countsVerified
-              ? totals.data.activeVotes
-              : "—"}
-          </strong>
-          <p>
-            {totals.data?.countsVerified && !totals.data.complete
-              ? m("Among verified indexed proposals")
-              : m("On-chain executable proposals")}
-          </p>
-        </div>
-        <div className="metric">
-          <span>
-            <Icon name="history" />
-            {m("Awaiting execution")}
-          </span>
-          <strong>
-            {totals.data?.complete || totals.data?.countsVerified
-              ? (totals.data.readyForExecution ?? "—")
-              : "—"}
-          </strong>
-          <p>
-            {totals.data?.countsVerified && !totals.data.complete
-              ? m("Among verified indexed proposals")
-              : m("Approved actions ready for direct execution")}
-          </p>
-        </div>
-        <div className="metric">
-          <span>
-            <Icon name="treasury" />
-            {m("DAO treasury assets")}
-          </span>
-          {vault && !treasury.error ? (
-            <div className="balance-list">
-              {vault.assets.map((a) => (
-                <div key={a.symbol}>
-                  <AssetIcon symbol={a.symbol} />
-                  <span>
-                    <TokenAmount
-                      value={a.balance}
-                      token={a.address ?? null}
-                      decimals={a.decimals}
-                      showSymbol
-                    />
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <>
-              <strong>—</strong>
-              <p>{m("Verified balances appear when available")}</p>
-            </>
-          )}
-        </div>
-      </section>
-      <div className="overview-grid">
-        <section>
-          <div className="section-top section-heading">
-            <h2>{m("Recent decisions")}</h2>
-            <a href="#governance">{m("View all")} ↗</a>
-          </div>
-          <DataState
-            loading={proposals.isPending || ballots.isPending}
-            error={proposals.error || ballots.error}
-            unavailable={
-              proposals.data?.unavailable || ballots.data?.unavailable
-            }
-            empty={!all.length}
-            retry={() => {
-              void proposals.refetch();
-              void ballots.refetch();
-            }}
-            emptyTitle={m("No decisions in this confirmed view.")}
-          >
-            <div className="proposal-grid">
-              {all.map((p) => (
-                <ProposalCard key={p.contract + p.id} p={p} />
-              ))}
-            </div>
-          </DataState>
-        </section>
-        <section className="panel participation">
-          <AssetIcon symbol="MANA" />
-          <h2>{m("Your participation")}</h2>
-          {!address ? (
-            <>
-              <p>
-                {m(
-                  "Connect a Polygon wallet to see your MANA balance and voting power.",
-                )}
-              </p>
-              <p className="muted">
-                {m(
-                  "You can explore decisions and save drafts without connecting.",
-                )}
-              </p>
-            </>
-          ) : member.data ? (
-            <>
-              <p className="participation-balance">
-                <TokenAmount
-                  value={member.data.votes}
-                  token={config.contracts.mana?.address}
-                  showSymbol
-                />
-              </p>
-              <p>{m("Voting power received")}</p>
-              <p>
-                {member.data.delegate === zeroAddress
-                  ? m(
-                      "Choose a representative or delegate to yourself to activate your voting power.",
-                    )
-                  : m(
-                      "Your delegation is recorded on-chain. Snapshot rules determine your power in each vote.",
-                    )}
-              </p>
-            </>
-          ) : (
-            <p>{m("Your membership data is not available yet.")}</p>
-          )}
-          <a className="button full" href="#delegation">
-            {m("Manage delegation")}
-            <Icon name="arrow" />
-          </a>
-          <a href="#governance">{m("Explore open votes")} ↗</a>
-        </section>
-      </div>
-      <section className="panel governance-explainer">
-        <Icon name="governance" />
-        <div>
-          <h2>{m("Two ways to make a decision")}</h2>
-          <p>
-            {m(
-              "Executable proposals can authorize contract actions. Snapshot votes record a preference and cannot spend treasury assets.",
-            )}
-          </p>
-        </div>
-        <a href="#guide">{m("Learn about governance")} ↗</a>
-      </section>
-    </>
-  );
-}
-function Governance() {
-  const { config } = usePortal();
-  const [tab, setTab] = useState("executable"),
-    [search, setSearch] = useState(""),
-    [before, setBefore] = useState("");
-  const query = useApi<ProposalList>(
-    (tab === "community"
-      ? "ballots?kind=community"
-      : "proposals?kind=executable") + (before ? "&before=" + before : ""),
-  );
-  const items = (query.data?.items ?? [])
-    .filter((p) => tab === "community" || p.kind === "executable")
-    .filter((p) => p.description.toLowerCase().includes(search.toLowerCase()));
-  return (
-    <>
-      <PageHeading
-        title={t("governance")}
-        description={m(
-          "Review the decision, understand its consequences and cast your vote.",
-        )}
-        action={
-          <a className="button primary" href="#create">
-            <Icon name="plus" />
-            {t("create")}
-          </a>
-        }
-      />
-      <div className="toolbar">
-        <div className="segmented" aria-label={m("Decision type")}>
-          {["executable", "community"].map((kind) => (
-            <button
-              key={kind}
-              aria-pressed={tab === kind}
-              className={tab === kind ? "selected" : ""}
-              onClick={() => {
-                setTab(kind);
-                setBefore("");
-              }}
-            >
-              {kind === "executable"
-                ? m("Executable proposals")
-                : m("Community ballots")}
-            </button>
-          ))}
-        </div>
-        <label className="search">
-          <span className="sr-only">{m("Search proposals on this page")}</span>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={m("Search this page…")}
-          />
-        </label>
-      </div>
-      {tab === "community" && (
-        <section className="panel">
-          <h2>{m("Advisory votes on Snapshot")}</h2>
-          <p>{t("advisoryNotice")}</p>
-          <a
-            className="button primary"
-            href={config.snapshotUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {m("Open Snapshot ↗")}
-          </a>
-          <a className="button" href="#history">
-            {m("Snapshot archive")}
-          </a>
-        </section>
-      )}
-      {tab === "executable" && <RecoverProposal />}
-      <p className="muted">
-        {m("Search covers the proposals on this page only.")}
-      </p>
-      <Notice>
-        {tab === "community" ? t("advisoryNotice") : t("fundingNotice")}
-      </Notice>
-      <DataState
-        loading={query.isPending}
-        error={query.error}
-        unavailable={query.data?.unavailable}
-        empty={!items.length}
-        retry={() => void query.refetch()}
-        emptyTitle={
-          search
-            ? m("No proposals match this search on the current page.")
-            : m("No proposals in this confirmed view.")
-        }
-      >
-        <div className="proposal-grid">
-          {items.map((p) => (
-            <ProposalCard key={p.contract + p.id} p={p} />
-          ))}
-        </div>
-      </DataState>
-      <Pagination
-        before={before}
-        next={query.data?.nextBefore}
-        change={setBefore}
-      />
-    </>
   );
 }
 function Pagination({
@@ -668,191 +405,6 @@ function Pagination({
         </button>
       )}
     </div>
-  );
-}
-function TreasuryPage() {
-  const { config } = usePortal(),
-    query = useApi<TreasuryResponse>("treasury"),
-    events = useApi<EventList>("events"),
-    proposals = useApi<ProposalList>("proposals?kind=executable");
-  const payments = (proposals.data?.items ?? [])
-    .filter(
-      (p) =>
-        p.kind === "executable" && ["Succeeded", "Queued"].includes(p.state),
-    )
-    .map((p) => ({
-      p,
-      payments: proposalActions(p)
-        .map((a) => paymentFor(a, config))
-        .filter(Boolean),
-    }))
-    .filter((p) => p.payments.length);
-  const movements = (events.data?.items ?? []).filter(
-    (e) =>
-      [
-        "RagequitExecuted",
-        "Approval",
-        "Redeemed",
-        "Payment",
-        "NativeDeposit",
-        "Transfer",
-      ].includes(e.event_name) && e.contract !== config.contracts.mana?.address,
-  );
-  return (
-    <>
-      <PageHeading
-        title={m("Treasury")}
-        description={m(
-          "Follow verified holdings and the decisions that authorize spending.",
-        )}
-      />
-      {["treasury"].map((role) => {
-        const account = query.data?.accounts.find((a) => a.role === role),
-          address = config.contracts.treasury?.address;
-        return (
-          <section className="panel treasury-panel" key={role}>
-            <div className="section-top">
-              <div>
-                <p className="eyebrow">
-                  {m("GEM · WETH · native USDC exit basket")}
-                </p>
-                <h2>{m("DAO treasury")}</h2>
-              </div>
-              {address && <AddressLink address={address} />}
-            </div>
-            <DataState
-              loading={query.isPending}
-              error={query.error}
-              unavailable={query.data?.unavailable || !account}
-              empty={false}
-              independent
-              retry={() => void query.refetch()}
-            >
-              <div className="metric-grid">
-                {account?.assets.map((asset) => (
-                  <div className="metric" key={asset.symbol}>
-                    <span>
-                      <AssetIcon symbol={asset.symbol} />
-                      {asset.symbol}
-                    </span>
-                    <strong>
-                      <TokenAmount
-                        value={asset.balance}
-                        token={asset.address ?? null}
-                        decimals={asset.decimals}
-                      />
-                    </strong>
-                    <p>
-                      {asset.ragequit
-                        ? m("Included in ragequit")
-                        : m("Excluded from ragequit")}
-                    </p>
-                    {asset.ragequit && (
-                      <p>
-                        {m("Treasury allowance")}:{" "}
-                        <TokenAmount
-                          value={asset.allowance}
-                          token={asset.address ?? null}
-                          decimals={asset.decimals}
-                          allowance
-                        />
-                      </p>
-                    )}
-                    {asset.address ? (
-                      <AddressLink address={asset.address} />
-                    ) : (
-                      <p>{m("Native Polygon asset")}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-              {query.data && !query.data.unavailable && (
-                <p className="muted">
-                  {m("Balances verified at block {block}", {
-                    block: query.data.asOfBlock,
-                  })}
-                </p>
-              )}
-            </DataState>
-            <Notice>{t("fundingNotice")}</Notice>
-          </section>
-        );
-      })}
-      <div className="split-layout">
-        <section className="panel">
-          <h2>{m("Identified pending payments")}</h2>
-          <p className="muted">
-            {m(
-              "Only payment actions identified in the loaded proposals are shown. This is not a complete commitment ledger.",
-            )}
-          </p>
-          <DataState
-            loading={proposals.isPending}
-            error={proposals.error}
-            unavailable={proposals.data?.unavailable}
-            empty={!payments.length}
-            emptyTitle={m(
-              "No identified pending payments in the loaded proposals.",
-            )}
-          >
-            {payments.map(({ p, payments }) => (
-              <article className="pending-payment" key={p.id}>
-                <ProposalCard p={p} />
-                {payments.map((payment, i) => (
-                  <p key={i}>
-                    <strong>
-                      <TokenAmount
-                        value={payment!.raw}
-                        token={payment!.token ?? null}
-                        decimals={payment!.decimals}
-                        showSymbol
-                      />
-                    </strong>{" "}
-                    →{" "}
-                    <AddressLink
-                      address={payment!.recipient as `0x${string}`}
-                    />
-                  </p>
-                ))}
-              </article>
-            ))}
-          </DataState>
-        </section>
-        <section className="panel">
-          <h2>{m("Recent treasury activity")}</h2>
-          <DataState
-            loading={events.isPending}
-            error={events.error}
-            unavailable={events.data?.unavailable}
-            empty={!movements.length}
-          >
-            {movements.map((e) => (
-              <div className="activity-row" key={e.tx_hash + e.log_index}>
-                <Icon name="arrow" />
-                <div>
-                  <strong>{e.event_name}</strong>
-                  <p className="muted">
-                    {m("Block {block} · confirmed", { block: e.block_number })}
-                  </p>
-                </div>
-                <a
-                  href={"https://polygonscan.com/tx/" + e.tx_hash}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {m("Receipt")} ↗
-                </a>
-              </div>
-            ))}
-          </DataState>
-        </section>
-      </div>
-      <p className="muted">
-        {m(
-          "POL, WPOL, USDC.e, MANA and NFTs are excluded from ragequit. No assets are automatically converted.",
-        )}
-      </p>
-    </>
   );
 }
 function History() {
