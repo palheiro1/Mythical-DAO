@@ -21,6 +21,8 @@ Check `/api/health` after starting. A non-null `head` confirms the two-provider 
 
 ## Active behavior
 
+Public MANA and governance reads use the published subgraph; treasury balances retain the last independently verified RPC update. See [Graph primary reads](docs/GRAPH_PRIMARY_READS.md) for coverage, freshness, budgets and live transaction checks.
+
 - Existing Governor: propose, vote, execute directly when Succeeded, cancel eligible pending proposals, current on-chain parameters and original proposal identities.
 - Treasury: one DAO account; GEM/WETH/native USDC basket; POL and historical USDC.e remain visible and excluded.
 - Ragequit: immutable noncustodial module; continuous treasury allowances, exact member MANA approval, proportional burn, per-asset minimums, deadline and atomic balance checks.

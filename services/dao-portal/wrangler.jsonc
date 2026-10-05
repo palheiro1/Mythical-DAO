@@ -60,13 +60,14 @@
         "INFURA_DAILY_CREDITS": "2400000",
         // User accepted server-only query-key scope exception on 2026-10-01.
         // Provider restriction remains absent; fixed destination and quotas apply.
-        "GRAPH_COMPARE_MODE": "shadow",
+        "GRAPH_COMPARE_MODE": "off",
         "GRAPH_SUBGRAPH_RESTRICTED": "false",
         "GRAPH_ALLOW_UNRESTRICTED_SERVER_KEY": "true",
-        "GRAPH_READ_MODE": "verified",
+        "GRAPH_READ_MODE": "primary",
         "GRAPH_REORG_VERIFIED": "true",
         "INDEX_RPC_SECONDARY_URL": "https://tenderly.rpc.polygon.community",
-        "PORTAL_ORIGIN": "https://dao-preview.mythicalbeings.io",
+        "PORTAL_ORIGIN": "https://dao.mythicalbeings.io",
+        "PORTAL_PREVIEW_ORIGIN": "https://dao-preview.mythicalbeings.io",
       },
       "d1_databases": [
         {

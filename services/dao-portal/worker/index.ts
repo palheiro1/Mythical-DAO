@@ -1,4 +1,6 @@
 import { graphComparisonStatus, runGraphComparison } from "./graph-comparison";
+import { publicReads, voterStatus } from "./public-reads";
+import { readClients } from "./infura";
 import { graphHistory } from "./graph-history";
 import { mergeHistoryRows } from "./graph-history-model";
 import { simulateActions } from "./simulation";
@@ -61,7 +63,8 @@ async function handle(request: Request, env: Env): Promise<Response> {
     request.method === "POST" &&
     request.headers.has("origin") &&
     request.headers.get("origin") !== url.origin &&
-    request.headers.get("origin") !== new URL(cfg.portalUrl).origin
+    request.headers.get("origin") !== new URL(cfg.portalUrl).origin &&
+    request.headers.get("origin") !== env.PORTAL_PREVIEW_ORIGIN
   )
     return json({ error: "Origin not allowed" }, 403);
   if (path === "/api/openapi.json") return json(openapi);
@@ -86,9 +89,29 @@ async function handle(request: Request, env: Env): Promise<Response> {
       readOnly: true,
     });
   }
+  const publicResponse = await publicReads(request, env, cfg);
+  if (publicResponse) return publicResponse;
+  const voter = path.match(
+    /^\/api\/vote-status\/(0x[0-9a-fA-F]{40})\/(\d{1,78})\/(0x[0-9a-fA-F]{40})$/,
+  );
+  if (voter && request.method === "GET") {
+    if (voter[1].toLowerCase() !== cfg.contracts.governor?.address)
+      return json({ error: "Unknown Governor" }, 400);
+    return json(
+      await voterStatus(
+        env,
+        cfg,
+        voter[1] as Address,
+        BigInt(voter[2]),
+        voter[3] as Address,
+      ),
+    );
+  }
   let pair;
   try {
-    pair = clients(env);
+    pair = /^\/api\/members\/0x[0-9a-fA-F]{40}$/.test(path)
+      ? readClients(env)
+      : clients(env);
   } catch {
     if (path === "/api/health")
       return json({
@@ -148,6 +171,14 @@ async function handle(request: Request, env: Env): Promise<Response> {
     (path === "/api/preflight" || path === "/api/simulate-actions")
   ) {
     const input = await body(request);
+    // Foreground delegation uses the same metered provider pair as the
+    // previously deployed Worker. No cached data authorizes this operation.
+    if (
+      path === "/api/preflight" &&
+      typeof input.to === "string" &&
+      input.to.toLowerCase() === cfg.contracts.mana?.address
+    )
+      pair = readClients(env);
     const { head, confirmed } = await commonHead(pair, cfg);
     // Live calls verify the current chain directly; no historical cursor is trusted.
     const blockHash = await agreed(

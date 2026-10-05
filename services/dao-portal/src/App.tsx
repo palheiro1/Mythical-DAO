@@ -34,6 +34,7 @@ import {
   Icon,
   PortalContext,
   DataState,
+  ReadFreshness,
   Notice,
   PageHeading,
   AssetIcon,
@@ -162,7 +163,11 @@ export function App() {
       </main>
     );
   const canSign =
-    !!address && chainId === config.chainId && health?.signingAllowed === true;
+    !!address &&
+    chainId === config.chainId &&
+    config.enabled &&
+    (health?.signingAllowed === true ||
+      health?.operationVerification === "on-demand");
   return (
     <PortalContext.Provider value={{ config, health }}>
       <TransactionProvider config={config}>
@@ -349,6 +354,7 @@ function Overview() {
       readyForExecution: number | null;
       complete: boolean;
       countsVerified?: boolean;
+      countsAvailable?: boolean;
       indexedProposals?: number;
     }>("overview"),
     { address } = useAccount(),
@@ -396,14 +402,18 @@ function Overview() {
             {m("Open votes")}
           </span>
           <strong>
-            {totals.data?.complete || totals.data?.countsVerified
+            {totals.data?.complete ||
+            totals.data?.countsVerified ||
+            totals.data?.countsAvailable
               ? totals.data.activeVotes
               : "—"}
           </strong>
           <p>
-            {totals.data?.countsVerified && !totals.data.complete
-              ? m("Among verified indexed proposals")
-              : m("On-chain executable proposals")}
+            {totals.data?.countsAvailable
+              ? m("Among indexed proposals")
+              : totals.data?.countsVerified && !totals.data.complete
+                ? m("Among verified indexed proposals")
+                : m("On-chain executable proposals")}
           </p>
         </div>
         <div className="metric">
@@ -412,14 +422,18 @@ function Overview() {
             {m("Awaiting execution")}
           </span>
           <strong>
-            {totals.data?.complete || totals.data?.countsVerified
+            {totals.data?.complete ||
+            totals.data?.countsVerified ||
+            totals.data?.countsAvailable
               ? (totals.data.readyForExecution ?? "—")
               : "—"}
           </strong>
           <p>
-            {totals.data?.countsVerified && !totals.data.complete
-              ? m("Among verified indexed proposals")
-              : m("Approved actions ready for direct execution")}
+            {totals.data?.countsAvailable
+              ? m("Among indexed proposals")
+              : totals.data?.countsVerified && !totals.data.complete
+                ? m("Among verified indexed proposals")
+                : m("Approved actions ready for direct execution")}
           </p>
         </div>
         <div className="metric">
@@ -446,6 +460,7 @@ function Overview() {
           )}
         </div>
       </section>
+      <ReadFreshness read={treasury.data?.read} />
       <div className="overview-grid">
         <section>
           <div className="section-top section-heading">
@@ -453,6 +468,7 @@ function Overview() {
             <a href="#governance">{m("View all")} ↗</a>
           </div>
           <DataState
+            read={proposals.data?.read}
             loading={proposals.isPending || ballots.isPending}
             error={proposals.error || ballots.error}
             unavailable={
@@ -609,6 +625,7 @@ function Governance() {
         {tab === "community" ? t("advisoryNotice") : t("fundingNotice")}
       </Notice>
       <DataState
+        read={query.data?.read}
         loading={query.isPending}
         error={query.error}
         unavailable={query.data?.unavailable}
@@ -709,6 +726,7 @@ function TreasuryPage() {
               {address && <AddressLink address={address} />}
             </div>
             <DataState
+              read={query.data?.read}
               loading={query.isPending}
               error={query.error}
               unavailable={query.data?.unavailable || !account}
@@ -760,12 +778,20 @@ function TreasuryPage() {
       <div className="split-layout">
         <section className="panel">
           <h2>{m("Identified pending payments")}</h2>
+          {proposals.data?.items.some((p) => p.state === "Ended") && (
+            <Notice>
+              {m(
+                "Some voting outcomes require a live contract check. Review the proposal to check execution eligibility.",
+              )}
+            </Notice>
+          )}
           <p className="muted">
             {m(
               "Only payment actions identified in the loaded proposals are shown. This is not a complete commitment ledger.",
             )}
           </p>
           <DataState
+            read={proposals.data?.read}
             loading={proposals.isPending}
             error={proposals.error}
             unavailable={proposals.data?.unavailable}
@@ -794,7 +820,13 @@ function TreasuryPage() {
         </section>
         <section className="panel">
           <h2>{m("Recent treasury activity")}</h2>
+          {events.data?.read && (
+            <p className="muted">
+              {m("Treasury activity uses saved history and may be incomplete.")}
+            </p>
+          )}
           <DataState
+            read={events.data?.read}
             loading={events.isPending}
             error={events.error}
             unavailable={events.data?.unavailable}
@@ -940,6 +972,7 @@ function History() {
             </p>
           </section>
           <DataState
+            read={proposals.data?.read}
             loading={proposals.isPending}
             error={proposals.error}
             unavailable={proposals.data?.unavailable}
@@ -972,6 +1005,7 @@ function Guide() {
       />
       <section className="panel">
         <h2>{m("Current Governor rules")}</h2>
+        <ReadFreshness read={rules.data?.read} />
         {rules.data ? (
           <dl>
             <dt>{m("Proposal threshold")}</dt>
