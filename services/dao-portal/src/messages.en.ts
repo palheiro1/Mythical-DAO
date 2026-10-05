@@ -40,6 +40,7 @@ export const messages = {
   "Allowance": "Allowance",
   "Alternative {number}": "Alternative {number}",
   "Among indexed proposals": "Among indexed proposals",
+  "Among verified indexed proposals": "Among verified indexed proposals",
   "Amount": "Amount",
   "Amount and recipient": "Amount and recipient",
   "Amount must be positive.": "Amount must be positive.",
