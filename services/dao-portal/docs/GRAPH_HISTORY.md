@@ -1,3 +1,5 @@
+> Historical pilot design. The current portal uses [Graph primary reads](GRAPH_PRIMARY_READS.md), enabled on 2026-10-05.
+
 # Verified supplemental history — 1 October 2026
 
 The portal can supplement the independent D1 index with Governor events discovered through The Graph and decoded from matching RPC logs. This is an additive read path, not a replacement for D1 or wallet preflight.

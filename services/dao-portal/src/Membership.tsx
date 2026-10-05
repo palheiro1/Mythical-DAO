@@ -21,6 +21,7 @@ import {
   AssetIcon,
   Notice,
   DataState,
+  ReadFreshness,
   ActionAvailability,
   DateStamp,
 } from "./ui";
@@ -110,7 +111,8 @@ export function Delegation({
           <p>{m("Delegation does not transfer MANA")}</p>
         </div>
       </div>
-      {member?.asOfBlock && !memberQuery.error && (
+      <ReadFreshness read={member?.read} />
+      {member?.asOfBlock && !member.read && !memberQuery.error && (
         <p className="muted">
           {m("Membership verified at block {block}", {
             block: member.asOfBlock,
@@ -178,11 +180,12 @@ export function Delegation({
           <h2>{m("Delegates")}</h2>
           <p className="muted">
             {m(
-              "Voting power is read from the contract. The list covers up to {count} indexed addresses.",
+              "Active representatives with indexed voting power. Showing up to {count} addresses.",
               { count: delegates.data?.limitedTo ?? 100 },
             )}
           </p>
           <DataState
+            read={delegates.data?.read}
             loading={delegates.isPending}
             error={delegates.error}
             unavailable={delegates.data?.unavailable}
@@ -222,7 +225,10 @@ export function Ragequit({
   canSign: boolean;
 }) {
   const { address, chainId } = useAccount(),
-    memberQuery = useApi<Member>("members/" + address, !!address),
+    memberQuery = useApi<Member>(
+      "members/" + address + "?live=true",
+      !!address,
+    ),
     member = memberQuery.data,
     tx = useTransaction();
   const [input, setInput] = useState(""),

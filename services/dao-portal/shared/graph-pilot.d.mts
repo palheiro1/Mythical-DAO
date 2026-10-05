@@ -84,6 +84,7 @@ export function validatePilotSnapshot(
   data: unknown,
   anchor: number,
   hash: string,
+  limits?: { accounts: number; proposals: number },
 ): PilotSnapshot;
 export function verifyPilotEntities(
   snapshot: PilotSnapshot,

@@ -126,7 +126,13 @@ export function Status({ health }: { health?: Health }) {
       className={"network-status " + (health?.status === "ok" ? "live" : "")}
     >
       <span aria-hidden="true" className="status-dot" />
-      {health ? labels[health.status] : m("Checking data")}
+      {health?.read
+        ? health.read.status === "fresh"
+          ? m("Indexed data available")
+          : m("Showing saved data")
+        : health
+          ? labels[health.status]
+          : m("Checking data")}
     </span>
   );
 }

@@ -1,10 +1,11 @@
 import type { Address } from "viem";
 import type {
+  ReadStatus,
   Proposal,
   ChainEvent,
   GraphHistoryStatus,
 } from "../shared/domain";
-export type ListResponse<T> =
+export type ListResponse<T> = { read?: ReadStatus; coverage?: string[] } & (
   | {
       unavailable: true;
       items: [];
@@ -19,7 +20,8 @@ export type ListResponse<T> =
       nextBefore?: string | null;
       limitedTo?: number;
       history?: GraphHistoryStatus;
-    };
+    }
+);
 export type ProposalList = ListResponse<Proposal>;
 export type EventList = ListResponse<ChainEvent>;
 export interface TreasuryAccount {
@@ -34,15 +36,17 @@ export interface TreasuryAccount {
     allowance?: string;
   }[];
 }
-export type TreasuryResponse =
+export type TreasuryResponse = { read?: ReadStatus } & (
   | { unavailable: true; accounts: []; asOfBlock?: never }
-  | { unavailable?: false; accounts: TreasuryAccount[]; asOfBlock: string };
+  | { unavailable?: false; accounts: TreasuryAccount[]; asOfBlock: string }
+);
 export interface Member {
   balance: string;
   votes: string;
   delegate: Address;
   supply: string;
-  allowance: string;
+  allowance: string | null;
+  read?: ReadStatus;
   asOfBlock?: string;
 }
 export interface SnapshotRecord {
@@ -61,6 +65,7 @@ export interface SnapshotRecord {
 }
 
 export interface GovernanceParameters {
+  read?: ReadStatus;
   votingDelay: string;
   votingPeriod: string;
   proposalThreshold: string;

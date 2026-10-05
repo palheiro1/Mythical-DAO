@@ -284,3 +284,16 @@ it("preserves a bounded-response overflow as a resizable log failure", () => {
     "INFURA_LOG_RANGE_LIMIT",
   );
 });
+
+it("meters foreground reads without an index lease while preserving the budget", async () => {
+  await fixture.db.prepare("DELETE FROM index_lock").run();
+  const foreground = new InfuraQuota(fixture.db, null, 80, time);
+  await foreground.reserve("eth_call");
+  expect(await state()).toMatchObject({ credits: 80, requests: 1 });
+  await expect(foreground.reserve("eth_call")).rejects.toThrow(
+    "INFURA_DAILY_BUDGET_EXHAUSTED",
+  );
+  await expect(quota().reserve("eth_call")).rejects.toThrow(
+    "INDEX_LEASE_EXPIRED",
+  );
+});

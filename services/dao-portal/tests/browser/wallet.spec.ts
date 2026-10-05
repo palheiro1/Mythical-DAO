@@ -24,6 +24,7 @@ async function setup(
   {
     wrongNetwork = false,
     preflightFails = false,
+    graphPrimary = false,
     revert = false,
     confirm = false,
     account = member,
@@ -32,6 +33,7 @@ async function setup(
   }: {
     wrongNetwork?: boolean;
     preflightFails?: boolean;
+    graphPrimary?: boolean;
     revert?: boolean;
     confirm?: boolean;
     account?: string;
@@ -136,7 +138,19 @@ async function setup(
     if (url.pathname === "/api/health")
       result = {
         status: "ok",
-        signingAllowed: true,
+        signingAllowed: !graphPrimary,
+        ...(graphPrimary
+          ? {
+              operationVerification: "on-demand",
+              read: {
+                source: "The Graph",
+                status: "fresh",
+                cached: true,
+                asOfBlock: "1000",
+                checkedAt: Date.now(),
+              },
+            }
+          : {}),
         head: "1000",
         confirmedHead: "936",
         checkedAt: new Date().toISOString(),
@@ -149,6 +163,17 @@ async function setup(
         delegate: member,
         supply: "1000000000000000000000",
         allowance: "0",
+      };
+    if (url.pathname === "/api/delegates" && graphPrimary)
+      result = {
+        items: [{ address: representative, votes: "500000000000000000000" }],
+        read: {
+          source: "The Graph",
+          status: "fresh",
+          cached: true,
+          asOfBlock: "1000",
+          checkedAt: Date.now(),
+        },
       };
     if (url.pathname === "/api/preflight") {
       if (preflightFails) {
@@ -427,6 +452,22 @@ test("revoking the reviewed account without an event still blocks submission", a
   await expect(page.getByRole("alert")).toContainText(
     "Wallet or network changed",
   );
+  expect(
+    await page.evaluate(() => (window as TestWallet).testSubmitted),
+  ).toBeUndefined();
+});
+
+test("Graph reads remain visible during RPC failure but cannot authorize signing", async ({
+  page,
+}) => {
+  await setup(page, { graphPrimary: true, preflightFails: true });
+  await expect(page.getByText("Indexed data available")).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: `Choose ${representative}` }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Delegate to myself" }).click();
+  await expect(page.getByRole("alert")).toContainText("RPC_DIVERGENCE");
+  await expect(page.getByRole("dialog")).not.toBeVisible();
   expect(
     await page.evaluate(() => (window as TestWallet).testSubmitted),
   ).toBeUndefined();
