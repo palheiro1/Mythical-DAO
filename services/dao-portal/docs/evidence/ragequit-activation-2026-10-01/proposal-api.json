@@ -1,0 +1,39 @@
+{
+  "chainId": 137,
+  "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+  "id": "28380386844107398034034691570755427638127941114420426233333446520814279739334",
+  "kind": "executable",
+  "description": "Authorize Mythical DAO ragequit module 0xef06E163F65807872e62b4AB186EffcAFca7C8C9\n\nGrant this immutable module continuous maximum allowances for GEM, WETH and native USDC. Members burn their own MANA to receive proportional payments directly from the existing treasury. POL, WPOL, USDC.e, MANA and NFTs are excluded. Governance retains spending authority and can revoke these allowances. There is no mandatory exit window or reservation of funds. Governor, MANA, delegations and governance rules remain unchanged.",
+  "proposer": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+  "targets": [
+    "0x5F790ffA0695967A2d711872EcB4c7553e24794D",
+    "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+    "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+  ],
+  "values": [
+    "0",
+    "0",
+    "0"
+  ],
+  "calldatas": [
+    "0x095ea7b3000000000000000000000000ef06e163f65807872e62b4ab186effcafca7c8c9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "0x095ea7b3000000000000000000000000ef06e163f65807872e62b4ab186effcafca7c8c9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "0x095ea7b3000000000000000000000000ef06e163f65807872e62b4ab186effcafca7c8c9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  ],
+  "signatures": [
+    "",
+    "",
+    ""
+  ],
+  "options": [],
+  "snapshot": "94815126",
+  "deadline": "95103126",
+  "blockNumber": "94773983",
+  "transactionHash": "0x2eed86cf4eee92383d0e5b6a86bdc2a46e0b097fadef64fc73d98622d3cd8480",
+  "state": "Pending",
+  "votes": [
+    "0",
+    "0",
+    "0"
+  ]
+}

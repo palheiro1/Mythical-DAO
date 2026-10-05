@@ -41,13 +41,17 @@
     "usdcNative": {
       "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
       "startBlock": "48674443"
+    },
+    "ragequitModule": {
+      "address": "0xef06E163F65807872e62b4AB186EffcAFca7C8C9",
+      "startBlock": "94773613"
     }
   },
   "release": {
-    "portalVerification": null,
-    "moduleReview": null,
-    "moduleDeployment": null,
-    "authorizationProposal": null,
+    "portalVerification": "../docs/evidence/ragequit-activation-2026-10-01/validation.json",
+    "moduleReview": "ragequit-release/review-acceptance.json",
+    "moduleDeployment": "ragequit-release/deployment-receipt.json",
+    "authorizationProposal": "ragequit-authorization-receipt.json",
     "allowancesVerified": false,
     "smallExitVerified": false
   },

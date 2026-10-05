@@ -1,0 +1,11 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (.task-audit-intake/vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.2 /home/usuario/Documentos/GitHub/Mythical DAO/.task-audit-intake
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  14:00:41
+   Duration  277ms (import 78%, transform 19%, tests 2%, worker 1%)

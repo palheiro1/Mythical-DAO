@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-10-01T14:42:40.921Z",
+  "httpStatus": 200,
+  "result": {
+    "isJobCompleted": true,
+    "verificationId": "d5ce0f57-b859-4756-9fbc-574e6c0f6fc9",
+    "jobStartTime": "2026-10-01T14:42:16Z",
+    "jobFinishTime": "2026-10-01T14:42:16Z",
+    "compilationTime": "258",
+    "externalVerifications": {
+      "etherscan": {
+        "verificationId": "f1wuwscm8js6rjw8s2sk6durwgctt6hmfltwnrifdm6t28mfva",
+        "statusUrl": "https://api.etherscan.io/v2/api?chainid=137&module=contract&action=checkverifystatus&guid=f1wuwscm8js6rjw8s2sk6durwgctt6hmfltwnrifdm6t28mfva",
+        "explorerUrl": "https://polygonscan.com//address/0xef06E163F65807872e62b4AB186EffcAFca7C8C9",
+        "contractApiUrl": "https://api.etherscan.io/v2/api?chainid=137&module=contract&action=getabi&address=0xef06E163F65807872e62b4AB186EffcAFca7C8C9"
+      },
+      "blockscout": {
+        "verificationId": "ef06e163f65807872e62b4ab186effcafca7c8c96abe7148",
+        "statusUrl": "https://polygon.blockscout.com/api?module=contract&action=checkverifystatus&chainid=137&guid=ef06e163f65807872e62b4ab186effcafca7c8c96abe7148",
+        "explorerUrl": "https://polygon.blockscout.com//address/0xef06E163F65807872e62b4AB186EffcAFca7C8C9",
+        "contractApiUrl": "https://polygon.blockscout.com/api?module=contract&action=getabi&chainid=137&address=0xef06E163F65807872e62b4AB186EffcAFca7C8C9"
+      }
+    },
+    "contract": {
+      "match": "exact_match",
+      "creationMatch": "exact_match",
+      "runtimeMatch": "exact_match",
+      "chainId": "137",
+      "address": "0xef06E163F65807872e62b4AB186EffcAFca7C8C9",
+      "verifiedAt": "2026-10-01T14:42:16Z",
+      "matchId": "54478443"
+    }
+  }
+}

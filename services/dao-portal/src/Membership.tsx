@@ -10,6 +10,7 @@ import {
 import { tokenAbi, ragequitAbi } from "../shared/abis";
 import type { PortalConfig } from "../shared/domain";
 import { basketAssets } from "../shared/assets";
+import { validRagequitRecipient } from "../shared/ragequit-security";
 import type { RedeemPreview, Member, ListResponse } from "./data-types";
 import { api, useApi } from "./api";
 import { amount, allowanceAmount, AddressLink } from "./components";
@@ -278,11 +279,7 @@ export function Ragequit({
             ((BigInt(a) * BigInt(10000 - bps)) / 10000n).toString(),
           )
         : [];
-  const validRecipient =
-    isAddress(to) &&
-    to !== zeroAddress &&
-    to.toLowerCase() !== module?.toLowerCase() &&
-    to.toLowerCase() !== config.contracts.treasury?.address.toLowerCase();
+  const validRecipient = validRagequitRecipient(to, config);
   useEffect(() => {
     if (!quote) return;
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -353,7 +350,12 @@ export function Ragequit({
   }
   async function redeem() {
     try {
-      if (!validRecipient) throw Error(m("Choose a valid payout recipient."));
+      if (!validRecipient)
+        throw Error(
+          m(
+            "Choose a recipient other than zero, the treasury, module or token contracts.",
+          ),
+        );
       if (!module || !validQuote || bps === null || !ack || !quote?.available)
         throw Error(
           m("Refresh the preview and acknowledge the permanent burn."),
@@ -646,7 +648,9 @@ export function Ragequit({
                     "Get a fresh preview before authorizing or reviewing an exit.",
                   )
                 : !validRecipient
-                  ? m("Choose a valid payout recipient.")
+                  ? m(
+                      "Choose a recipient other than zero, the treasury, module or token contracts.",
+                    )
                   : allowance !== units
                     ? m("Authorize exactly the selected amount of MANA first.")
                     : !ack

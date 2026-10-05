@@ -57,6 +57,15 @@ export interface Health {
   confirmedHead: string | null;
   sources: { contract: string; block: string; updatedAt: number }[];
   sync?: SyncProgress;
+  graphHistory?: GraphHistoryStatus;
+  reason?: string;
+}
+export interface GraphHistoryStatus {
+  source: "The Graph + RPC";
+  status: "disabled" | "pending" | "ready" | "stale" | "fallback";
+  complete: false;
+  asOfBlock?: string;
+  checkedAt?: number;
   reason?: string;
 }
 export interface ChainEvent {

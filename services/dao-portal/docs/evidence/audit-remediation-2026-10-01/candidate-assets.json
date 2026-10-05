@@ -1,0 +1,30 @@
+{
+  "block": "94768142",
+  "blockHash": "0x6bf8d8e37d24d5260e9cafb0b43d565e7d62ba2c9c85663661be38a617f96572",
+  "assets": [
+    {
+      "label": "USDC.e",
+      "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+      "symbol": "USDC",
+      "name": "USD Coin (PoS)",
+      "decimals": 6,
+      "balance": "0",
+      "formattedBalance": "0",
+      "codeHash": "0xa97604bff5b11d790aca38bf9f6189369ea260f08365b428fc2ef73390fddcef",
+      "paused": false,
+      "owner": "not verified through this interface"
+    },
+    {
+      "label": "USDT",
+      "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+      "symbol": "USDT0",
+      "name": "USDT0",
+      "decimals": 6,
+      "balance": "0",
+      "formattedBalance": "0",
+      "codeHash": "0x8cb0cfc9b3aa516d8c5a1cdf94a2c60b668a903e21711cb6f3f3501fdd8478b5",
+      "paused": "not verified through this interface",
+      "owner": "not verified through this interface"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-01T11:00:52.011Z",
+  "mode": "fork-dry-run-only",
+  "forkBlock": "94764727",
+  "chainId": 137,
+  "deployer": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9",
+  "nonce": 298,
+  "predictedAddress": "0xef06e163f65807872e62b4ab186effcafca7c8c9",
+  "initCodeKeccak256": "0x710a2b7369fd614a83b89366d3cf7bb57150fec3a54161795fe7fa744f99b24c",
+  "checks": {
+    "oneCreation": true,
+    "sender": true,
+    "nonce": true,
+    "zeroValue": true,
+    "noDestination": true,
+    "initCode": true,
+    "address": true
+  },
+  "signed": false,
+  "broadcast": false,
+  "note": "Foundry successfully simulated DeployRagequit.s.sol. Address exists only in this rehearsal, not registered as a public deployment."
+}

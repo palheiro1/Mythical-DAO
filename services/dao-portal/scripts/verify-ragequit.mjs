@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
+import { checkAllowances, operationalAmount } from "./ragequit-allowances.mjs";
 import {
   assertRagequitManifest,
   assertIndependentProviders,
@@ -9,7 +10,6 @@ import {
   http,
   parseAbi,
   keccak256,
-  maxUint256,
   encodeDeployData,
   toHex,
 } from "viem";
@@ -18,11 +18,11 @@ async function main() {
     manifestPath = "deployments/polygon.json",
     output = "deployments/ragequit-verification.json",
     expected = "inspect",
+    amountInput,
   ] = process.argv.slice(2);
   const m = JSON.parse(readFileSync(manifestPath, "utf8"));
   assertRagequitManifest(m);
-  if (!["inspect", "authorized", "revoked"].includes(expected))
-    throw Error("Expected inspect, authorized or revoked");
+  const amount = operationalAmount(expected, amountInput);
   if (m.schemaVersion !== 2 || m.architecture !== "existing-governor")
     throw Error("Wrong manifest architecture");
   const urls = [process.env.RPC_PRIMARY_URL, process.env.RPC_SECONDARY_URL];
@@ -47,8 +47,12 @@ async function main() {
     throw Error("RPC head divergence");
   if (!Number.isSafeInteger(m.confirmations) || m.confirmations < 1)
     throw Error("Invalid confirmation window");
-  const block =
+  const confirmed =
     heads.reduce((a, b) => (a < b ? a : b)) - BigInt(m.confirmations);
+  const block = process.env.VERIFICATION_BLOCK
+    ? BigInt(process.env.VERIFICATION_BLOCK)
+    : confirmed;
+  if (block > confirmed) throw Error("Verification block is not confirmed");
   if (block < 0n) throw Error("Insufficient confirmed blocks");
   const blockHash = await agree(
     async (c) => (await c.getBlock({ blockNumber: block })).hash,
@@ -71,6 +75,7 @@ async function main() {
     "function basket() view returns(address[3])",
     "function decimals() view returns(uint8)",
     "function allowance(address,address) view returns(uint256)",
+    "function previewRedeem(uint256) view returns(uint256[3])",
     "function votingDelay() view returns(uint256)",
     "function votingPeriod() view returns(uint256)",
     "function proposalThreshold() view returns(uint256)",
@@ -109,6 +114,7 @@ async function main() {
     if ((await read(address, "decimals")) !== (i === 2 ? 6 : 18))
       throw Error("Unexpected decimals");
   let allowances = [];
+  let payouts = null;
   if (module) {
     const artifact = JSON.parse(
       readFileSync(
@@ -160,15 +166,11 @@ async function main() {
     allowances = await Promise.all(
       assets.map((a) => read(a, "allowance", [treasury, module])),
     );
-    if (expected !== "inspect" && !["authorized", "revoked"].includes(expected))
-      throw Error("Expected inspect, authorized or revoked");
-    if (
-      expected !== "inspect" &&
-      allowances.some(
-        (a) => a !== (expected === "authorized" ? maxUint256 : 0n),
-      )
-    )
-      throw Error("Treasury allowance verification failed");
+    if (keccak256(code) !== reviewed.runtimeKeccak256)
+      throw Error("Runtime does not match the instantiated reviewed release");
+    if (amount !== null)
+      payouts = await read(module, "previewRedeem", [amount]);
+    checkAllowances(expected, allowances, payouts);
   } else if (expected !== "inspect") throw Error("Module is not configured");
   const parameters = {};
   for (const fn of [
@@ -194,6 +196,8 @@ async function main() {
       module: module ?? null,
       assets,
       allowances,
+      manaAmount: amount,
+      payouts,
       parameters,
       codeHashes,
       verifiedAt: new Date().toISOString(),

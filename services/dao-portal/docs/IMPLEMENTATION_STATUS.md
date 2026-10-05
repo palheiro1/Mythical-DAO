@@ -1,5 +1,13 @@
 # Entrega — Governor atual e ragequit sem migração
 
+**1 de outubro — módulo implantado e verificado:** `0xef06E163F65807872e62b4AB186EffcAFca7C8C9`, bloco 94773613, código idêntico ao pacote aprovado. Fontes verificadas no Sourcify; endereço fixado e publicado no preview e Worker. A proposta das três autorizações foi submetida e confirmada, está em Pending e já aparece no portal. Autorizações a zero; ragequit ainda indisponível. [Estado e evidências atuais](RAGEQUIT_ACTIVATION_2026_10_01.md). As entradas seguintes conservam o histórico anterior.
+
+1 de outubro, após Claude/Grok: [correções aplicadas e pacote substituído](AUDIT_REMEDIATION_2026_10_01.md). Novo contrato rejeita os quatro tokens como destinatários; frontend e Worker exigem código e endereço fixados; compilação reproduzível; verificador distingue aprovação inicial e suficiência operacional. [USDC.e e USDT0 avaliados](RAGEQUIT_CANDIDATE_ASSETS.md), sem ampliação da cesta. Portal de teste e Worker de staging atualizados e verificados publicamente (governação disponível, módulo ausente). Reteste independente e ativação financeira continuam pendentes. Os registos abaixo conservam os resultados históricos.
+
+1 de outubro, ragequit: [implantação preparada para a carteira escolhida](RAGEQUIT_PREFLIGHT.md), com transação sem assinatura, fontes completas para compilação reproduzível, concordância de dois RPCs e simulação do script de implantação. Novo ensaio do Governor real passou no bloco 94764463; 16 testes Solidity/2048 casos de fuzz e 140 testes portal/scripts passaram, assim como tipos/build. Slither executado e 51 alertas documentados com triagem interna. Revisão independente, implantação pública, autorizações e saída real continuam pendentes.
+
+1 de outubro: [leitura suplementar verificada](GRAPH_HISTORY.md) implementada, com 127 testes do portal e seis verificações de browser aprovados. O ensaio real de reorg local passou para MANA e propostas do Governor; a aplicação rejeita hashes órfãos via RPC, pois o Graph Node pode responder a essas consultas. O utilizador aceitou a [exceção de chave privada no backend](GRAPH_ACTIVATION.md), mantendo a ausência de restrição no fornecedor explícita; o seletor vazio do Studio deixa de bloquear a ativação. O histórico completo continua por demonstrar.
+
 Atualização: [recuperação do sync, validação do portal e preparação do piloto The Graph](SYNC_RECOVERY.md). A versão do Worker é agora `851124ed-f7f3-46bd-a668-6c1eaa5f8609`. Abaixo mantém-se a descrição da entrega anterior; os resultados e limites mais recentes estão no relatório ligado.
 
 Data: 28 de setembro de 2026. Código implementado localmente; nenhuma transação enviada à Polygon pública.
@@ -13,6 +21,8 @@ Atualização: [portal de teste publicado no domínio próprio](https://dao-prev
 29 de setembro: [corrigida a configuração RPC local](LOCAL_LIVE_DATA.md) e publicadas as correções. Saldo, votos e representante verificados na API e em dois RPCs. A interface distingue leituras diretas do histórico incompleto. Os logs públicos identificaram HTTP 429 no PublicNode; o staging passou a usar dRPC/Tenderly, após verificar concordância de bloco/saldo/oferta. Os lotes respeitam o limite documentado de três chamadas do dRPC e mantêm isolamento por pedido. As 15 consultas públicas seguintes passaram. Tipos/build, 48 testes de dados e os testes selecionados de estados da interface em desktop/móvel passaram. Os limites gerais dos serviços públicos continuam a aplicar-se.
 
 O [pacote do módulo para revisão](../deployments/ragequit-release/README.md) inclui ABI, código de criação sem assinatura, argumentos e hashes verificados contra as fontes compiladas. A simulação do construtor concordou em dois RPCs no bloco 94644367. O ensaio completo do Governor real passou novamente no fork do bloco 94644170. Revisão independente e implantação pública continuam pendentes.
+
+30 de setembro: [integração de comparação The Graph](GRAPH_COMPARISON.md) preparada e desligada. Validação real de 73 contas MANA, oferta/soma dos saldos e ambas as propostas passou em dois RPCs; 117 testes do portal passaram. Restrição por domínio verificada e cliente adaptado. A restrição ao subgraph, prova de ausência de omissões no histórico e ensaio de reorg no Graph Node continuam pendentes; D1/RPC mantêm-se ativos.
 
 ## Implementado
 
@@ -54,11 +64,11 @@ O fork move 50000 MANA da tesouraria para um membro de teste e delega esse saldo
 ## Ativação que falta fora do código
 
 1. Completar a indexação histórica para métricas/listas completas e feed de notificações. O preview com D1/RPCs de staging já permite governação mediante verificação direta; o ensaio web de assinatura foi realizado no fork, sem transações públicas.
-2. Concluir revisão independente e implantar **apenas** o módulo; registar e verificar endereço, bloco, código e argumentos.
-3. Materializar a proposta com esse endereço real; submeter, votar e executar pela DAO; confirmar as três autorizações efetivas.
+2. Concluído em 1 de outubro: aprovação comunicada pelo utilizador; módulo implantado, verificado e integrado no preview.
+3. Proposta submetida e confirmada; aguardar início da votação, votar e executar pela DAO, depois confirmar as três autorizações efetivas.
 4. Realizar uma pequena saída real consentida e guardar evidência antes de anunciar disponibilidade geral.
 
-O endereço real do módulo é a única variável pendente da proposta parametrizada. A ausência dele não bloqueia a governação na implementação. `enabled: true` no manifesto habilita a arquitetura atual quando os dados forem verificados; não afirma que a instância local sem RPCs esteja pronta para assinar.
+O endereço real do módulo já está verificado e fixado no manifesto. A falta de autorizações não bloqueia a governação na implementação. `enabled: true` no manifesto habilita a arquitetura atual quando os dados forem verificados; não afirma que a instância local sem RPCs esteja pronta para assinar.
 
 Nenhuma migração, alteração de MANA/delegações, redirecionamento de receitas, modificação de regras do Governor ou mudança automática de notificações foi realizada. O plano V2, os contratos e a configuração histórica foram preservados, juntamente com os documentos antigos em `docs/historical`.
 

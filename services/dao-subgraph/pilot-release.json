@@ -1,13 +1,13 @@
 {
   "preparedAt": "2026-09-29",
-  "status": "published-network-readiness-pending-verification",
+  "status": "network-query-verified-comparison-deployed-off",
   "studioWalletLoginRequired": false,
   "deploymentCID": "QmQ5GTG5cGpPDXc9duief12uyPsALnq569DJUY8PVvN7BW",
   "queryEndpoint": "https://api.studio.thegraph.com/query/1762785/mythical-dao-pilot/v0.1.0",
   "graphCli": "0.98.1",
   "graphTs": "0.38.2",
   "matchstick": "0.6.0",
-  "validationTests": 8,
+  "validationTests": 11,
   "mappingTests": 10,
   "build": "passed",
   "files": [
@@ -57,13 +57,13 @@
     },
     {
       "file": "scripts/validation.mjs",
-      "sha256": "fd90bbafe03ca1c3ffedf8c145429a5014d53caa93112f05a45cf664db3be8e0"
+      "sha256": "4be29a0b73af14a27877facfd4cbdb97855ff559a6429ebe0e83c376b845b1c0"
     }
   ],
   "deployedOn": "2026-09-30",
   "studioSlug": "mythical-dao-pilot",
   "studioVersion": "v0.1.0",
-  "portalComparatorTests": 3,
+  "portalComparatorTests": 5,
   "publishedOnChain": true,
   "portalBackend": "D1",
   "comparisonEvidence": "evidence/comparison-2026-09-30.json",
@@ -74,8 +74,57 @@
   "subgraphId": "56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
   "publicationTransaction": "0x116d6f23463cca98b2dbfcf95dff6859df37e02e55644240ba2f6bb4b6938f99",
   "publicationEvidence": "evidence/network-publication-2026-09-30.json",
-  "latestComparisonEvidence": "evidence/prepublication-comparison-2026-09-30.json",
+  "latestComparisonEvidence": "evidence/entity-comparison-2026-09-30.json",
   "queryEndpointKind": "studio-development",
-  "networkQueryEndpointTemplate": "https://gateway.thegraph.com/api/<API_KEY>/subgraphs/id/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
-  "networkQueryAvailability": "not-yet-verified"
+  "networkQueryAvailability": "verified",
+  "networkQueryEndpoint": "https://gateway.thegraph.com/api/subgraphs/id/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
+  "networkQueryAuthentication": "Authorization: Bearer GRAPH_API_KEY",
+  "queryCredentialStatus": "private-server-key-active-with-explicit-scope-exception",
+  "validatedAt": "2026-09-30T10:43:00.017Z",
+  "fullHistoryVerified": false,
+  "studioCaughtUpAt": "2026-09-30T09:45:40.315Z",
+  "studioCaughtUpConfirmedBlock": 94704178,
+  "networkQueryVerificationEvidence": "evidence/gateway-comparison-2026-09-30.json",
+  "queryKeyName": "Mythical DAO pilot server",
+  "queryPlan": "Free Plan",
+  "monthlyFreeQueries": 100000,
+  "perKeySpendingCapUSD": null,
+  "querySubgraphRestriction": "pending-studio-selector-empty",
+  "workerSecret": {
+    "name": "GRAPH_API_KEY",
+    "worker": "mythical-dao-portal-staging",
+    "configured": true,
+    "usedByRuntime": true
+  },
+  "entityValidation": {
+    "accounts": 73,
+    "holders": 44,
+    "proposals": 2,
+    "allReturnedEntitiesVerified": true,
+    "fullHistoryVerified": false,
+    "anchor": 94706303
+  },
+  "queryDomainRestriction": {
+    "userConfiguredPattern": "*.mythicalbeings.io",
+    "testedOrigin": "https://dao-preview.mythicalbeings.io",
+    "requestWithoutOrigin": "rejected",
+    "requestWithOrigin": "passed"
+  },
+  "portalIntegration": {
+    "mode": "shadow",
+    "implementation": "verified-supplemental-history",
+    "documentation": "../dao-portal/docs/GRAPH_HISTORY.md",
+    "graphNodeReorgAcceptance": "local-rollback-passed-rpc-anchor-guard-required",
+    "workerVersion": "6a9a3f23-5b90-466e-85ee-c63068c0694e",
+    "previewEvidence": "../dao-portal/docs/evidence/graph-history-preview-2026-10-01.json",
+    "graphNodeReorgEvidence": "evidence/reorg-acceptance-2026-10-01.json",
+    "graphNodeReorgWorkflow": ".github/workflows/graph-reorg.yml",
+    "readMode": "verified",
+    "previewFrontendDeployment": "dpl_99MTxRBX1BTnmB2XvupffW9b4JVo",
+    "historyAcceptanceEvidence": "../dao-portal/docs/evidence/graph-history-acceptance-2026-10-01.json",
+    "activationEvidence": "../dao-portal/docs/evidence/graph-activation-2026-10-01.json",
+    "activationDocumentation": "../dao-portal/docs/GRAPH_ACTIVATION.md",
+    "providerSubgraphRestricted": false,
+    "allowUnrestrictedServerKey": true
+  }
 }

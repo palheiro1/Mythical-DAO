@@ -1,0 +1,42 @@
+name: Graph Node reorg acceptance
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: "Runner with at least 44 GB free on the Docker filesystem (ordinary hosted runners may be too small)"
+        type: string
+        default: self-hosted
+        required: true
+permissions:
+  contents: read
+jobs:
+  graph-reorg:
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: services/dao-subgraph
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.22"
+          cache: npm
+          cache-dependency-path: services/dao-subgraph/package-lock.json
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.3.5
+      - run: npm ci --ignore-scripts
+      - run: npm run codegen
+      - name: Graph Node controlled reorg
+        timeout-minutes: 12
+        run: node scripts/rehearse-reorg.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: graph-reorg-acceptance
+          path: |
+            services/dao-subgraph/.task-reorg/report.json
+            services/dao-subgraph/.task-reorg/graph-node.log
+          include-hidden-files: true
+          retention-days: 7

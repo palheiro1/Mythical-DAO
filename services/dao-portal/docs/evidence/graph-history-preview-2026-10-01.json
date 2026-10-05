@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-01T09:55:47.193Z",
+  "workerVersion": "80e970cf-60ca-4250-8f4b-951c89d45e2a",
+  "frontendDeployment": "dpl_99MTxRBX1BTnmB2XvupffW9b4JVo",
+  "results": [
+    {
+      "path": "/api/health",
+      "http": 200,
+      "data": {
+        "status": "syncing",
+        "signingAllowed": true,
+        "historyComplete": false,
+        "syncPercent": 1.46,
+        "graphHistory": {
+          "source": "The Graph + RPC",
+          "complete": false,
+          "status": "disabled"
+        }
+      }
+    },
+    {
+      "path": "/api/graph-status",
+      "http": 200,
+      "data": {
+        "mode": "off",
+        "activeBackend": "D1/RPC",
+        "subgraphId": "56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
+        "fullHistoryVerified": false,
+        "historyReadMode": "off",
+        "reorgAcceptance": true,
+        "status": "disabled",
+        "reason": "GRAPH_COMPARISON_OFF"
+      }
+    },
+    {
+      "path": "/api/config",
+      "http": 200,
+      "data": {
+        "architecture": "existing-governor",
+        "capabilities": {
+          "governance": "existing-governor",
+          "snapshot": "external",
+          "timelock": false,
+          "ragequit": false
+        }
+      }
+    }
+  ],
+  "frontendBundle": "/assets/index-BlqVnOBF.js",
+  "d1Inventory": {
+    "events": 37,
+    "cursors": 6,
+    "snapshot_records": 8
+  }
+}

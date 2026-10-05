@@ -1,0 +1,136 @@
+{
+  "checkedAt": "2026-10-01T09:48:39.640Z",
+  "purpose": "Manual read-only acceptance; no remote state or flags changed",
+  "status": "compared",
+  "anchor": 94761918,
+  "hash": "0x268166b6e5b14e77808fe5202315e16bde156d5eff9e26d1e42bb6c8f281dbaf",
+  "verified": {
+    "accounts": 2,
+    "proposals": 2,
+    "fullHistoryVerified": false
+  },
+  "d1": {
+    "matchedProposals": 0,
+    "historyComplete": false
+  },
+  "fullHistoryVerified": false,
+  "history": {
+    "anchor": 94761918,
+    "hash": "0x268166b6e5b14e77808fe5202315e16bde156d5eff9e26d1e42bb6c8f281dbaf",
+    "events": [
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 89169940,
+        "block_hash": "0x1cdfec3e95dc88c84e3710ffefe9a3a2d0e45053fa174ad6c41e4c84b1f6b31d",
+        "tx_hash": "0x0add41071906a617dc7b43807fc1f1196648eab86d00c89dfb4ec351623fa605",
+        "log_index": 1547,
+        "event_name": "ProposalCreated",
+        "args_json": "{\"proposalId\":\"75457034832782812829619008240925853346288766231940027002641282537521561335180\",\"proposer\":\"0x07031A2f4957D81fCdb669dC4AF73FC2dAe619de\",\"targets\":[\"0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619\",\"0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174\",\"0x07031A2f4957D81fCdb669dC4AF73FC2dAe619de\"],\"values\":[\"0\",\"0\",\"3303004000000000000\"],\"signatures\":[\"\",\"\",\"\"],\"calldatas\":[\"0xa9059cbb00000000000000000000000007031a2f4957d81fcdb669dc4af73fc2dae619de000000000000000000000000000000000000000000000000080822ce0940ecbf\",\"0xa9059cbb00000000000000000000000007031a2f4957d81fcdb669dc4af73fc2dae619de00000000000000000000000000000000000000000000000000000000004fbc80\",\"0x\"],\"voteStart\":\"89211083\",\"voteEnd\":\"89499083\",\"description\":\"p1\"}"
+      },
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 58628044,
+        "block_hash": "0x8e6d639a2615d45d41862a7c83e8fd0c28c9576c12edcfc72b47fcf620143c48",
+        "tx_hash": "0x2ea9eeadd7b4b9fb1c50e5666c5b87b8246198d6b2fc238168eff5a00e898829",
+        "log_index": 300,
+        "event_name": "VoteCast",
+        "args_json": "{\"voter\":\"0x0314c7fBF0bd957f65925bA49A868EF9029C24f1\",\"proposalId\":\"48844407342116835452564597067000717639217187351786596578093461697847982212499\",\"support\":1,\"weight\":\"4000000000000000000000\",\"reason\":\"\"}"
+      },
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 58544373,
+        "block_hash": "0x4000299b45be8b4cb5bdc09bb0f91287f35eaf65326ced874c4ab05ffe8ae7dd",
+        "tx_hash": "0x707bc17d52bef2bd4e1666bfd416769651f3170561b0b2ef91a284ab269ef781",
+        "log_index": 53,
+        "event_name": "VoteCast",
+        "args_json": "{\"voter\":\"0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9\",\"proposalId\":\"48844407342116835452564597067000717639217187351786596578093461697847982212499\",\"support\":1,\"weight\":\"26169936971428589697113\",\"reason\":\"\"}"
+      },
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 58560692,
+        "block_hash": "0x3770bd08b5f24e16b19b0e9efaeb2a964a29240baea520f65a7601e48ee5ac09",
+        "tx_hash": "0x722e0ef643b5a40185e3c565646377e7f795231fa0d9101e30ee3b3c0bfafd70",
+        "log_index": 297,
+        "event_name": "VoteCast",
+        "args_json": "{\"voter\":\"0x22443804Ae1dC2351dA53D8192c8c54ad21FAcBB\",\"proposalId\":\"48844407342116835452564597067000717639217187351786596578093461697847982212499\",\"support\":1,\"weight\":\"0\",\"reason\":\"\"}"
+      },
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 58635761,
+        "block_hash": "0x0e72022ed395882834bacda3a5081775fe1c267f23d8d9ae870e970c2663d832",
+        "tx_hash": "0x839b0e1ee6f174b200668bbdf889689c6c4d89b185c65d1e3e2b815b1fe82935",
+        "log_index": 465,
+        "event_name": "VoteCast",
+        "args_json": "{\"voter\":\"0x9e32ff89a4D9fc288384751Cb30308dCC93E86EC\",\"proposalId\":\"48844407342116835452564597067000717639217187351786596578093461697847982212499\",\"support\":1,\"weight\":\"26903256011135446882200\",\"reason\":\"\"}"
+      },
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 58427770,
+        "block_hash": "0x08dd1dc5fc9342768b345daa70a081a88e8acbe5335d62edbe95510e8ffd3eb9",
+        "tx_hash": "0x862d1b68152e8c4b67d4db87cd892977a12eed1350a216d776ade0fc52737570",
+        "log_index": 199,
+        "event_name": "ProposalCreated",
+        "args_json": "{\"proposalId\":\"48844407342116835452564597067000717639217187351786596578093461697847982212499\",\"proposer\":\"0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9\",\"targets\":[\"0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619\",\"0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619\",\"0x5F790ffA0695967A2d711872EcB4c7553e24794D\",\"0x5F790ffA0695967A2d711872EcB4c7553e24794D\",\"0x2caCCa1266653bB090D3Fb511456EBCA33150562\",\"0x2caCCa1266653bB090D3Fb511456EBCA33150562\",\"0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619\",\"0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619\"],\"values\":[\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\"],\"signatures\":[\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"],\"calldatas\":[\"0xa9059cbb000000000000000000000000268952f3870628f3f6cce9635236e6144f9a680c0000000000000000000000000000000000000000000000000098c445ad578000\",\"0xa9059cbb0000000000000000000000004890f92e8fcaf7b22764c7f08da0d1abd7f567ec00000000000000000000000000000000000000000000000000030e2a5a81c000\",\"0xa9059cbb000000000000000000000000268952f3870628f3f6cce9635236e6144f9a680c0000000000000000000000000000000000000000000002588a22223d91580000\",\"0xa9059cbb0000000000000000000000004890f92e8fcaf7b22764c7f08da0d1abd7f567ec00000000000000000000000000000000000000000000000c02c33e1ff38c0000\",\"0xa9059cbb000000000000000000000000268952f3870628f3f6cce9635236e6144f9a680c0000000000000000000000000000000000000000000001afc894739f12540000\",\"0xa9059cbb0000000000000000000000004890f92e8fcaf7b22764c7f08da0d1abd7f567ec000000000000000000000000000000000000000000000008a2bb49fe0fba0000\",\"0xa9059cbb000000000000000000000000c4ccc6a11329558582c2da79c18a9aeac00f59f900000000000000000000000000000000000000000000000001f161421c8e0000\",\"0xa9059cbb0000000000000000000000004890f92e8fcaf7b22764c7f08da0d1abd7f567ec0000000000000000000000000000000000000000000000000009f295cd5f0000\"],\"voteStart\":\"58468913\",\"voteEnd\":\"58756913\",\"description\":\"# Payment of the NFC subsidy\\nAccording to the previously approved grant for DAO members attending the Non Fungible Conference in Lisbon, Apenzl is to be paid for his travel expenses and Palheiro for the reservation of the apartment where the whole team stayed.\\n\\nThe payment to Apenzl is $300 as per the grant, payable in wETH ($150), GEM ($75) and MANA ($75). At current prices this equates to:\\n\\n0.043 wETH\\n\\n11078 GEM\\n\\n7965 MANA\\n\\n\\n\\nFor the apartment, the total cost was €566, but the DAO only covers $500, so the payment will be:\\n\\n0.14 wETH\\n\\n\\n\\nInvoices justifying these payments are available to DAO members on request. This proposal can be discussed in the private Discord channel and in the forum [thread](https://dao.mythicalbeings.io/forum/post/nfc_lisbon_subsidy_proposal_4rrloich \\\"forum thread\\\").\"}"
+      },
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 89223445,
+        "block_hash": "0x1916fd3aca1ee5f20f214b48e714541ee668f1c0c6163eb3d0996fee45574eff",
+        "tx_hash": "0x8c7a14e47950a60e45b8f9c48be37328b6074a5250b8373026093cb11ca2c1d5",
+        "log_index": 967,
+        "event_name": "VoteCast",
+        "args_json": "{\"voter\":\"0x07031A2f4957D81fCdb669dC4AF73FC2dAe619de\",\"proposalId\":\"75457034832782812829619008240925853346288766231940027002641282537521561335180\",\"support\":1,\"weight\":\"53939944555246236983048\",\"reason\":\"\"}"
+      },
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 58984871,
+        "block_hash": "0xa31d85db9fb4566c3361184a2b35245ef57ea9890d1210ab62acc831ededf774",
+        "tx_hash": "0x923c496e8ab098c575818e020d847c6844387c611bda10a4cd86fc197b23daba",
+        "log_index": 335,
+        "event_name": "ProposalExecuted",
+        "args_json": "{\"proposalId\":\"48844407342116835452564597067000717639217187351786596578093461697847982212499\"}"
+      },
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 58663809,
+        "block_hash": "0xbd6511bcb584c8c4b2676dedcf289630d5063b7dbe983b050ad1c2fc274429da",
+        "tx_hash": "0xb521794b9385c3a496c71774f83c183539c04b309546656311af2aebdf922d46",
+        "log_index": 593,
+        "event_name": "VoteCast",
+        "args_json": "{\"voter\":\"0x5942DEe7389402aA33aa589ffeFeE51dd765E459\",\"proposalId\":\"48844407342116835452564597067000717639217187351786596578093461697847982212499\",\"support\":1,\"weight\":\"0\",\"reason\":\"\"}"
+      },
+      {
+        "chain_id": 137,
+        "contract": "0x7b9e327748462f1038c9d081c98d189b22c60a27",
+        "block_number": 89532760,
+        "block_hash": "0x89cce543147c2b9b7fb009a6a013d8a859ae0f4af914e205b1420a6698b046cc",
+        "tx_hash": "0xf564cd8c10d186fe622c8a41ff0ebcf04b81cd5f7060dad73e5c93f96ce82ea9",
+        "log_index": 1705,
+        "event_name": "ProposalExecuted",
+        "args_json": "{\"proposalId\":\"75457034832782812829619008240925853346288766231940027002641282537521561335180\"}"
+      }
+    ],
+    "delegateCandidates": [
+      "0x0314c7fbf0bd957f65925ba49a868ef9029c24f1",
+      "0x0629b955338222e2b833394422639c4108a2ea4d",
+      "0x09bff4758b652309704079f8a3cf271a2cf6220e",
+      "0x0fdd9f147117d627eb88fbc4c161b088ea64e0ca",
+      "0x2d41211fc8a4a1639032ead5c8ee6b867ef70a49",
+      "0x491b1831d200478d303d4157d9f33c30607ff165",
+      "0x5942dee7389402aa33aa589ffefee51dd765e459",
+      "0x9e32ff89a4d9fc288384751cb30308dcc93e86ec",
+      "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9",
+      "0xd64c5043ab83c2390a6e5fab31ff44304f0a5de1"
+    ],
+    "fullHistoryVerified": false
+  }
+}

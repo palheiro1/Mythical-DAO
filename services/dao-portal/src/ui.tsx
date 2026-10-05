@@ -3,6 +3,7 @@ import { useAccount } from "wagmi";
 import type { Health, PortalConfig } from "../shared/domain";
 import { m } from "./i18n";
 import { messages } from "./messages.en";
+import { ragequitErrors } from "../shared/ragequit-errors";
 export const PortalContext = createContext<{
   config: PortalConfig;
   health?: Health;
@@ -276,7 +277,10 @@ export function ErrorNotice({ error }: { error: string }) {
       "This proposal is still awaiting network confirmations. Try again shortly.",
     ),
   };
-  const readable = Object.values(messages).some((value) => value === error);
+  const readable = [
+    ...Object.values(messages),
+    ...Object.values(ragequitErrors),
+  ].some((value) => value === error);
   return (
     <div role="alert" className="error">
       <p>

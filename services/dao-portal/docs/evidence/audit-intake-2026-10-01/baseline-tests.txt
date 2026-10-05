@@ -1,0 +1,33 @@
+Compiling 64 files with Solc 0.8.30
+Solc 0.8.30 finished in 1.74s
+Compiler run successful!
+2026-10-01T11:57:45.842598Z  WARN traces::etherscan: etherscan config not found
+
+Ran 15 tests for contracts/test/RagequitModule.t.sol:RagequitModuleTest
+[PASS] testAllZeroRejected() (gas: 107990)
+[PASS] testBlockedOrFeeTokenRollsBackEverything() (gas: 433590)
+[PASS] testDelegatedVoterCanBurnOnlyOwnBalanceEvenWithAllowance() (gas: 302376)
+[PASS] testFaultyBurnSupplyAndBalanceChangesRollBackPaymentsAndAllowance() (gas: 1953507)
+[PASS] testFuzzConservationAndRounding(uint96) (runs: 2048, μ: 189855, ~: 182215)
+[PASS] testInsufficientAndRevokedAllowanceRollBackAllAssetsAndBurn() (gas: 365317)
+[PASS] testInvalidAmountAndConstructor() (gas: 98460)
+[PASS] testLaterAssetHookCannotAlterAnEarlierPayout() (gas: 1732332)
+[PASS] testMinimumsAreEnforcedForEachAssetBeforeAnyBurn() (gas: 136163)
+[PASS] testNoDelegatedBurnAndReentrancyBlocked() (gas: 339548)
+[PASS] testProportionIncludesTreasuryManaAndExactApproval() (gas: 209023)
+[PASS] testProportionalMathHandlesIntermediateUint256Overflow() (gas: 2432762)
+[PASS] testRecipientExpiryAndMinimums() (gas: 189949)
+[PASS] testSuccessiveExitsAndNewRevenue() (gas: 377570)
+[PASS] testZeroQuotaAllowedEvenWithoutAllowance() (gas: 144826)
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 314.41ms (322.46ms CPU time)
+
+Ran 6 tests for contracts/test/ClaudeAudit.t.sol:RagequitAuditTest
+[PASS] testAllowanceDriftsBelowMaxWithDecrementingToken() (gas: 1654215)
+[PASS] testFuzzSequenceConservationAndNoDilution(uint96,uint96,uint96,uint96,uint96) (runs: 2048, μ: 385078, ~: 393482)
+[PASS] testModuleHoldsNothingAndDonationsToItAreNotPaidOut() (gas: 215748)
+[PASS] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2016674)
+[PASS] testRecipientCanBeAnAssetContractAndFundsAreStuck() (gas: 415948)
+[PASS] testReentrancyIsBlockedByTheGuardNotByAccident() (gas: 3409517)
+Suite result: ok. 6 passed; 0 failed; 0 skipped; finished in 1.13s (1.13s CPU time)
+
+Ran 2 test suites in 1.13s (1.44s CPU time): 21 tests passed, 0 failed, 0 skipped (21 total tests)

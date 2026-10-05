@@ -1,0 +1,24 @@
+Compiling 2 files with Solc 0.8.30
+Solc 0.8.30 finished in 504.83ms
+Compiler run successful!
+2026-10-01T12:00:17.656154Z  WARN traces::etherscan: etherscan config not found
+
+Ran 15 tests for contracts/test/RagequitModule.t.sol:RagequitModuleTest
+[PASS] testAllZeroRejected() (gas: 102913)
+[PASS] testBlockedOrFeeTokenRollsBackEverything() (gas: 423436)
+[PASS] testDelegatedVoterCanBurnOnlyOwnBalanceEvenWithAllowance() (gas: 294904)
+[PASS] testFaultyBurnSupplyAndBalanceChangesRollBackPaymentsAndAllowance() (gas: 1920018)
+[PASS] testFuzzConservationAndRounding(uint96) (runs: 2048, μ: 187432, ~: 179820)
+[PASS] testInsufficientAndRevokedAllowanceRollBackAllAssetsAndBurn() (gas: 355163)
+[PASS] testInvalidAmountAndConstructor() (gas: 98406)
+[PASS] testLaterAssetHookCannotAlterAnEarlierPayout() (gas: 1699397)
+[PASS] testMinimumsAreEnforcedForEachAssetBeforeAnyBurn() (gas: 120932)
+[PASS] testNoDelegatedBurnAndReentrancyBlocked() (gas: 335811)
+[PASS] testProportionIncludesTreasuryManaAndExactApproval() (gas: 206628)
+[PASS] testProportionalMathHandlesIntermediateUint256Overflow() (gas: 2399691)
+[PASS] testRecipientExpiryAndMinimums() (gas: 164564)
+[PASS] testSuccessiveExitsAndNewRevenue() (gas: 374385)
+[PASS] testZeroQuotaAllowedEvenWithoutAllowance() (gas: 142431)
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 294.39ms (300.47ms CPU time)
+
+Ran 1 test suite in 295.21ms (294.39ms CPU time): 15 tests passed, 0 failed, 0 skipped (15 total tests)

@@ -1,0 +1,62 @@
+{
+  "reviewedCommit": "085042e69e04c5ebc7dc029a276ed65cb26ec2d4",
+  "inputsSha256": {
+    "AUDIT_CLAUDE.md": "049536702adf18675e9c40a9f41ef1fdaa2a14c72ff34e4b77a1cd889849db03",
+    "AUDIT_GROK.md": "4581a117c941cf78ecead0cdb6b270652f0e15f7fa655a8b59fe88b4096c3ee5",
+    "CLAUDE_RagequitAudit.t.sol": "ed1b60319011eb1c709b91f22d02ab35edd539d0fa5818ee056b59423c5a4826",
+    "CLAUDE_finding6-recipient.patch": "b832762f3de2c12893ab8fe953f9dd37ceb92a6e3bcd6b0d881bca3504e1db35"
+  },
+  "baseline": {
+    "moduleTestsPassed": 15,
+    "incomingTestsPassed": 6,
+    "fuzzRunsPerProperty": 2048,
+    "failed": 0
+  },
+  "previewProbe": {
+    "passed": 1,
+    "unreviewedRuntimeAcceptedInMock": true
+  },
+  "realTokens": {
+    "forkBlock": "94767131",
+    "forkBlockHash": "0x3bc5e55055dcce6e5ed94ceeebc9ceace952ceb8b5dbaddf77b92c0af318e339",
+    "nativeUsdcAllowanceDecrement": "1",
+    "wethAllowanceDecrement": "160000000",
+    "gemAllowanceUnchanged": true,
+    "publicTransactionsSent": false
+  },
+  "mutations": [
+    {
+      "name": "without-guard-original-suite",
+      "exit": 0,
+      "pass": 15,
+      "fail": 0,
+      "failures": []
+    },
+    {
+      "name": "without-guard-new-suite",
+      "exit": 1,
+      "pass": 4,
+      "fail": 2,
+      "failures": [
+        "[FAIL: REENTRANCY SUCCEEDED] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2021131)",
+        "[FAIL: REENTRANCY SUCCEEDED] testReentrancyIsBlockedByTheGuardNotByAccident() (gas: 3413086)"
+      ]
+    },
+    {
+      "name": "burn-after-payment-original-suite",
+      "exit": 0,
+      "pass": 15,
+      "fail": 0,
+      "failures": []
+    }
+  ],
+  "recipientPatch": {
+    "isolatedCopyOnly": true,
+    "incomingRecipientTestAdaptedToRejectFourTokenAddresses": true,
+    "passed": 21,
+    "failed": 0
+  },
+  "repositoryModuleUnchanged": true,
+  "independentReview": "pending",
+  "attachmentsModified": false
+}

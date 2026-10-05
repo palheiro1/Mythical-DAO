@@ -1,7 +1,10 @@
 // Produce reviewable deployment material without a private key, signing or broadcasting.
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { encodeDeployData, encodeAbiParameters, keccak256, toHex } from "viem";
-import { assertRagequitManifest } from "./ragequit-policy.mjs";
+import {
+  assertRagequitManifest,
+  instantiateModuleRuntime,
+} from "./ragequit-policy.mjs";
 
 const manifest = JSON.parse(readFileSync("deployments/polygon.json", "utf8"));
 assertRagequitManifest(manifest);
@@ -22,11 +25,14 @@ const metadata =
     ? JSON.parse(artifact.metadata)
     : artifact.metadata;
 const sources = {};
+const compilerSources = {};
 for (const [path, entry] of Object.entries(metadata.sources)) {
-  const hash = keccak256(toHex(readFileSync(path)));
+  const content = readFileSync(path, "utf8");
+  const hash = keccak256(toHex(content));
   if (hash !== entry.keccak256)
     throw Error(`Compiled source differs from disk: ${path}. Run forge build.`);
   sources[path] = hash;
+  compilerSources[path] = { content };
 }
 const roles = ["treasury", "mana", "gem", "weth", "usdcNative"];
 const args = roles.map((role) => manifest.contracts[role].address);
@@ -47,10 +53,41 @@ const data = encodeDeployData({
   bytecode: artifact.bytecode.object,
   args,
 });
+const runtimeHash = keccak256(instantiateModuleRuntime(artifact, args));
+// Distributed with both clients. An API response cannot replace this trust root.
+mkdirSync("shared/generated", { recursive: true });
+writeFileSync(
+  "shared/generated/ragequit-trust.json",
+  JSON.stringify(
+    {
+      version: 1,
+      chainId: 137,
+      moduleAddress: null,
+      runtimeHash,
+      addresses: Object.fromEntries(roles.map((role, i) => [role, args[i]])),
+    },
+    null,
+    2,
+  ) + "\n",
+);
 const directory = "deployments/ragequit-release";
 mkdirSync(directory, { recursive: true });
 const write = (name, value) =>
   writeFileSync(`${directory}/${name}`, JSON.stringify(value, null, 2) + "\n");
+// Self-contained Standard JSON input: an external reviewer needs no dependency
+// installation. compilationTarget belongs to output metadata, not compiler input.
+const { compilationTarget: _target, ...compilerSettings } = metadata.settings;
+const compilerInput = {
+  language: "Solidity",
+  sources: compilerSources,
+  settings: {
+    ...compilerSettings,
+    outputSelection: {
+      "*": { "*": ["abi", "metadata", "evm.bytecode", "evm.deployedBytecode"] },
+    },
+  },
+};
+write("compiler-input.json", compilerInput);
 write("deployment-unsigned.json", {
   status: "unsigned-review-only",
   transaction: { chainId: "0x89", value: "0x0", data },
@@ -72,8 +109,12 @@ write("review-manifest.json", {
   initCodeKeccak256: keccak256(data),
   initCodeBytes: (data.length - 2) / 2,
   runtimeTemplateKeccak256: keccak256(artifact.deployedBytecode.object),
+  runtimeKeccak256: runtimeHash,
   immutableReferences: artifact.deployedBytecode.immutableReferences,
   sources,
+  compilerInputKeccak256: keccak256(
+    toHex(readFileSync(`${directory}/compiler-input.json`)),
+  ),
   authorization: "../ragequit-authorization.template.json",
   requirements: [
     "Independent review of these exact sources and init code",

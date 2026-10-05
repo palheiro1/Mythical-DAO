@@ -1,0 +1,129 @@
+{
+  "status": "passed",
+  "graphNode": "v0.45.0",
+  "network": "isolated-anvil-137",
+  "liveNetworkAcceptance": false,
+  "startedAt": "2026-10-01T09:46:27.572Z",
+  "disk": {
+    "availableBefore": 357871333376,
+    "peakAdditional": 4000000000,
+    "reserve": 40000000000
+  },
+  "completedAt": "2026-10-01T09:46:43.800Z",
+  "before": {
+    "proposals": [
+      {
+        "proposalId": "1",
+        "executed": true
+      }
+    ],
+    "pilotStats": {
+      "totalSupply": "110",
+      "holders": "1",
+      "transfers": "2",
+      "proposals": "1"
+    },
+    "manaAccount": {
+      "balance": "110"
+    },
+    "eventRecords": [
+      {
+        "transactionHash": "0x5186485c3d8d7ffeef380acbfe2b5844be291692d76d8b9882242a07258c6cba",
+        "value": "100",
+        "blockHash": "0x28a7fda3357d0496359cde523ae8b511c4829579d93a27b387ba27e134bd61ab"
+      },
+      {
+        "transactionHash": "0xe5f4e6a201ad0c6cdf8692c199aff6f1c691d7ca3401905c7b133580699fafba",
+        "value": null,
+        "blockHash": "0x5e1a1cb58c679399aed2af043b1a5769ba23b3f270917a2289b3e6bec45b0728"
+      },
+      {
+        "transactionHash": "0x27ee2c3b062af5ee6750c82fc9d0e755d133a4286e0198513324ab7ce7f93737",
+        "value": "10",
+        "blockHash": "0xfa7c00740b0c738d5ed5ea81d894fb685d7489f727bdffff40f13ee45f1a16cc"
+      },
+      {
+        "transactionHash": "0x2ecbd25c04961aefb2128207812afaf3cdae6831c0bcf049333a5570647a8b59",
+        "value": null,
+        "blockHash": "0x4ae93d04d259f829ce6bb83d38585dae65f8fed394f7c2b97f845b41374ec9a2"
+      }
+    ],
+    "_meta": {
+      "hasIndexingErrors": false,
+      "block": {
+        "number": 8,
+        "hash": "0x6120c61ef3b9f3f14986078e232c8b7e42ca8b1d894ca60e31d3c3d94706af6d"
+      }
+    }
+  },
+  "after": {
+    "proposals": [
+      {
+        "proposalId": "1",
+        "executed": false
+      },
+      {
+        "proposalId": "2",
+        "executed": false
+      }
+    ],
+    "pilotStats": {
+      "totalSupply": "107",
+      "holders": "1",
+      "transfers": "2",
+      "proposals": "2"
+    },
+    "manaAccount": {
+      "balance": "107"
+    },
+    "eventRecords": [
+      {
+        "transactionHash": "0x5186485c3d8d7ffeef380acbfe2b5844be291692d76d8b9882242a07258c6cba",
+        "value": "100",
+        "blockHash": "0x28a7fda3357d0496359cde523ae8b511c4829579d93a27b387ba27e134bd61ab"
+      },
+      {
+        "transactionHash": "0xe5f4e6a201ad0c6cdf8692c199aff6f1c691d7ca3401905c7b133580699fafba",
+        "value": null,
+        "blockHash": "0x5e1a1cb58c679399aed2af043b1a5769ba23b3f270917a2289b3e6bec45b0728"
+      },
+      {
+        "transactionHash": "0x7a076fdc49c2cbd8cb147004216eb58073ef04a3e14993e893e0102ba873f2b9",
+        "value": "7",
+        "blockHash": "0x06cea2a840c4a573ef1bfde9a9640eab6ff11e4171941507e7b7c48905c0a50a"
+      },
+      {
+        "transactionHash": "0xf4cfb6c4bf84d3fc1d912b57b3d08b818e6ebf9650cfc241770b660d0d721ff3",
+        "value": null,
+        "blockHash": "0x144d27cc8eecc78ddf07828bfc2e0b5e912b3369ba5d1463b3d612f4426e1574"
+      }
+    ],
+    "_meta": {
+      "hasIndexingErrors": false,
+      "block": {
+        "number": 16,
+        "hash": "0x765ab9ac62767200bdcc5d577028767be3eccc0954fef17b217140657fcdd4db"
+      }
+    }
+  },
+  "canonicalHistoricalSupply": "100",
+  "graphRejectsOrphan": false,
+  "orphanResponse": {
+    "data": {
+      "pilotStats": {
+        "totalSupply": "107"
+      }
+    }
+  },
+  "applicationRejectsOrphan": true,
+  "governorRollbackVerified": true,
+  "wasm": {
+    "mana": "1d51bb1cd7d50b08203133880352e82904a4218e2ef832603f3ba92950747b97",
+    "governor": "e7ad1a7a6359a65d8e4867dd8a6d6c095514c46b4cd8c09e697f795a727e3a1d"
+  },
+  "limitations": [
+    "Controlled short reorg of MANA balances/events and Governor proposal creation/execution.",
+    "Graph Node may answer orphan-hash queries; the portal must independently verify the canonical hash with RPC.",
+    "Local Graph Node behavior does not prove Gateway indexer retention or complete Polygon event coverage."
+  ]
+}

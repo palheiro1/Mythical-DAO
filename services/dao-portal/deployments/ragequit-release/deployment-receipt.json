@@ -1,0 +1,24 @@
+{
+  "address": "0xef06E163F65807872e62b4AB186EffcAFca7C8C9",
+  "blockHash": "0xbac3ec87182b6c54bc2d694da915e343815718b36d8a1513218a8f5eb4642b15",
+  "blockNumber": "94773613",
+  "chainId": 137,
+  "confirmations": "69",
+  "confirmedBlockHash": "0x11caaff94e02ac49bee50a5c44d003676e81f5f2dc0633176308129d6f1c26fa",
+  "confirmedThrough": "94773618",
+  "effectiveGasPrice": "270753901120",
+  "from": "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9",
+  "gasCostWei": "286765745324434560",
+  "gasUsed": "1059138",
+  "initCodeKeccak256": "0x4180449b7b77b9cad40d742b653aaca16d71f39810a5dd62904d4d2d8abe7324",
+  "nonce": 298,
+  "providers": [
+    "polygon.drpc.org",
+    "tenderly.rpc.polygon.community"
+  ],
+  "runtimeBytes": 4450,
+  "runtimeKeccak256": "0x3a4c043fc5bac256e18e0c1f1fe2931cdd506f6c38ea22b00a4c3a41783dd73c",
+  "status": "verified-deployment",
+  "transactionHash": "0xeac0c3add4896dc6a5580273136cbcdc8d6463b41bb725624d3356aac420cba3",
+  "verifiedAt": "2026-10-01T14:41:06.103Z"
+}

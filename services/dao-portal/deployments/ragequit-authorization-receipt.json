@@ -1,0 +1,44 @@
+{
+  "actions": [
+    {
+      "data": "0x095ea7b3000000000000000000000000ef06e163f65807872e62b4ab186effcafca7c8c9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "target": "0x5f790ffa0695967a2d711872ecb4c7553e24794d",
+      "value": "0"
+    },
+    {
+      "data": "0x095ea7b3000000000000000000000000ef06e163f65807872e62b4ab186effcafca7c8c9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "target": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+      "value": "0"
+    },
+    {
+      "data": "0x095ea7b3000000000000000000000000ef06e163f65807872e62b4ab186effcafca7c8c9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "target": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+      "value": "0"
+    }
+  ],
+  "blockHash": "0xd7e07d621c9091d59ddb34ec9e361df0575f9e351594449abe2a1b1b288e5d96",
+  "blockNumber": "94773983",
+  "chainId": 137,
+  "confirmations": "253",
+  "confirmedThrough": "94774172",
+  "descriptionHash": "0x62a08535fbfa8978e09f66ec5674746e22fde58a23c39a868878532717b3bd72",
+  "from": "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9",
+  "gasCostWei": "46346287445605440",
+  "gasUsed": "167598",
+  "governor": "0x7B9e327748462F1038c9D081c98d189b22C60A27",
+  "module": "0xef06E163F65807872e62b4AB186EffcAFca7C8C9",
+  "nonce": 299,
+  "portalUrl": "https://dao-preview.mythicalbeings.io/#proposal/0x7b9e327748462f1038c9d081c98d189b22c60a27/28380386844107398034034691570755427638127941114420426233333446520814279739334",
+  "proposalId": "28380386844107398034034691570755427638127941114420426233333446520814279739334",
+  "proposalState": "Pending",
+  "proposeDataHash": "0x4714415afea54a2c509fa48794cb771aca966eb64dbefa1c235a5115d8ee6579",
+  "providers": [
+    "polygon.drpc.org",
+    "tenderly.rpc.polygon.community"
+  ],
+  "status": "verified-proposal-submitted",
+  "transactionHash": "0x2eed86cf4eee92383d0e5b6a86bdc2a46e0b097fadef64fc73d98622d3cd8480",
+  "verifiedAt": "2026-10-01T14:54:54.821Z",
+  "voteEnd": "95103126",
+  "voteStart": "94815126"
+}

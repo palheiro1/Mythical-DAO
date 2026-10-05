@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-09-30T10:51:24.089Z",
+  "workerVersion": "8d7985fa-e647-4a45-8c38-2a8d4a5893fd",
+  "publicCredentialLeak": false,
+  "results": [
+    {
+      "path": "/api/graph-status",
+      "http": 200,
+      "data": {
+        "mode": "off",
+        "activeBackend": "D1/RPC",
+        "subgraphId": "56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb",
+        "fullHistoryVerified": false,
+        "status": "disabled",
+        "reason": "GRAPH_COMPARISON_OFF"
+      }
+    },
+    {
+      "path": "/api/health",
+      "http": 200,
+      "data": {
+        "status": "syncing",
+        "signingAllowed": true,
+        "historyComplete": false,
+        "syncPercent": 1.07
+      }
+    },
+    {
+      "path": "/api/config",
+      "http": 200,
+      "data": {
+        "architecture": "existing-governor",
+        "capabilities": {
+          "governance": "existing-governor",
+          "snapshot": "external",
+          "timelock": false,
+          "ragequit": false
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "without-guard-original-suite",
+    "exit": 0,
+    "pass": 15,
+    "fail": 0,
+    "failures": []
+  },
+  {
+    "name": "without-guard-new-suite",
+    "exit": 1,
+    "pass": 4,
+    "fail": 2,
+    "failures": [
+      "[FAIL: REENTRANCY SUCCEEDED] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2021131)",
+      "[FAIL: REENTRANCY SUCCEEDED] testReentrancyIsBlockedByTheGuardNotByAccident() (gas: 3413086)"
+    ]
+  },
+  {
+    "name": "burn-after-payment-original-suite",
+    "exit": 0,
+    "pass": 15,
+    "fail": 0,
+    "failures": []
+  }
+]

@@ -1,3 +1,6 @@
+import { graphComparisonStatus, runGraphComparison } from "./graph-comparison";
+import { graphHistory } from "./graph-history";
+import { mergeHistoryRows } from "./graph-history-model";
 import { simulateActions } from "./simulation";
 import { isAddress, isHex, type Address, type Hex } from "viem";
 import { redeemPreview } from "./ragequit";
@@ -63,6 +66,8 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return json({ error: "Origin not allowed" }, 403);
   if (path === "/api/openapi.json") return json(openapi);
   if (path === "/api/config") return json(cfg);
+  if (path === "/api/graph-status" && request.method === "GET")
+    return json(await graphComparisonStatus(env));
   if (path === "/api/history/snapshot") {
     const before = Number(
       url.searchParams.get("before") ?? Number.MAX_SAFE_INTEGER,
@@ -108,7 +113,14 @@ async function handle(request: Request, env: Env): Promise<Response> {
       return json({ items: [], unavailable: true });
     return json({ error: "RPC_NOT_CONFIGURED" }, 503);
   }
-  if (path === "/api/health") return json(await indexHealth(env, cfg, pair));
+  if (path === "/api/health") {
+    const health = await indexHealth(env, cfg, pair);
+    if (health.confirmedHead)
+      health.graphHistory = (
+        await graphHistory(env, cfg, pair, BigInt(health.confirmedHead))
+      ).status;
+    return json(health);
+  }
   if (path === "/api/proposals/resolve" && request.method === "POST") {
     const input = await body(request);
     if (
@@ -136,7 +148,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     (path === "/api/preflight" || path === "/api/simulate-actions")
   ) {
     const input = await body(request);
-    const { head } = await commonHead(pair, cfg);
+    const { head, confirmed } = await commonHead(pair, cfg);
     // Live calls verify the current chain directly; no historical cursor is trusted.
     const blockHash = await agreed(
       pair,
@@ -183,7 +195,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       value: BigInt(String(value)),
       blockNumber: head,
     };
-    const verification = await verifyOperation(cfg, pair, head, tx);
+    const verification = await verifyOperation(cfg, pair, head, tx, confirmed);
     await agreed(pair, async (c) => (await c.call(tx)).data ?? "0x");
     const gasEstimates = await Promise.all(pair.map((c) => c.estimateGas(tx)));
     const gas = gasEstimates.reduce((a, b) => (a > b ? a : b));
@@ -209,7 +221,49 @@ async function handle(request: Request, env: Env): Promise<Response> {
   }
   if (request.method !== "GET") return json({ error: "Not found" }, 404);
   const { head, confirmed } = await commonHead(pair, cfg);
+  // Request-local read: no public endpoint triggers Graph queries or cache writes.
+  let historyRead: ReturnType<typeof graphHistory> | undefined;
+  const supplemental = () =>
+    (historyRead ??= graphHistory(env, cfg, pair, confirmed));
   if (path === "/api/overview") {
+    const graph = await supplemental();
+    if (graph.data) {
+      const rows = await env.DAO_DB.prepare(
+        "SELECT * FROM events WHERE chain_id=? AND contract=? AND event_name='ProposalCreated' AND block_number<=? ORDER BY block_number DESC LIMIT 21",
+      )
+        .bind(cfg.chainId, cfg.contracts.governor!.address, Number(confirmed))
+        .all<EventRow>();
+      const proposals = mergeHistoryRows(
+        rows.results,
+        graph.data.events.filter((e) => e.event_name === "ProposalCreated"),
+        21,
+      );
+      if (proposals.length <= 20) {
+        const states = await agreed(pair, (c) =>
+          Promise.all(
+            proposals.map((e) =>
+              c.readContract({
+                address: e.contract,
+                abi: governorAbi,
+                functionName: "state",
+                args: [BigInt(JSON.parse(e.args_json).proposalId)],
+                blockNumber: confirmed,
+              }),
+            ),
+          ),
+        );
+        return json({
+          activeVotes: states.filter((s) => s === 1).length,
+          queuedExecutions: 0,
+          readyForExecution: states.filter((s) => s === 4).length,
+          indexedProposals: proposals.length,
+          countsVerified: true,
+          complete: false,
+          asOfBlock: String(confirmed),
+          history: graph.status,
+        });
+      }
+    }
     const active = await env.DAO_DB.prepare(
       `SELECT COUNT(*) AS count FROM events p
       WHERE p.chain_id=? AND p.contract=? AND p.event_name IN ('ProposalCreated','BallotCreated')
@@ -291,8 +345,22 @@ async function handle(request: Request, env: Env): Promise<Response> {
     )
       .bind(...params)
       .all<EventRow>();
+    const graph = await supplemental();
+    const extra = community
+      ? []
+      : (graph.data?.events ?? []).filter(
+          (e) =>
+            e.event_name === event &&
+            e.block_number <= Number(confirmed) &&
+            (e.block_number < before.block ||
+              (e.block_number === before.block &&
+                (e.log_index < before.log ||
+                  (e.log_index === before.log &&
+                    e.contract < before.contract)))),
+        );
+    const merged = mergeHistoryRows(rows.results, extra, 20);
     const items = [];
-    for (const row of rows.results) {
+    for (const row of merged) {
       const p = eventProposal(row, cfg);
       try {
         items.push(await hydrate(p, pair, confirmed));
@@ -303,8 +371,8 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return json({
       items,
       asOfBlock: String(confirmed),
-      nextBefore:
-        rows.results.length === 20 ? eventCursor(rows.results.at(-1)!) : null,
+      history: graph.status,
+      nextBefore: merged.length === 20 ? eventCursor(merged.at(-1)!) : null,
     });
   }
   if (path === "/api/notification-feed") {
@@ -336,11 +404,19 @@ async function handle(request: Request, env: Env): Promise<Response> {
   }
   const detail = path.match(/^\/api\/proposals\/(0x[0-9a-fA-F]{40})\/(\d+)$/);
   if (detail) {
-    const row = await env.DAO_DB.prepare(
+    const indexed = await env.DAO_DB.prepare(
       "SELECT * FROM events WHERE chain_id=? AND contract=? AND event_name IN ('ProposalCreated','BallotCreated') AND CAST(COALESCE(json_extract(args_json,'$.proposalId'),json_extract(args_json,'$.ballotId')) AS TEXT)=? LIMIT 1",
     )
       .bind(cfg.chainId, detail[1].toLowerCase(), detail[2])
       .first<EventRow>();
+    const graph = await supplemental();
+    const row =
+      graph.data?.events.find(
+        (e) =>
+          e.contract === detail[1].toLowerCase() &&
+          e.event_name === "ProposalCreated" &&
+          JSON.parse(e.args_json).proposalId === detail[2],
+      ) ?? indexed;
     if (!row) return json({ error: "Proposal not indexed" }, 404);
     if (
       (await agreed(
@@ -360,7 +436,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       BigInt(value) >= 2n ** 256n
     )
       return json({ error: "Invalid amount" }, 400);
-    return json(await redeemPreview(cfg, pair, BigInt(value), head));
+    return json(await redeemPreview(cfg, pair, BigInt(value), confirmed));
   }
   if (path === "/api/governance-parameters") {
     const address = cfg.contracts.governor!.address;
@@ -434,17 +510,26 @@ async function handle(request: Request, env: Env): Promise<Response> {
     )
       .bind(cfg.chainId, cfg.contracts.mana?.address ?? "")
       .all<{ address: Address }>();
+    const graph = await supplemental();
+    const addresses = [
+      ...new Set([
+        ...rows.results.map((r) => r.address),
+        ...(graph.data?.delegateCandidates ?? []),
+      ]),
+    ]
+      .sort()
+      .slice(0, 100);
     const items = [];
-    for (const row of rows.results)
+    for (const address of addresses)
       items.push({
-        address: row.address,
+        address,
         votes: String(
           await agreed(pair, (c) =>
             c.readContract({
               address: cfg.contracts.mana!.address,
               abi: tokenAbi,
               functionName: "getVotes",
-              args: [row.address],
+              args: [address],
               blockNumber: confirmed,
             }),
           ),
@@ -457,7 +542,12 @@ async function handle(request: Request, env: Env): Promise<Response> {
           ? 1
           : 0,
     );
-    return json({ items, asOfBlock: String(confirmed), limitedTo: 100 });
+    return json({
+      items,
+      asOfBlock: String(confirmed),
+      limitedTo: 100,
+      history: graph.status,
+    });
   }
   const account = path.match(/^\/api\/members\/(0x[0-9a-fA-F]{40})$/);
   if (account) {
@@ -527,13 +617,23 @@ async function handle(request: Request, env: Env): Promise<Response> {
         before.contract,
       )
       .all<EventRow>();
+    const graph = await supplemental();
+    const extra = (graph.data?.events ?? []).filter(
+      (e) =>
+        e.block_number <= Number(confirmed) &&
+        (e.block_number < before.block ||
+          (e.block_number === before.block &&
+            (e.log_index < before.log ||
+              (e.log_index === before.log && e.contract < before.contract)))),
+    );
+    const merged = mergeHistoryRows(rows.results, extra, 50);
     return json({
-      items: rows.results.map(({ args_json, ...row }) => ({
+      items: merged.map(({ args_json, ...row }) => ({
         ...row,
         args: JSON.parse(args_json),
       })),
-      nextBefore:
-        rows.results.length === 50 ? eventCursor(rows.results.at(-1)!) : null,
+      history: graph.status,
+      nextBefore: merged.length === 50 ? eventCursor(merged.at(-1)!) : null,
     });
   }
   return json({ error: "Not found" }, 404);
@@ -588,6 +688,18 @@ export default {
     }
   },
   scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(indexChain(env));
+    ctx.waitUntil(
+      runGraphComparison(env)
+        .catch(() => {
+          console.error(
+            JSON.stringify({ event: "graph_scheduled_task_failed" }),
+          );
+          return false;
+        })
+        .then((ran) => (ran ? undefined : indexChain(env)))
+        .catch(() => {
+          console.error(JSON.stringify({ event: "scheduled_task_failed" }));
+        }),
+    );
   },
 } satisfies ExportedHandler<Env>;

@@ -1,0 +1,8 @@
+{
+  "compiler": "0.8.30",
+  "standaloneStandardJson": true,
+  "creationMatches": true,
+  "runtimeTemplateMatches": true,
+  "templateHash": "0xbc5e9eb45fd7791af4b778a931b56806520f023a71954467d62d97c00cb2b2b9",
+  "autoDetectRemappings": false
+}

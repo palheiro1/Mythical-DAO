@@ -1,6 +1,14 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, statSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-import { createPublicClient, http, decodeEventLog, parseAbi } from "viem";
+import {
+  createPublicClient,
+  http,
+  decodeEventLog,
+  parseAbi,
+  encodeAbiParameters,
+  keccak256,
+  stringToHex,
+} from "viem";
 import {
   GOVERNOR,
   MANA,
@@ -10,18 +18,20 @@ import {
   graphQuery,
   pagedEvents,
   comparableEvent,
+  queryConnection,
+  pilotSnapshotQuery,
+  validatePilotSnapshot,
+  verifyPilotEntities,
 } from "../../dao-subgraph/scripts/validation.mjs";
 
 const ROOT = new URL("../../dao-subgraph/", import.meta.url);
 const expected = process.env.GRAPH_PILOT_DEPLOYMENT;
-const endpoint = process.env.GRAPH_PILOT_URL;
 const metaFields =
   "_meta { deployment hasIndexingErrors block { number hash } }";
 const statsFields =
   "chainId governor mana governorStartBlock manaStartBlock totalSupply holders proposals votes transfers";
 const eventFields =
   "id eventKey contract name blockNumber blockHash transactionHash transactionIndex logIndex from to value owner spender account fromDelegate toDelegate previousVotes newVotes voter support weight reason proposal { proposalId description proposer targets values signatures calldatas voteStart voteEnd }";
-const query = (q, v) => graphQuery(endpoint, q, v);
 const abi = [
   ...JSON.parse(readFileSync(new URL("abis/Governor.json", ROOT))),
   ...JSON.parse(readFileSync(new URL("abis/MANA.json", ROOT))),
@@ -46,6 +56,112 @@ const lower = (value) =>
   typeof value === "string" && value.startsWith("0x")
     ? value.toLowerCase()
     : value;
+const governorEvents = new Set([
+  "ProposalCreated",
+  "VoteCast",
+  "ProposalExecuted",
+  "ProposalCanceled",
+]);
+export function compareEventRows(indexed, canonical) {
+  const rows = [...indexed].sort((a, b) =>
+    a.eventKey.localeCompare(b.eventKey),
+  );
+  const logs = [...canonical].sort((a, b) =>
+    a.eventKey.localeCompare(b.eventKey),
+  );
+  if (stable(rows.map(comparableEvent)) !== stable(logs.map(comparableEvent))) {
+    const indexedByKey = new Map(
+      rows.map((row) => [row.eventKey, comparableEvent(row)]),
+    );
+    const canonicalByKey = new Map(
+      logs.map((row) => [row.eventKey, comparableEvent(row)]),
+    );
+    const differences = [
+      ...new Set([...indexedByKey.keys(), ...canonicalByKey.keys()]),
+    ]
+      .flatMap((eventKey) => {
+        const a = indexedByKey.get(eventKey),
+          b = canonicalByKey.get(eventKey);
+        const fields = !a
+          ? ["missing-indexed-event"]
+          : !b
+            ? ["extra-indexed-event"]
+            : Object.keys(a).filter((key) => stable(a[key]) !== stable(b[key]));
+        return fields.length ? [{ eventKey, fields }] : [];
+      })
+      .slice(0, 20);
+    throw Object.assign(new Error("EVENT_SAMPLE_MISMATCH"), {
+      comparison: { indexed: rows.length, canonical: logs.length, differences },
+    });
+  }
+  for (let i = 0; i < rows.length; i++) {
+    if (logs[i].proposalId)
+      requireValue(
+        rows[i].proposal?.proposalId === logs[i].proposalId,
+        "PROPOSAL_ID_MISMATCH",
+      );
+    if (logs[i].proposal)
+      requireValue(
+        stable(rows[i].proposal) === stable(logs[i].proposal),
+        "PROPOSAL_ACTIONS_MISMATCH",
+      );
+  }
+}
+export async function verifyGovernorInventory(rows, stats, anchor, readBlock) {
+  requireValue(Array.isArray(rows), "EVENTS_MISSING");
+  const keys = new Set();
+  for (const row of rows) {
+    requireValue(
+      row.contract === GOVERNOR && governorEvents.has(row.name),
+      "GOVERNOR_EVENT_IDENTITY_MISMATCH",
+    );
+    requireValue(!keys.has(row.eventKey), "DUPLICATE_EVENT");
+    keys.add(row.eventKey);
+    const block = Number(row.blockNumber);
+    requireValue(
+      Number.isSafeInteger(block) && block >= 48674443 && block <= anchor,
+      "EVENT_BLOCK_INVALID",
+    );
+  }
+  const counts = Object.fromEntries(
+    [...governorEvents].map((name) => [
+      name,
+      rows.filter((row) => row.name === name).length,
+    ]),
+  );
+  requireValue(
+    String(counts.ProposalCreated) === stats.proposals &&
+      String(counts.VoteCast) === stats.votes,
+    "GOVERNOR_COUNTS_MISMATCH",
+  );
+  const blocks = [...new Set(rows.map((row) => Number(row.blockNumber)))].sort(
+    (a, b) => a - b,
+  );
+  requireValue(blocks.length <= 100, "GOVERNOR_VERIFICATION_LIMIT_EXCEEDED");
+  for (const block of blocks) {
+    const { hash, events } = await readBlock(block);
+    const indexed = rows.filter((row) => Number(row.blockNumber) === block);
+    const canonical = events.filter(
+      (row) => row.contract === GOVERNOR && governorEvents.has(row.name),
+    );
+    requireValue(
+      [...indexed, ...canonical].every(
+        (row) => row.blockHash === hash && Number(row.blockNumber) === block,
+      ),
+      "EVENT_BLOCK_HASH_MISMATCH",
+    );
+    compareEventRows(indexed, canonical);
+  }
+  return {
+    status: "indexed-events-verified",
+    events: rows.length,
+    counts,
+    blocks,
+    completeHistoryVerified: false,
+    limitation:
+      "Verifies every indexed Governor event and all Governor events in those blocks. Does not discover events omitted from entirely absent blocks. Optional D1 reconciliation is reported separately.",
+  };
+}
 export function comparisonRpcUrls(env, useInfura = false) {
   if (useInfura)
     requireValue(
@@ -100,6 +216,9 @@ export function fromLog(log) {
   } catch {
     return null;
   }
+  return fromDecoded(log, decoded);
+}
+function fromDecoded(log, decoded) {
   const row = {
     eventKey: `137:${log.address.toLowerCase()}:${log.transactionHash.toLowerCase()}:${log.logIndex}`,
     contract: log.address.toLowerCase(),
@@ -155,9 +274,73 @@ export function fromLog(log) {
     );
   return row;
 }
-async function run() {
+export function reconcileD1Governor(indexed, d1Rows, anchor) {
   requireValue(
-    endpoint && expected,
+    Array.isArray(d1Rows) && d1Rows.length <= 2500,
+    "D1_EXPORT_LIMIT_EXCEEDED",
+  );
+  const byKey = new Map(indexed.map((row) => [row.eventKey, row]));
+  const keys = new Set();
+  let matched = 0,
+    aheadOfAnchor = 0;
+  for (const row of d1Rows) {
+    requireValue(
+      row.chain_id === 137 &&
+        row.contract === GOVERNOR &&
+        governorEvents.has(row.event_name),
+      "D1_SOURCE_MISMATCH",
+    );
+    requireValue(
+      Number.isSafeInteger(row.block_number) && row.block_number >= 48674443,
+      "D1_BLOCK_INVALID",
+    );
+    const canonical = fromDecoded(
+      {
+        address: row.contract,
+        blockNumber: row.block_number,
+        blockHash: row.block_hash,
+        transactionHash: row.tx_hash,
+        logIndex: row.log_index,
+        transactionIndex: 0,
+      },
+      { eventName: row.event_name, args: JSON.parse(row.args_json) },
+    );
+    requireValue(!keys.has(canonical.eventKey), "D1_DUPLICATE_EVENT");
+    keys.add(canonical.eventKey);
+    if (row.block_number > anchor) {
+      aheadOfAnchor++;
+      continue;
+    }
+    const graph = byKey.get(canonical.eventKey);
+    requireValue(graph, "D1_EVENT_MISSING_FROM_GRAPH");
+    // D1 stores transaction hash/log index but not transaction index. That field
+    // is verified against RPC in verifyGovernorInventory, not in this export.
+    canonical.transactionIndex = graph.transactionIndex;
+    compareEventRows([graph], [canonical]);
+    matched++;
+  }
+  return {
+    matched,
+    aheadOfAnchor,
+    indexedEventsNotInD1: indexed.filter((row) => !keys.has(row.eventKey))
+      .length,
+    completeHistoryVerified: false,
+    transactionIndexStoredInD1: false,
+  };
+}
+async function run() {
+  const connection = queryConnection(
+    process.env,
+    process.argv.includes("--gateway"),
+  );
+  const query = (q, v) => graphQuery(connection.url, q, v, fetch, connection);
+  requireValue(
+    !process.env.GRAPH_D1_EVENTS_PATH ||
+      process.argv.includes("--governor-events"),
+    "D1_REQUIRES_GOVERNOR_EVENTS",
+  );
+  requireValue(
+    connection.url && expected,
     "Set GRAPH_PILOT_URL and GRAPH_PILOT_DEPLOYMENT after Studio deployment.",
   );
   const urls = comparisonRpcUrls(
@@ -309,25 +492,165 @@ async function run() {
         ),
       { hash, address, from: String(from), to: String(to) },
     );
-    rows.sort((a, b) => a.eventKey.localeCompare(b.eventKey));
-    requireValue(
-      stable(rows.map(comparableEvent)) ===
-        stable(onChain.map(comparableEvent)),
-      "EVENT_SAMPLE_MISMATCH",
-    );
-    for (let i = 0; i < rows.length; i++) {
-      if (onChain[i].proposalId)
-        requireValue(
-          rows[i].proposal?.proposalId === onChain[i].proposalId,
-          "PROPOSAL_ID_MISMATCH",
-        );
-      if (onChain[i].proposal)
-        requireValue(
-          stable(rows[i].proposal) === stable(onChain[i].proposal),
-          "PROPOSAL_ACTIONS_MISMATCH",
-        );
-    }
+    compareEventRows(rows, onChain);
     checked.push({ address, from, to, events: rows.length });
+  }
+  let governorInventory;
+  if (process.argv.includes("--governor-events")) {
+    const rows = await pagedEvents(
+      (vars) =>
+        query(
+          `query($hash:Bytes!,$address:Bytes!,$after:Bytes!){eventRecords(first:500,orderBy:id,orderDirection:asc,block:{hash:$hash},where:{contract:$address,id_gt:$after}){${eventFields}}}`,
+          vars,
+        ),
+      { hash, address: GOVERNOR },
+    );
+    governorInventory = await verifyGovernorInventory(
+      rows,
+      anchored.pilotStats,
+      anchor,
+      async (block) => {
+        const events = await agree(
+          pair,
+          async (c) =>
+            (
+              await c.getLogs({
+                address: GOVERNOR,
+                fromBlock: BigInt(block),
+                toBlock: BigInt(block),
+              })
+            )
+              .map(fromLog)
+              .filter(Boolean)
+              .sort((a, b) => a.eventKey.localeCompare(b.eventKey)),
+          "RPC_GOVERNOR_EVENTS",
+        );
+        const blockHash = await agree(
+          pair,
+          async (c) =>
+            (
+              await c.getBlock({ blockNumber: BigInt(block) })
+            ).hash.toLowerCase(),
+          "RPC_GOVERNOR_BLOCK",
+        );
+        return { hash: blockHash, events };
+      },
+    );
+    if (process.env.GRAPH_D1_EVENTS_PATH) {
+      requireValue(
+        statSync(process.env.GRAPH_D1_EVENTS_PATH).size <= 4_000_000,
+        "D1_EXPORT_TOO_LARGE",
+      );
+      const exported = JSON.parse(
+        readFileSync(process.env.GRAPH_D1_EVENTS_PATH, "utf8"),
+      );
+      requireValue(
+        Array.isArray(exported) &&
+          exported.length === 1 &&
+          exported[0].success === true,
+        "D1_EXPORT_FAILED",
+      );
+      const d1Rows = exported[0].results;
+      governorInventory.d1 = reconcileD1Governor(rows, d1Rows, anchor);
+    }
+  }
+  let entityInventory;
+  if (process.argv.includes("--entities")) {
+    const snapshot = validatePilotSnapshot(
+      await query(pilotSnapshotQuery, { hash }),
+      anchor,
+      hash,
+    );
+    entityInventory = await verifyPilotEntities(
+      snapshot,
+      (id) =>
+        agree(
+          pair,
+          async (c) => {
+            const values = [];
+            for (const functionName of ["balanceOf", "getVotes", "delegates"])
+              values.push(
+                String(
+                  await c.readContract({
+                    address: MANA,
+                    abi: manaAbi,
+                    functionName,
+                    args: [id],
+                    blockNumber: BigInt(anchor),
+                  }),
+                ).toLowerCase(),
+              );
+            return {
+              balance: values[0],
+              votingPower: values[1],
+              delegate: values[2],
+            };
+          },
+          "RPC_ALL_ACCOUNTS",
+        ),
+      (p) =>
+        agree(
+          pair,
+          async (c) => {
+            const params = {
+              address: GOVERNOR,
+              abi: parseAbi([
+                "function state(uint256) view returns(uint8)",
+                "function proposalSnapshot(uint256) view returns(uint256)",
+                "function proposalDeadline(uint256) view returns(uint256)",
+                "function proposalVotes(uint256) view returns(uint256,uint256,uint256)",
+              ]),
+              args: [BigInt(p.proposalId)],
+              blockNumber: BigInt(anchor),
+            };
+            const state = await c.readContract({
+              ...params,
+              functionName: "state",
+            });
+            const voteStart = await c.readContract({
+              ...params,
+              functionName: "proposalSnapshot",
+            });
+            const voteEnd = await c.readContract({
+              ...params,
+              functionName: "proposalDeadline",
+            });
+            const votes = await c.readContract({
+              ...params,
+              functionName: "proposalVotes",
+            });
+            const digest = keccak256(
+              encodeAbiParameters(
+                [
+                  { type: "address[]" },
+                  { type: "uint256[]" },
+                  { type: "bytes[]" },
+                  { type: "bytes32" },
+                ],
+                [
+                  p.targets,
+                  p.values.map(BigInt),
+                  p.calldatas,
+                  keccak256(stringToHex(p.description)),
+                ],
+              ),
+            );
+            return {
+              proposalId: String(BigInt(digest)),
+              voteStart: String(voteStart),
+              voteEnd: String(voteEnd),
+              votes: votes.map(String),
+              executed: state === 7,
+              canceled: state === 2,
+            };
+          },
+          "RPC_ALL_PROPOSALS",
+        ),
+    );
+    entityInventory.holders = snapshot.pilotStats.holders;
+    entityInventory.supply = snapshot.pilotStats.totalSupply;
+    entityInventory.limitation =
+      "Every returned account and proposal checked; balance conservation and holder count checked. Does not prove absence of omitted event blocks.";
   }
   requireValue(
     (await agree(
@@ -346,6 +669,7 @@ async function run() {
   return {
     checkedAt: new Date().toISOString(),
     deployment: expected,
+    endpointKind: connection.kind,
     status: pending.length ? "partial" : "samples-passed",
     anchor,
     hash,
@@ -355,6 +679,8 @@ async function run() {
     accountChecks,
     checked,
     pending,
+    governorInventory,
+    entityInventory,
     limitation:
       "Sample verification only; not a full-history or reorg acceptance test. The portal remains on D1.",
   };
@@ -374,6 +700,8 @@ export async function main() {
         ? error.message
         : "COMPARISON_FAILED_CHECK_CONFIGURATION_OR_PROVIDERS";
     console.error(message);
+    if (message === "EVENT_SAMPLE_MISMATCH")
+      console.error(JSON.stringify(error.comparison));
     process.exitCode = 1;
   }
 }

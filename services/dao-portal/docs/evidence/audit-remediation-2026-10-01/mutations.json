@@ -1,0 +1,17 @@
+{
+  "baseline": {
+    "exitCode": 0,
+    "expectedFailure": false,
+    "matchedExpectation": true
+  },
+  "removed-guard": {
+    "exitCode": 1,
+    "expectedFailure": true,
+    "matchedExpectation": true
+  },
+  "burn-after-payouts": {
+    "exitCode": 1,
+    "expectedFailure": true,
+    "matchedExpectation": true
+  }
+}

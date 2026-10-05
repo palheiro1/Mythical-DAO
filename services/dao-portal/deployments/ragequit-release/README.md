@@ -1,33 +1,29 @@
-# Módulo pronto para revisão — 29 de setembro de 2026
+# Ragequit — pacote corrigido após as revisões, 1 de outubro de 2026
 
-Este pacote é material de revisão e simulação. Não existe implantação pública registada e nenhuma transação foi assinada ou enviada.
+Este pacote substitui a versão de 5050 bytes, preservada em `../historical/ragequit-pre-audit-2026-10-01/`. Não assinar transações desse pacote histórico. A implantação pública verificada está em `0xef06E163F65807872e62b4AB186EffcAFca7C8C9`, bloco **94773613**; ver [recibo](deployment-receipt.json). Não voltar a implantar este pacote.
 
-[Revisão técnica de 29 de setembro](../../docs/RAGEQUIT_REVIEW.md) concluída: verificador de imutáveis reforçado, endereços aprovados fixados nos scripts e 15 testes do módulo aprovados, com 2048 casos de fuzz. O init code permanece igual. A [nova simulação no bloco 94662614](../../docs/evidence/ragequit-review-creation-2026-09-29.json) verificou também todas as cópias imutáveis. A revisão independente continua pendente.
+Em 1 de outubro, o utilizador comunicou a aprovação do auditor e autorizou a implantação e a submissão da proposta. A [aceitação registada](review-acceptance.json) associa essa declaração ao init code e runtime abaixo; não atribui identidade ao auditor nem inventa um relatório adicional. A implantação foi assinada pelo utilizador e confirmada; a proposta de autorização foi submetida e confirmada, aguardando o início da votação. [Estado da ativação](../../docs/RAGEQUIT_ACTIVATION_2026_10_01.md).
 
-- `review-manifest.json`: compilador, configuração, cinco endereços imutáveis, argumentos do construtor e hashes dos 12 ficheiros Solidity compilados. O gerador verifica os hashes dos ficheiros atuais contra os metadados do compilador.
-- `deployment-unsigned.json`: transação de criação para a Polygon, com valor nativo zero. A carteira de implantação terá de definir remetente, nonce e taxas atuais. A ausência de `to` é intencional: cria apenas o módulo.
-- `deployment-simulation.json`: dois RPCs executaram o mesmo código de criação em `eth_call`, no mesmo bloco, e devolveram o mesmo runtime. É uma simulação, sem publicação.
-- `abi.json`: ABI exata do artefacto compilado.
+A correção rejeita destinatários iguais a MANA, GEM, WETH ou USDC, além de zero/tesouraria/módulo. A cesta permanece GEM/WETH/USDC nativo. [Correções e resultados](../../docs/AUDIT_REMEDIATION_2026_10_01.md); [avaliação de USDC.e e USDT0](../../docs/RAGEQUIT_CANDIDATE_ASSETS.md).
 
-Init code: 5050 bytes; hash `0x710a2b7369fd614a83b89366d3cf7bb57150fec3a54161795fe7fa744f99b24c`.
+- `review-manifest.json`: fontes, compilador/configuração e hashes exatos desta versão.
+- `compiler-input.json`: 12 fontes completas em Standard JSON, recompiláveis sem instalar dependências.
+- `deployment-unsigned.json`: criação de apenas este contrato, Polygon, valor zero, sem assinatura.
+- `deployment-simulation.json`: simulação concordante em dois RPCs, sem envio.
+- `deployment-wallet-unsigned.json`: remetente escolhido, nonce e taxas estimadas. Repetir o preflight imediatamente antes de assinar; a validade indicada não é uma expiração on-chain.
+- `abi.json`: ABI exata do contrato.
 
-O [ensaio atualizado em fork](../../docs/evidence/existing-governor-fork-2026-09-29.txt) passou no bloco 94644170, usando o Governor, MANA, GEM, WETH e USDC nativo reais. Incluiu o ciclo completo de proposta/voto/execução para autorizar e revogar, saída com USDC inicialmente zero, receita posterior de USDC e reversão integral quando o USDC foi pausado no fork. Os endereços e transações de teste só existem nesse fork.
-
-## Revisão antes de implantação
-
-Conferir a fórmula proporcional com a oferta antes da queima, a inclusão dos MANA da tesouraria, a queima apenas do chamador, a ordem GEM/WETH/USDC nativo, mínimos/prazo, atomicidade, proteção de reentrância e diferenças efetivas de saldos. Confirmar a ausência de proprietário operacional, upgrade, pausa e execução arbitrária. Rever também as capacidades administrativas e de bloqueio dos tokens externos.
-
-As autorizações contínuas permitem pagamentos diretos da tesouraria; a DAO mantém o poder de gastar ativos e de revogar autorizações pelo seu ciclo normal de propostas. Não existe pausa instantânea nem período reservado de saída. Os testes e esta revisão técnica não constituem uma auditoria independente; essa revisão continua pendente.
+Init code: **5318 bytes**, `0x4180449b7b77b9cad40d742b653aaca16d71f39810a5dd62904d4d2d8abe7324`.
+Runtime instanciado: `0x3a4c043fc5bac256e18e0c1f1fe2931cdd506f6c38ea22b00a4c3a41783dd73c`. Frontend e Worker incluem este mesmo hash em `shared/generated/ragequit-trust.json`; o endereço da implantação verificada já está fixado no frontend e no Worker publicados.
 
 ## Ativação
 
-1. Registar a revisão dos hashes exatos deste pacote e escolher a carteira de implantação.
-2. Simular novamente `DeployRagequit.s.sol` com esse remetente e conferir o custo apresentado pela carteira.
-3. Assinar a implantação de apenas este contrato; guardar endereço, recibo, bloco e verificar o código-fonte e os imutáveis.
-4. Inserir o endereço/bloco reais em `deployments/polygon.json` e gerar as propostas de autorização e revogação com `scripts/ragequit-proposal.mjs`.
-5. Submeter, votar e executar a autorização pela DAO; verificar as três allowances efetivas.
-6. Validar uma saída real pequena e consentida antes de anunciar disponibilidade geral.
+1. A aceitação da revisão foi comunicada pelo utilizador e registada como `approved-as-reported-by-user`. Conferir a correspondência do pacote com os hashes aceites; qualquer alteração do contrato exige novo reteste.
+2. Implantação concluída; os ficheiros sem assinatura e de simulação foram preservados como evidência da preparação, não devem ser reenviados. O preflight agora recusa duplicar o módulo.
+3. Recibo, endereço/bloco e fontes já verificados (Sourcify: criação e runtime exatos). Para repetir a leitura do módulo e autorizações, executar `node --env-file=.dev.vars scripts/verify-ragequit.mjs deployments/polygon.json deployments/ragequit-verification.json inspect`.
+4. Executar `node scripts/pin-ragequit-deployment.mjs deployments/polygon.json deployments/ragequit-verification.json`. Rever o endereço agora fixado no código; reconstruir e publicar tanto frontend como Worker. A configuração HTTP, sozinha, não pode habilitar um endereço diferente.
+5. As três chamadas de autorização foram geradas e submetidas pelo Governor atual; ver [recibo da proposta](../ragequit-authorization-receipt.json). Aguardar o início da votação e a aprovação/execução pela DAO. Verificar o estado com o modo `authorized`; `VERIFICATION_BLOCK` pode fixar o bloco confirmado da autorização inicial.
+6. Para utilização posterior, usar `operational AMOUNT_IN_MANA` como argumentos finais do verificador: por exemplo `node --env-file=.dev.vars scripts/verify-ragequit.mjs deployments/polygon.json deployments/ragequit-verification.json operational 1`. WETH e USDC consomem a autorização máxima. O modo operacional verifica suficiência para a saída escolhida, sem exigir novamente `uint256.max` nem tolerar pagamentos parciais. `revoked` exige as três autorizações zero.
+7. Validar uma pequena saída real consentida antes de anunciar disponibilidade geral.
 
-A [proposta parametrizada](../ragequit-authorization.template.json) está pronta para revisão. As calldata finais dependem do endereço efetivamente implantado; não usar o endereço do fork.
-
-Para regenerar: `npm run prepare:ragequit-release`. A simulação deve ser refeita depois de qualquer alteração de fontes, parâmetros ou tokens.
+Nenhuma alteração de Governor, tesouraria, MANA, delegações, regras, receitas ou Telegram. O módulo não dispõe de pausa administrativa; a DAO pode revogar autorizações pelo ciclo normal de propostas.

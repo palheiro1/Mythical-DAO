@@ -1,0 +1,31 @@
+No files changed, compilation skipped
+
+Ran 15 tests for contracts/test/RagequitModule.t.sol:RagequitModuleTest
+[PASS] testAllZeroRejected() (gas: 108246)
+[PASS] testBlockedOrFeeTokenRollsBackEverything() (gas: 434102)
+[PASS] testDelegatedVoterCanBurnOnlyOwnBalanceEvenWithAllowance() (gas: 302888)
+[PASS] testFaultyBurnSupplyAndBalanceChangesRollBackPaymentsAndAllowance() (gas: 2002432)
+[PASS] testFuzzConservationAndRounding(uint96) (runs: 2048, μ: 189777, ~: 182471)
+[PASS] testInsufficientAndRevokedAllowanceRollBackAllAssetsAndBurn() (gas: 365829)
+[PASS] testInvalidAmountAndConstructor() (gas: 98556)
+[PASS] testLaterAssetHookCannotAlterAnEarlierPayout() (gas: 1780745)
+[PASS] testMinimumsAreEnforcedForEachAssetBeforeAnyBurn() (gas: 136931)
+[PASS] testNoDelegatedBurnAndReentrancyBlocked() (gas: 340060)
+[PASS] testProportionIncludesTreasuryManaAndExactApproval() (gas: 209279)
+[PASS] testProportionalMathHandlesIntermediateUint256Overflow() (gas: 2481208)
+[PASS] testRecipientExpiryAndMinimums() (gas: 190665)
+[PASS] testSuccessiveExitsAndNewRevenue() (gas: 378338)
+[PASS] testZeroQuotaAllowedEvenWithoutAllowance() (gas: 145082)
+Suite result: ok. 15 passed; 0 failed; 0 skipped; finished in 300.09ms (305.69ms CPU time)
+
+Ran 7 tests for contracts/test/RagequitAudit.t.sol:RagequitAuditTest
+[PASS] testAllowanceDriftsBelowMaxWithDecrementingToken() (gas: 1702719)
+[PASS] testAssetAndManaRecipientsAreRejectedWithoutBurn() (gas: 102696)
+[PASS] testBurnCompletesBeforeTheFirstAssetTransfer() (gas: 1975650)
+[PASS] testFuzzSequenceConservationAndNoDilution(uint96,uint96,uint96,uint96,uint96) (runs: 2048, μ: 385976, ~: 394760)
+[PASS] testModuleHoldsNothingAndDonationsToItAreNotPaidOut() (gas: 216062)
+[PASS] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2065178)
+[PASS] testReentrancyIsBlockedByTheGuardNotByAccident() (gas: 2059547)
+Suite result: ok. 7 passed; 0 failed; 0 skipped; finished in 1.09s (1.09s CPU time)
+
+Ran 2 test suites in 1.09s (1.39s CPU time): 22 tests passed, 0 failed, 0 skipped (22 total tests)

@@ -1,0 +1,22 @@
+Compiling 2 files with Solc 0.8.30
+Solc 0.8.30 finished in 527.29ms
+Compiler run successful!
+
+Ran 7 tests for contracts/test/RagequitAudit.t.sol:RagequitAuditTest
+[PASS] testAllowanceDriftsBelowMaxWithDecrementingToken() (gas: 1669641)
+[PASS] testAssetAndManaRecipientsAreRejectedWithoutBurn() (gas: 82388)
+[PASS] testBurnCompletesBeforeTheFirstAssetTransfer() (gas: 1942572)
+[PASS] testFuzzSequenceConservationAndNoDilution(uint96,uint96,uint96,uint96,uint96) (runs: 2048, μ: 382034, ~: 391180)
+[PASS] testModuleHoldsNothingAndDonationsToItAreNotPaidOut() (gas: 213667)
+[FAIL: REENTRANCY SUCCEEDED] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2069884)
+[FAIL: REENTRANCY SUCCEEDED] testReentrancyIsBlockedByTheGuardNotByAccident() (gas: 2063369)
+Suite result: FAILED. 5 passed; 2 failed; 0 skipped; finished in 1.08s (1.08s CPU time)
+
+Ran 1 test suite in 1.08s (1.08s CPU time): 5 tests passed, 2 failed, 0 skipped (7 total tests)
+
+Failing tests:
+Encountered 2 failing tests in contracts/test/RagequitAudit.t.sol:RagequitAuditTest
+[FAIL: REENTRANCY SUCCEEDED] testReadOnlyReentrancyPreviewIsSkewedMidTransaction() (gas: 2069884)
+[FAIL: REENTRANCY SUCCEEDED] testReentrancyIsBlockedByTheGuardNotByAccident() (gas: 2063369)
+
+Encountered a total of 2 failing tests, 5 tests succeeded

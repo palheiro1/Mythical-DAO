@@ -1,8 +1,8 @@
 # Mythical DAO — The Graph pilot
 
-Pilot for the existing Polygon Governor and MANA. **Published to [The Graph Network](https://thegraph.com/explorer/subgraphs/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb?view=Query&chain=arbitrum-one) as `v0.1.0` on 2026-09-30.** Publication is registered on Arbitrum One; indexed contracts remain on Polygon. It is not an active portal backend. Cloudflare D1, its history/cursors and the Telegram service continue operating unchanged. MANA and the first Governor sample passed comparison with two independent RPCs; full history, the later Governor sample and Gateway availability remain pending. See the [deployment report](DEPLOYMENT.md) and [release record](pilot-release.json).
+Pilot for the existing Polygon Governor and MANA. **Published to [The Graph Network](https://thegraph.com/explorer/subgraphs/56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb?view=Query&chain=arbitrum-one) as `v0.1.0` on 2026-09-30.** Publication is registered on Arbitrum One; indexed contracts remain on Polygon. The preview can use it as verified supplemental history under the accepted private server-key exception; see [current activation](../dao-portal/docs/GRAPH_ACTIVATION.md). Cloudflare D1, its history/cursors and the Telegram service continue operating unchanged. All three planned samples and ten indexed Governor events passed comparison with two independent RPCs through the network Gateway at confirmed block 94,704,475 after indexing caught up; both existing D1 proposals matched. The dedicated query key is stored locally and in the staging Worker, but its Studio subgraph restriction is still pending because the selector returns no results. All 73 indexed MANA accounts and both proposals additionally passed complete entity-state comparisons at block 94,706,303. A [verified supplemental-history integration](../dao-portal/docs/GRAPH_HISTORY.md) is implemented and published to the preview. The user accepted server-only operation while provider scope is unavailable. Full-history omission acceptance remains pending. See the [deployment report](DEPLOYMENT.md) and [release record](pilot-release.json).
 
-**Service deadline:** The Graph announced that Polygon staging queries end on **2026-10-08**. Network publication is complete; a working Gateway endpoint and the remaining validation are still required before any portal cutover. The local comparator currently uses the Studio development endpoint. No paid plan was activated. [Official announcement, 2026-09-24](https://thegraph.com/blog/subgraph-studio-traffic-to-network/).
+**Service deadline:** The Graph announced that Polygon staging queries end on **2026-10-08**. Network publication and real Gateway queries are verified; the supplemental read path requires RPC validation, preserves incomplete-history labels and leaves the D1 scan independent. The local comparator uses Studio by default and supports an explicit authenticated Gateway check with `--gateway`. No paid plan was activated. [Official announcement, 2026-09-24](https://thegraph.com/blog/subgraph-studio-traffic-to-network/).
 
 ## Scope
 
@@ -15,7 +15,7 @@ There are no global token queries, call handlers, block handlers, treasury baske
 
 MANA supply, balances, holder count and voting power derive from events. These are historical observations, **not transaction authorization**. Proposal execution/cancellation flags come from events; current voting state, quorum and executable status must still be read from the Governor at the chosen block. An executed proposal is not assumed to describe current treasury balances.
 
-The manifest requests historical entity retention (`prune: never`), but Studio rejected an older time-travel query during the live trial. Do not assume the service retains arbitrary past entity snapshots. The comparator pins reads to a recent indexed hash agreed by two RPCs and fails if that anchor becomes unavailable. Historical immutable event records remain queryable at a retained anchor. Graph Node handles rollback on canonical reorgs; a controlled reorg acceptance test remains pending. Unit tests do not prove that service behavior.
+The manifest requests historical entity retention (`prune: never`), but Studio rejected an older time-travel query during the live trial. Do not assume the service retains arbitrary past entity snapshots. The comparator pins reads to a recent indexed hash agreed by two RPCs and fails if that anchor becomes unavailable. Historical immutable event records remain queryable at a retained anchor. The controlled local Graph Node rollback acceptance passed on 1 October for MANA and Governor events. Orphan-hash queries still require the portal’s canonical RPC guard; this does not prove long-term Gateway retention.
 
 ## Reproduce
 
@@ -64,9 +64,33 @@ Exit `0` means these samples passed, **not full-history acceptance**. Exit `2` m
 
 Pagination is bounded and fails rather than silently truncating; GraphQL errors also fail. Do not continuously poll this full comparison. Studio development endpoints currently have a 3,000-query/day limit; monitor progress in Studio and compare at milestones. The code does not assume a published-network free query allowance applies to Studio.
 
+### Gateway and Governor reconciliation
+
+Store the dedicated query credential as `GRAPH_API_KEY` in the ignored `.env`, separately from `GRAPH_DEPLOY_KEY`. Restrict the key to subgraph `56FJGyLgf4QM8C7DNVKjzv4xUMPfWuLSzLsGeEheiZUb`. Keep the account on the Free Plan; do not upgrade billing to complete the pilot. Studio rejected a per-key spending cap of `0 USD` during setup, so that cap must not be reported as configured. The account was subsequently confirmed on the Free Plan with 100,000 monthly queries, and the key was created without upgrading billing or setting a positive spending limit. Restriction is not yet configured: Studio's selector returned no candidates by name or exact ID. The key is private and restricted by the user to `*.mythicalbeings.io`. Authenticated CLI/Worker queries send the fixed `https://dao-preview.mythicalbeings.io` Origin; a request without Origin was rejected and one with it passed. Domain restriction does not replace the pending subgraph restriction. The CLI and Worker pin their destination to this subgraph. The user accepted the explicit server-only exception on 1 October; provider scope remains false and quota/fallback/RPC guards remain active.
+
+```sh
+node --env-file=.env --env-file=../dao-portal/.dev.vars scripts/compare.mjs --infura --gateway --governor-events
+```
+
+`--gateway` uses the fixed network endpoint with an `Authorization: Bearer` header. The credential is never put in the URL; redirects and other destinations are rejected. Responses are streamed with a 4 MB limit and a 30-second timeout. Transport, malformed JSON, HTTP and GraphQL failures return sanitized error codes. There is no automatic fallback to Studio and no change to the portal's backend.
+
+`--governor-events` verifies every Governor event returned at the agreed anchor against both RPCs, including all four supported Governor event types in each discovered block, canonical block hashes and proposal bytes. It cross-checks event counts with pilot statistics. Verification is bounded to 2,500 events and 100 distinct event blocks and fails if a bound is reached. This does not discover omitted events in completely absent blocks and therefore **does not establish complete history**.
+
+To compare existing D1 data, first export only the four Governor event types with a read-only Wrangler query from `services/dao-portal`:
+
+```sh
+./node_modules/.bin/wrangler d1 execute DAO_DB --env staging --remote --json --command "SELECT chain_id,contract,block_number,block_hash,tx_hash,log_index,event_name,args_json FROM events WHERE chain_id=137 AND contract='0x7b9e327748462f1038c9d081c98d189b22c60a27' AND event_name IN ('ProposalCreated','VoteCast','ProposalExecuted','ProposalCanceled') ORDER BY block_number,log_index LIMIT 2501" > /tmp/mythical-d1-governor.json
+```
+
+Then set `GRAPH_D1_EVENTS_PATH=/tmp/mythical-d1-governor.json` on the comparison command. Existing D1 events at or below the anchor must all match; events ahead of the anchor are reported separately. Graph events not yet present in D1 are counted without importing them or advancing cursors. D1 does not store transaction index, so that field is checked against the two RPCs instead. The export limit includes one extra row to detect truncation.
+
+The generated nullable-string setter stores an empty `VoteCast.reason` as `null`. The comparator treats only this field on this event as equivalent to the contract's empty string; non-empty text must still match exactly. Event mismatches report bounded event keys and field names, without credentials or full response bodies.
+
 Studio's displayed percentage uses the absolute Polygon block height. Pilot history coverage is `(indexedBlock - 45785116 + 1) / (targetBlock - 45785116 + 1)`, clamped to 0–100%; it measures blocks covered, not event completeness or remaining time. Indexing runs remotely and continues with the local computer switched off.
 
-## Acceptance before any portal experiment
+Use `--entities` to additionally check every returned MANA account and proposal against the two RPCs, including balance conservation, holder count, proposal hashes/intervals/vote totals/state. Collection caps fail explicitly. This does not prove absence of omitted event blocks.
+
+## Acceptance before serving Graph data in the portal
 
 - Complete Governor/MANA history with no indexing errors, and matching canonical block hash on two RPCs.
 - Match supply and account samples, proposal IDs/descriptions/actions, vote totals and event samples; then reconcile **all** Governor proposal/vote events and the existing D1 rows before using history counters.
@@ -75,3 +99,13 @@ Studio's displayed percentage uses the absolute Polygon block height. Pilot hist
 - Any fallback/cutover must be an explicit later change with its own tests. No automatic source switch or deletion of D1 cursors is included.
 
 References: [manifest](https://thegraph.com/docs/en/subgraphs/developing/creating/subgraph-manifest/), [Studio deployment and development limits](https://thegraph.com/docs/en/subgraphs/developing/deploying-publishing/using-subgraph-studio/), [GraphQL block and metadata queries](https://thegraph.com/docs/en/subgraphs/querying/graphql-api/), [Polygon support](https://thegraph.com/docs/en/supported-networks/matic/).
+
+## Isolated Graph Node reorg rehearsal
+
+The manually dispatched `graph-reorg.yml` workflow runs `node scripts/rehearse-reorg.mjs` with Graph Node v0.45.0, Anvil, IPFS and an ephemeral PostgreSQL database. It checks rollback of MANA and Governor events and derived entities, canonical historical reads, and RPC rejection of an orphaned anchor. Graph Node’s response to an orphan-hash query is recorded separately; the application does not rely on Graph rejecting that query. It never uses Polygon/Studio credentials, modifies the production manifest or contacts a funded wallet. Test-only emit bytecode is installed at the MANA and Governor addresses on the empty local chain. Artifacts retain the result and bounded Graph Node logs for seven days.
+
+Local execution requires `GRAPH_REORG_LOCAL=1`, existing Node/Graph CLI/Anvil/Docker dependencies, free test ports and the disk preflight (4 GB peak addition, 40 GB reserve on Docker's filesystem). Existing test containers cause refusal. Cleanup targets only containers/volumes created under the dedicated `mythical-graph-reorg` compose project; images and unrelated resources are preserved. This short rehearsal does not establish long-term Gateway retention or full Polygon history completeness.
+
+The initial hosted-runner attempt was blocked **before Docker downloads**: only 13.31 GB were available, below the required 40 GB reserve plus 4 GB peak allocation. See `evidence/reorg-preflight-2026-09-30.json`. The normal CI continues to test the mappings and build; the separate hosted acceptance workflow requires a suitable runner. The subsequent local service-level acceptance passed as described below.
+
+1 October update: the local rehearsal passed after space became available, including Governor rollback. Orphan-hash queries require the portal’s RPC guard; see [acceptance evidence](evidence/reorg-acceptance-2026-10-01.json) and [serving limitations](../dao-portal/docs/GRAPH_HISTORY.md).

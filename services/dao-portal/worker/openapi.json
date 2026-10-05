@@ -50,7 +50,8 @@
           "503": {
             "description": "RPC, index or configuration unavailable"
           }
-        }
+        },
+        "description": " Optional RPC-verified supplemental Governor history includes source/anchor/availability metadata. Historical completeness remains false until independently established. Wallet authorization is independent."
       }
     },
     "/api/proposals": {
@@ -80,7 +81,8 @@
           "503": {
             "description": "RPC, index or configuration unavailable"
           }
-        }
+        },
+        "description": " Optional RPC-verified supplemental Governor history includes source/anchor/availability metadata. Historical completeness remains false until independently established. Wallet authorization is independent."
       }
     },
     "/api/ballots": {
@@ -171,7 +173,8 @@
           "503": {
             "description": "RPC, index or configuration unavailable"
           }
-        }
+        },
+        "description": " Optional RPC-verified supplemental Governor history includes source/anchor/availability metadata. Historical completeness remains false until independently established. Wallet authorization is independent."
       }
     },
     "/api/members/{address}": {
@@ -252,7 +255,8 @@
           "503": {
             "description": "RPC, index or configuration unavailable"
           }
-        }
+        },
+        "description": " Optional RPC-verified supplemental Governor history includes source/anchor/availability metadata. Historical completeness remains false until independently established. Wallet authorization is independent."
       }
     },
     "/api/history/snapshot": {
@@ -478,7 +482,8 @@
           "200": {
             "description": "activeVotes, queuedExecutions, complete and asOfBlock"
           }
-        }
+        },
+        "description": " Optional RPC-verified supplemental Governor history includes source/anchor/availability metadata. Historical completeness remains false until independently established. Wallet authorization is independent."
       }
     },
     "/api/governance-parameters": {
@@ -520,6 +525,16 @@
           },
           "503": {
             "description": "Missing, unconfirmed, divergent or noncanonical receipt"
+          }
+        }
+      }
+    },
+    "/api/graph-status": {
+      "get": {
+        "summary": "Read Graph comparison, supplemental-history mode and key policy diagnostics; never triggers a Graph query",
+        "responses": {
+          "200": {
+            "description": "Disabled, pending, stale or latest sanitized comparison. keyPolicy distinguishes provider subgraph restriction from an explicit server-only exception; D1 and RPC remain independent."
           }
         }
       }

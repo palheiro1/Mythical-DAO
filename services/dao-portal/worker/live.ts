@@ -10,6 +10,7 @@ import { governorAbi, tokenAbi, ragequitAbi } from "../shared/abis";
 import type { PortalConfig } from "../shared/domain";
 import { agreed, RpcFault } from "./rpc";
 import { redeemPreview } from "./ragequit";
+import { validRagequitRecipient } from "../shared/ragequit-security";
 
 type Pair = [PublicClient, PublicClient];
 export async function verifyLive(cfg: PortalConfig, pair: Pair, block: bigint) {
@@ -40,6 +41,7 @@ export async function verifyOperation(
   pair: Pair,
   block: bigint,
   tx: { account: Address; to: Address; data: Hex; value: bigint },
+  attestationBlock = block,
 ) {
   const to = tx.to.toLowerCase();
   const governor = cfg.contracts.governor!.address,
@@ -71,7 +73,13 @@ export async function verifyOperation(
       call.args[1] > 0n &&
       call.args[1] <= (await read("balanceOf"))
     ) {
-      const quote = await redeemPreview(cfg, pair, call.args[1], block);
+      const quote = await redeemPreview(
+        cfg,
+        pair,
+        call.args[1],
+        block,
+        attestationBlock,
+      );
       if (!quote.available) throw new RpcFault("RAGEQUIT_UNAVAILABLE");
       return {
         operation: "approve",
@@ -85,7 +93,15 @@ export async function verifyOperation(
     const call = decodeFunctionData({ abi: ragequitAbi, data: tx.data });
     if (call.functionName !== "redeem" || tx.value !== 0n)
       throw new RpcFault("UNSUPPORTED_MEMBER_OPERATION");
-    const quote = await redeemPreview(cfg, pair, call.args[0], block);
+    if (!validRagequitRecipient(call.args[1], cfg))
+      throw new RpcFault("INVALID_RAGEQUIT_RECIPIENT");
+    const quote = await redeemPreview(
+      cfg,
+      pair,
+      call.args[0],
+      block,
+      attestationBlock,
+    );
     if (!quote.available) throw new RpcFault("RAGEQUIT_UNAVAILABLE");
     return { operation: "redeem", module, amounts: quote.amounts };
   }
