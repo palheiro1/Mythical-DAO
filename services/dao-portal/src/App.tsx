@@ -409,10 +409,11 @@ function Overview() {
               : "—"}
           </strong>
           <p>
-            {(totals.data?.countsVerified || totals.data?.countsAvailable) &&
-            !totals.data.complete
+            {totals.data?.countsAvailable
               ? m("Among indexed proposals")
-              : m("On-chain executable proposals")}
+              : totals.data?.countsVerified && !totals.data.complete
+                ? m("Among verified indexed proposals")
+                : m("On-chain executable proposals")}
           </p>
         </div>
         <div className="metric">
@@ -428,10 +429,11 @@ function Overview() {
               : "—"}
           </strong>
           <p>
-            {(totals.data?.countsVerified || totals.data?.countsAvailable) &&
-            !totals.data.complete
+            {totals.data?.countsAvailable
               ? m("Among indexed proposals")
-              : m("Approved actions ready for direct execution")}
+              : totals.data?.countsVerified && !totals.data.complete
+                ? m("Among verified indexed proposals")
+                : m("Approved actions ready for direct execution")}
           </p>
         </div>
         <div className="metric">
