@@ -1,6 +1,15 @@
 import { test, expect, type Page } from "@playwright/test";
+import { decodeFunctionData, getAddress, type Hex } from "viem";
+import { tokenAbi } from "../../shared/abis";
 const member = "0x1111111111111111111111111111111111111111";
 const representative = "0x2222222222222222222222222222222222222222";
+const secondMember = getAddress("0xabcdef1234567890abcdef1234567890abcdef12");
+type TestWallet = Window & {
+  testAccounts?: (accounts: string[], notify?: boolean) => void;
+  testAccountsUnavailable?: boolean;
+  testSubmitted?: boolean;
+  testTransaction?: { from: string; to: string; data: Hex };
+};
 const roles = [
   "mana",
   "weth",
@@ -17,19 +26,48 @@ async function setup(
     preflightFails = false,
     revert = false,
     confirm = false,
+    account = member,
+    exposedAccounts = [account],
+    accountsUnavailable = false,
+  }: {
+    wrongNetwork?: boolean;
+    preflightFails?: boolean;
+    revert?: boolean;
+    confirm?: boolean;
+    account?: string;
+    exposedAccounts?: string[];
+    accountsUnavailable?: boolean;
   } = {},
 ) {
   await page.addInitScript(
-    ({ member, wrongNetwork, revert, confirm }) => {
+    ({
+      account,
+      exposedAccounts,
+      accountsUnavailable,
+      wrongNetwork,
+      revert,
+      confirm,
+    }) => {
       let chain = wrongNetwork ? "0x1" : "0x89";
+      let accounts = exposedAccounts;
       const listeners: Record<string, ((value: unknown) => void)[]> = {};
+      const w = window as TestWallet;
+      w.testAccountsUnavailable = accountsUnavailable;
+      w.testAccounts = (next, notify = true) => {
+        accounts = next;
+        if (notify) listeners.accountsChanged?.forEach((fn) => fn(next));
+      };
       Object.defineProperty(window, "ethereum", {
         value: {
           isMetaMask: true,
           on: (name: string, fn: (v: unknown) => void) => {
             (listeners[name] ??= []).push(fn);
           },
-          removeListener: () => {},
+          removeListener: (name: string, fn: (v: unknown) => void) => {
+            listeners[name] = listeners[name]?.filter(
+              (listener) => listener !== fn,
+            );
+          },
           request: async ({
             method,
             params,
@@ -37,8 +75,12 @@ async function setup(
             method: string;
             params: unknown[];
           }) => {
-            if (method === "eth_accounts" || method === "eth_requestAccounts")
-              return [member];
+            if (method === "eth_requestAccounts") return [account];
+            if (method === "eth_accounts") {
+              if (w.testAccountsUnavailable)
+                throw Error("Wallet temporarily unavailable");
+              return accounts;
+            }
             if (method === "eth_chainId") return chain;
             if (method === "wallet_switchEthereumChain") {
               chain = "0x89";
@@ -46,8 +88,8 @@ async function setup(
               return null;
             }
             if (method === "eth_sendTransaction") {
-              (window as Window & { testSubmitted?: boolean }).testSubmitted =
-                true;
+              w.testSubmitted = true;
+              w.testTransaction = params[0] as TestWallet["testTransaction"];
               if (revert || confirm) return "0x" + "a".repeat(64);
               throw Object.assign(new Error("User rejected the request."), {
                 code: 4001,
@@ -65,7 +107,14 @@ async function setup(
         },
       });
     },
-    { member, wrongNetwork, revert, confirm },
+    {
+      account,
+      exposedAccounts,
+      accountsUnavailable,
+      wrongNetwork,
+      revert,
+      confirm,
+    },
   );
   await page.route("**/api/**", async (route) => {
     const url = new URL(route.request().url());
@@ -204,4 +253,181 @@ test("a successful receipt completes only after the confirmation window", async 
   await page.getByRole("button", { name: "Review delegation" }).click();
   await page.getByRole("button", { name: "Confirm in wallet" }).click();
   await expect(page.getByText("Confirmed · operation completed")).toBeVisible();
+});
+
+test("self-delegation needs no pasted address and follows an account switch", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.evaluate(
+    (accounts) => (window as TestWallet).testAccounts!(accounts),
+    [secondMember, member],
+  );
+  await expect(
+    page.getByRole("button", {
+      name: secondMember.slice(0, 6) + "…" + secondMember.slice(-4),
+    }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Representative address")).toHaveValue("");
+  await page
+    .getByRole("button", { name: "Delegate to myself", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText(secondMember);
+  await page.getByRole("button", { name: "Confirm in wallet" }).click();
+  await expect(page.getByRole("alert")).toContainText("Signature declined");
+  const transaction = await page.evaluate(
+    () => (window as TestWallet).testTransaction,
+  );
+  expect(transaction?.from.toLowerCase()).toBe(secondMember.toLowerCase());
+  expect(
+    decodeFunctionData({ abi: tokenAbi, data: transaction!.data }),
+  ).toEqual({
+    functionName: "delegate",
+    args: [secondMember],
+  });
+});
+
+for (const self of [true, false]) {
+  test(`${self ? "self-delegation" : "delegation"} signs with the selected second account in a multi-account wallet`, async ({
+    page,
+  }) => {
+    await setup(page, {
+      account: secondMember,
+      exposedAccounts: [member, secondMember],
+    });
+    const preflights: { account: string; data: Hex }[] = [];
+    page.on("request", (request) => {
+      if (new URL(request.url()).pathname === "/api/preflight")
+        preflights.push(request.postDataJSON());
+    });
+    const target = self ? secondMember : representative;
+    if (!self) await page.getByLabel("Representative address").fill(target);
+    await page
+      .getByRole("button", {
+        name: self ? "Delegate to myself" : "Review delegation",
+        exact: true,
+      })
+      .click();
+    await page.getByRole("button", { name: "Confirm in wallet" }).click();
+    await expect(page.getByRole("alert")).toContainText("Signature declined");
+    const transaction = await page.evaluate(
+      () => (window as TestWallet).testTransaction,
+    );
+    expect(transaction?.from.toLowerCase()).toBe(secondMember.toLowerCase());
+    expect(preflights).toHaveLength(2);
+    for (const preflight of preflights) {
+      expect(preflight.account.toLowerCase()).toBe(secondMember.toLowerCase());
+      expect(preflight.data).toBe(transaction?.data);
+    }
+    expect(
+      decodeFunctionData({ abi: tokenAbi, data: transaction!.data }),
+    ).toEqual({
+      functionName: "delegate",
+      args: [target],
+    });
+  });
+}
+
+test("an unavailable wallet shows an error and self-delegation can be retried", async ({
+  page,
+}) => {
+  await setup(page, { accountsUnavailable: true });
+  await page
+    .getByRole("button", { name: "Delegate to myself", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Confirm in wallet" }).click();
+  await expect(page.getByRole("alert")).toContainText(
+    "Wallet temporarily unavailable",
+  );
+  expect(
+    await page.evaluate(() => (window as TestWallet).testSubmitted),
+  ).toBeUndefined();
+  await page.evaluate(() => {
+    (window as TestWallet).testAccountsUnavailable = false;
+  });
+  await page.getByRole("button", { name: "Confirm in wallet" }).click();
+  await expect(page.getByRole("alert")).toContainText("Signature declined");
+  expect(await page.evaluate(() => (window as TestWallet).testSubmitted)).toBe(
+    true,
+  );
+});
+
+test("switching accounts during the final simulation blocks submission and allows a fresh self-delegation", async ({
+  page,
+}) => {
+  await setup(page);
+  await page
+    .getByRole("button", { name: "Delegate to myself", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let reached!: () => void;
+  const requested = new Promise<void>((resolve) => {
+    reached = resolve;
+  });
+  await page.route("**/api/preflight", async (route) => {
+    reached();
+    await held;
+    await route.fallback();
+  });
+  await page.getByRole("button", { name: "Confirm in wallet" }).click();
+  await requested;
+  await page.evaluate(
+    (accounts) => (window as TestWallet).testAccounts!(accounts),
+    [secondMember, member],
+  );
+  release();
+  await expect(page.getByRole("dialog")).toContainText(
+    "Operation not completed",
+  );
+  await expect(
+    page.getByRole("button", { name: "Confirm in wallet" }),
+  ).toBeDisabled();
+  expect(
+    await page.evaluate(() => (window as TestWallet).testSubmitted),
+  ).toBeUndefined();
+  await page.getByRole("button", { name: "Close review" }).click();
+  await page
+    .getByRole("button", { name: "Delegate to myself", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText(secondMember);
+  await page.getByRole("button", { name: "Confirm in wallet" }).click();
+  await expect(page.getByRole("alert")).toContainText("Signature declined");
+  const transaction = await page.evaluate(
+    () => (window as TestWallet).testTransaction,
+  );
+  expect(transaction?.from.toLowerCase()).toBe(secondMember.toLowerCase());
+  expect(
+    decodeFunctionData({ abi: tokenAbi, data: transaction!.data }),
+  ).toEqual({
+    functionName: "delegate",
+    args: [secondMember],
+  });
+});
+
+test("revoking the reviewed account without an event still blocks submission", async ({
+  page,
+}) => {
+  await setup(page);
+  await page
+    .getByRole("button", { name: "Delegate to myself", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.route("**/api/preflight", async (route) => {
+    await page.evaluate(
+      (account) => (window as TestWallet).testAccounts!([account], false),
+      secondMember,
+    );
+    await route.fallback();
+  });
+  await page.getByRole("button", { name: "Confirm in wallet" }).click();
+  await expect(page.getByRole("alert")).toContainText(
+    "Wallet or network changed",
+  );
+  expect(
+    await page.evaluate(() => (window as TestWallet).testSubmitted),
+  ).toBeUndefined();
 });
