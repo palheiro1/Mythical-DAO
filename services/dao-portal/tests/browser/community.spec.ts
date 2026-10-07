@@ -32,6 +32,88 @@ async function setup(page: Parameters<typeof controlledPortal>[0]) {
   await controlledPortal(page);
   await page.route("**/api/config", (r) => r.fulfill({ json: configured }));
 }
+test("Graph primary reads retain the journal, community, indexed counts and vote provenance", async ({
+  page,
+}) => {
+  await setup(page);
+  const read = {
+    source: "The Graph",
+    status: "stale",
+    cached: true,
+    asOfBlock: "90000000",
+    checkedAt: Date.now() - 600000,
+  };
+  const proposal = {
+    ...paymentProposal,
+    state: "Ended",
+    read,
+    votes: ["0", "34000000000000000000000", "0"],
+  };
+  await page.route("**/api/health", (r) =>
+    r.fulfill({
+      json: {
+        status: "degraded",
+        signingAllowed: false,
+        operationVerification: "on-demand",
+        read,
+        historyComplete: false,
+        head: "90000000",
+        sources: [],
+      },
+    }),
+  );
+  await page.route("**/api/overview", (r) =>
+    r.fulfill({
+      json: {
+        activeVotes: 0,
+        readyForExecution: null,
+        complete: false,
+        countsAvailable: true,
+        read,
+      },
+    }),
+  );
+  await page.route("**/api/proposals?*", (r) =>
+    r.fulfill({ json: { items: [proposal], read } }),
+  );
+  await page.route("**/api/proposals/*/*", (r) =>
+    r.fulfill({ json: proposal }),
+  );
+  await page.goto("/#overview");
+  await expect(page.locator(".garuda-art img")).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Governance summary" }),
+  ).toContainText("Among indexed proposals");
+  await expect(
+    page.locator(".journal-stat").first().locator("strong"),
+  ).toHaveText("0");
+  await expect(
+    page.locator(".journal-stat").nth(1).locator("strong"),
+  ).toHaveText("—");
+  await expect(
+    page.getByRole("link", { name: "Get governance alerts" }),
+  ).toBeVisible();
+  await page.goto("/#governance");
+  await expect(page.locator(".decision-results")).toContainText("For 34,000");
+  await expect(page.locator(".result-freshness")).toContainText(
+    "Indexed by The Graph",
+  );
+  await expect(page.locator(".result-freshness")).toContainText(
+    "update delayed",
+  );
+  await expect(
+    page.getByRole("button", { name: "Open DAO chat" }),
+  ).toBeVisible();
+  await page.goto(`/#proposal/${proposal.contract}/${proposal.id}`);
+  await expect(
+    page.getByText(
+      "Voting has ended. Review execution to check the outcome and eligibility against the live contract.",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Get governance alerts" }),
+  ).toBeVisible();
+});
 test("community order, Telegram instructions, contextual access and no eager widget", async ({
   page,
 }) => {

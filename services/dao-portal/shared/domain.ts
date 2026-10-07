@@ -51,6 +51,9 @@ export interface PortalConfig {
 export interface Health {
   status: "ok" | "setup" | "syncing" | "degraded";
   signingAllowed: boolean;
+  /** Enables review only; every review/signature still requires live preflight. */
+  operationVerification?: "on-demand";
+  read?: ReadStatus;
   /** Historical completeness is independent of live operation verification. */
   historyComplete?: boolean;
   liveReason?: string;
@@ -60,6 +63,15 @@ export interface Health {
   sources: { contract: string; block: string; updatedAt: number }[];
   sync?: SyncProgress;
   graphHistory?: GraphHistoryStatus;
+  reason?: string;
+}
+export interface ReadStatus {
+  source: "The Graph" | "RPC";
+  status: "fresh" | "stale";
+  cached: boolean;
+  asOfBlock: string;
+  checkedAt: number;
+  blockTimestamp?: number;
   reason?: string;
 }
 export interface GraphHistoryStatus {
@@ -81,6 +93,7 @@ export interface ChainEvent {
   args: Record<string, unknown>;
 }
 export interface Proposal {
+  read?: ReadStatus;
   chainId: number;
   contract: Address;
   id: string;

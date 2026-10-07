@@ -78,20 +78,17 @@ beforeEach(async () => {
 afterEach(async () => {
   await db.mf.dispose();
 });
-it("serves proposal lists and direct links without RPC fan-out", async () => {
-  const saved = await readProposalSnapshot(env);
-  for (const path of [
-    "proposals",
-    `proposals/${saved!.items[0].contract}/${paymentProposal.id}`,
-  ]) {
-    const r = await worker.fetch(
-      new Request("https://portal.test/api/" + path),
-      env,
-    );
-    expect(r.status).toBe(200);
-    expect(await r.text()).toContain(paymentProposal.id);
-  }
-  expect(rpc.calls).toBe(0);
+it("does not serve the retired proposal snapshot as the active public read model", async () => {
+  const r = await worker.fetch(
+    new Request("https://portal.test/api/proposals"),
+    env,
+  );
+  expect(r.status).toBe(200);
+  expect(await r.text()).not.toContain(paymentProposal.id);
+  // The old table is kept for rollback, without determining current public data.
+  expect((await readProposalSnapshot(env))!.items[0].id).toBe(
+    paymentProposal.id,
+  );
 });
 it("refreshes all totals while retaining publication history and leaves last success on RPC failure", async () => {
   await refreshProposalSnapshot(env, config(env));
@@ -113,7 +110,7 @@ it("removes a reorged publication from the display without deleting independent 
   await refreshProposalSnapshot(env, config(env));
   expect((await readProposalSnapshot(env))!.items).toEqual([]);
 });
-it("the original minute trigger renews data before its display validity expires", async () => {
+it("the index trigger leaves the retired snapshot intact for rollback", async () => {
   const old = (await readProposalSnapshot(env))!;
   old.checkedAt = Date.now() - 100000;
   await env.DAO_DB.prepare(
@@ -129,6 +126,5 @@ it("the original minute trigger renews data before its display validity expires"
   } as ExecutionContext);
   await pending;
   const updated = (await readProposalSnapshot(env))!;
-  expect(updated.checkedAt).toBeGreaterThan(old.checkedAt);
-  expect(updated.items[0].votes).toEqual(["0", "34", "0"]);
+  expect(updated).toEqual(old);
 });

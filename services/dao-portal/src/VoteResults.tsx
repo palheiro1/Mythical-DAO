@@ -50,9 +50,11 @@ export function VoteResults({ proposal: p }: { proposal: Proposal }) {
         ))}
       </div>
       <span className="result-freshness">
-        {p.results
-          ? `${fresh ? "Checked" : "Last verified"} ${new Date(p.results.checkedAt).toLocaleTimeString("en-GB")} · ${fresh ? "updates every 2 minutes" : "refresh delayed"}`
-          : "MANA · latest available totals"}
+        {p.read
+          ? `${p.read.source === "The Graph" ? "Indexed by The Graph" : "Cached totals"} · ${new Date(p.read.checkedAt).toLocaleTimeString("en-GB")}${p.read.status === "stale" ? " · update delayed" : ""}`
+          : p.results
+            ? `${fresh ? "Checked" : "Last verified"} ${new Date(p.results.checkedAt).toLocaleTimeString("en-GB")} · ${fresh ? "updates every 2 minutes" : "refresh delayed"}`
+            : "MANA · latest available totals"}
       </span>
     </div>
   );

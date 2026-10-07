@@ -7,7 +7,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useAccount, useWalletClient, usePublicClient } from "wagmi";
+import { useAccount, useConfig, usePublicClient } from "wagmi";
+import { getWalletClient } from "wagmi/actions";
 import { formatEther, decodeFunctionData, type Address, type Hex } from "viem";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Action, PortalConfig, Proposal } from "../shared/domain";
@@ -58,8 +59,8 @@ export function TransactionProvider({
   config: PortalConfig;
   children: ReactNode;
 }) {
-  const { address, chainId } = useAccount(),
-    { data: wallet } = useWalletClient(),
+  const { address, chainId, connector } = useAccount(),
+    walletConfig = useConfig(),
     client = usePublicClient({ chainId: config.chainId });
   const queries = useQueryClient(),
     dialog = useRef<HTMLDialogElement>(null),
@@ -75,6 +76,7 @@ export function TransactionProvider({
   const identity = JSON.stringify([
     address,
     chainId,
+    connector?.uid,
     config.enabled,
     config.chainId,
     config.contracts,
@@ -146,19 +148,28 @@ export function TransactionProvider({
     }
   }
   async function sign() {
-    if (!review || !wallet || !client) return;
+    if (!review) return;
     setBusy(true);
     setError("");
     const intent = review.intent;
     try {
+      if (!connector || !client)
+        throw new Error(m("Connect your wallet to the correct network first."));
       if (
         currentWallet.current.epoch !== review.walletEpoch ||
         address !== review.account ||
-        (await wallet.getChainId()) !== config.chainId
+        chainId !== config.chainId
       )
         throw new Error(
           m("Wallet or network changed. Review the operation again."),
         );
+      // Resolve the signer for this review, including after reconnects or account
+      // changes. A missing cached wallet client must never make the button a no-op.
+      const wallet = await getWalletClient(walletConfig, {
+        account: review.account,
+        chainId: config.chainId,
+        connector,
+      });
       intent.assertCurrent?.();
       setStatus(m("Simulating again before signature…"));
       if (intent.actions) {
@@ -182,16 +193,22 @@ export function TransactionProvider({
         value: intent.value ?? "0",
       });
       await attestRagequitIntent(config, intent, client);
-      intent.assertCurrent?.();
+      const [accounts, walletChainId] = await Promise.all([
+        wallet.getAddresses(),
+        wallet.getChainId(),
+      ]);
       if (
         currentWallet.current.epoch !== review.walletEpoch ||
-        (await wallet.getAddresses())[0]?.toLowerCase() !==
-          review.account.toLowerCase() ||
-        (await wallet.getChainId()) !== config.chainId
+        wallet.account.address.toLowerCase() !== review.account.toLowerCase() ||
+        !accounts.some(
+          (account) => account.toLowerCase() === review.account.toLowerCase(),
+        ) ||
+        walletChainId !== config.chainId
       )
         throw new Error(
           m("Wallet or network changed. Review the operation again."),
         );
+      intent.assertCurrent?.();
       setStatus(m("Waiting for wallet signature…"));
       const sent = await wallet.sendTransaction({
         account: review.account,

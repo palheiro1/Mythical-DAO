@@ -1,7 +1,7 @@
 import { JournalHeading, type ChapterArt } from "./JournalHeading";
 import { createContext, useContext, type ReactNode } from "react";
 import { useAccount } from "wagmi";
-import type { Health, PortalConfig } from "../shared/domain";
+import type { Health, PortalConfig, ReadStatus } from "../shared/domain";
 import { m } from "./i18n";
 import { messages } from "./messages.en";
 import { ragequitErrors } from "../shared/ragequit-errors";
@@ -165,7 +165,7 @@ export function blockedReason(
     return m("Switch your wallet to the portal network to continue.");
   if (!config.enabled || health?.status === "setup")
     return m("The portal is being prepared. Signing is not available yet.");
-  if (!health?.signingAllowed)
+  if (!health?.signingAllowed && health?.operationVerification !== "on-demand")
     return m(
       "Latest data is not verified. Signing will be available after verification.",
     );
@@ -186,6 +186,7 @@ export function DataState({
   retry,
   emptyTitle,
   independent = false,
+  read,
 }: {
   loading?: boolean;
   error?: unknown;
@@ -195,8 +196,10 @@ export function DataState({
   retry?: () => void;
   emptyTitle?: string;
   independent?: boolean;
+  read?: ReadStatus;
 }) {
   const { health } = usePortal();
+  independent ||= !!read;
   const stale = !!error && !empty && !unavailable;
   let message: string | undefined;
   if (loading) message = m("Loading verified data…");
@@ -219,18 +222,22 @@ export function DataState({
     message = emptyTitle ?? m("No records in this confirmed view.");
   if (message)
     return (
-      <div className="data-state" role={error ? "alert" : "status"}>
-        <Icon name={loading ? "history" : "info"} />
-        <p>{message}</p>
-        {retry && !loading && (error || health?.status === "degraded") ? (
-          <button className="button small" onClick={retry}>
-            {m("Try again")}
-          </button>
-        ) : null}
-      </div>
+      <>
+        <ReadFreshness read={read} />
+        <div className="data-state" role={error ? "alert" : "status"}>
+          <Icon name={loading ? "history" : "info"} />
+          <p>{message}</p>
+          {retry && !loading && (error || health?.status === "degraded") ? (
+            <button className="button small" onClick={retry}>
+              {m("Try again")}
+            </button>
+          ) : null}
+        </div>
+      </>
     );
   return (
     <>
+      <ReadFreshness read={read} />
       {stale || (!independent && health && health.status !== "ok") ? (
         <Notice tone="warning">
           {m(
@@ -316,6 +323,31 @@ export function ErrorNotice({ error }: { error: string }) {
           <summary>{m("Technical details")}</summary>
           <code className="calldata">{error}</code>
         </details>
+      )}
+    </div>
+  );
+}
+
+/** Provenance is display information; it never authorizes a transaction. */
+export function ReadFreshness({ read }: { read?: ReadStatus }) {
+  if (!read) return null;
+  return (
+    <div className="read-freshness">
+      <p className="muted">
+        {read.source === "The Graph"
+          ? m("Indexed by The Graph")
+          : m("Last verified balances and parameters")}
+        {" · "}
+        {m("Block {block}", { block: read.asOfBlock })}
+        {" · "}
+        <DateStamp value={new Date(read.checkedAt).toISOString()} />
+      </p>
+      {read.status === "stale" && (
+        <Notice tone="warning">
+          {m(
+            "Showing saved data. The latest update is unavailable or delayed.",
+          )}
+        </Notice>
       )}
     </div>
   );

@@ -227,7 +227,12 @@ export function pilotAnchor(latest, confirmed) {
   );
   return Math.min(latest.block.number, confirmed);
 }
-export function validatePilotSnapshot(data, anchor, hash) {
+export function validatePilotSnapshot(
+  data,
+  anchor,
+  hash,
+  limits = PILOT_LIMITS,
+) {
   validateMeta(data?._meta, PILOT_DEPLOYMENT, anchor, hash);
   validateSources(data.pilotStats);
   const stats = data.pilotStats;
@@ -242,12 +247,11 @@ export function validatePilotSnapshot(data, anchor, hash) {
     requireValue(uint(stats[k]), "GRAPH_STATS_INVALID");
   requireValue(
     Array.isArray(data.manaAccounts) &&
-      data.manaAccounts.length <= PILOT_LIMITS.accounts,
+      data.manaAccounts.length <= limits.accounts,
     "GRAPH_ACCOUNT_LIMIT",
   );
   requireValue(
-    Array.isArray(data.proposals) &&
-      data.proposals.length <= PILOT_LIMITS.proposals,
+    Array.isArray(data.proposals) && data.proposals.length <= limits.proposals,
     "GRAPH_PROPOSAL_LIMIT",
   );
   let previous = "",

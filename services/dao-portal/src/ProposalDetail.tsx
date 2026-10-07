@@ -21,7 +21,13 @@ import {
   type PortalConfig,
   type Proposal,
 } from "../shared/domain";
-import { StateBadge, Notice, ActionAvailability, DateStamp } from "./ui";
+import {
+  ReadFreshness,
+  StateBadge,
+  Notice,
+  ActionAvailability,
+  DateStamp,
+} from "./ui";
 import { actionSummary } from "../shared/action-summary";
 import { proposalActions } from "./action-view";
 import { useApi } from "./api";
@@ -225,6 +231,14 @@ export function ProposalDetail({
         </div>
       </JournalHeading>
       <CommunityShortcuts />
+      <ReadFreshness read={p.read} />
+      {p.state === "Ended" && (
+        <Notice>
+          {m(
+            "Voting has ended. Review execution to check the outcome and eligibility against the live contract.",
+          )}
+        </Notice>
+      )}
       {!intact && (
         <p role="alert" className="notice error">
           {m(
@@ -476,15 +490,17 @@ export function ProposalDetail({
                 </p>
               </>
             )}
-            {!legacy && !advisory && p.state === "Succeeded" && (
-              <button
-                className="button primary full"
-                disabled={!canSign || !intact || tx.busy}
-                onClick={() => void action("execute")}
-              >
-                {m("Review execution →")}
-              </button>
-            )}
+            {!legacy &&
+              !advisory &&
+              ["Succeeded", "Ended"].includes(p.state) && (
+                <button
+                  className="button primary full"
+                  disabled={!canSign || !intact || tx.busy}
+                  onClick={() => void action("execute")}
+                >
+                  {m("Review execution →")}
+                </button>
+              )}
             {!legacy &&
               p.state === "Pending" &&
               address?.toLowerCase() === p.proposer.toLowerCase() && (

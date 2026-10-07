@@ -31,6 +31,7 @@ import {
   Icon,
   PortalContext,
   DataState,
+  ReadFreshness,
   Notice,
   PageHeading,
   AssetIcon,
@@ -188,7 +189,11 @@ export function App() {
       </main>
     );
   const canSign =
-    !!address && chainId === config.chainId && health?.signingAllowed === true;
+    !!address &&
+    chainId === config.chainId &&
+    config.enabled &&
+    (health?.signingAllowed === true ||
+      health?.operationVerification === "on-demand");
   return (
     <PortalContext.Provider value={{ config, health }}>
       <TransactionProvider config={config}>
@@ -526,6 +531,7 @@ function History() {
             </p>
           </section>
           <DataState
+            read={proposals.data?.read}
             loading={proposals.isPending}
             error={proposals.error}
             unavailable={proposals.data?.unavailable}
@@ -557,6 +563,7 @@ function Guide() {
       />
       <section className="panel" aria-busy={rules.isPending}>
         <h2>{m("Current Governor rules")}</h2>
+        <ReadFreshness read={rules.data?.read} />
         {rules.data ? (
           <dl>
             <dt>{m("Proposal threshold")}</dt>

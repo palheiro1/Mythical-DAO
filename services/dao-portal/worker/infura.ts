@@ -3,7 +3,7 @@ import { timedBoundedFetch, clients, RpcFault } from "./rpc";
 
 const DAY = 86_400_000;
 // One request per 1.1 seconds stays below Free's 500 credits/second even for
-// two adjacent eth_estimateGas requests (300 each), spaced across seconds. No JSON-RPC batches or retries.
+// two adjacent eth_getLogs requests (255 each). No JSON-RPC batches or retries.
 const INTERVAL = 1_100;
 const DEFAULT_DAILY_CREDITS = 2_400_000;
 const COSTS: Record<string, number> = {
@@ -11,6 +11,7 @@ const COSTS: Record<string, number> = {
   eth_call: 80,
   eth_estimateGas: 300,
   eth_gasPrice: 80,
+  eth_getBalance: 80,
   eth_blockNumber: 80,
   eth_getBlockByNumber: 80,
   eth_getLogs: 255,
@@ -148,6 +149,21 @@ export class InfuraQuota {
       .run();
     this.cached = undefined;
   }
+}
+
+/** Reconciles the deployed, budgeted foreground provider selection. */
+export function readClients(env: Env) {
+  if (env.INDEX_RPC_MODE !== "infura-free") return clients(env);
+  const primary = infuraUrl(env.INFURA_API_KEY);
+  const quota = new InfuraQuota(
+    env.DAO_DB,
+    null,
+    infuraDailyLimit(env.INFURA_DAILY_CREDITS),
+  );
+  return clients(
+    { ...env, RPC_PRIMARY_URL: primary },
+    { primaryTransport: infuraTransport(primary, quota) },
+  );
 }
 
 export function infuraTransport(
@@ -330,19 +346,4 @@ export function indexClients(env: Env, owner: string) {
       { primaryTransport: infuraTransport(primary, quota), timeout: 25_000 },
     ),
   };
-}
-
-/** Read-only UI/Graph refreshes share the indexer's free-tier quota and cooldown. */
-export function readClients(env: Env) {
-  if (env.INDEX_RPC_MODE !== "infura-free") return clients(env);
-  const primary = infuraUrl(env.INFURA_API_KEY);
-  const quota = new InfuraQuota(
-    env.DAO_DB,
-    null,
-    infuraDailyLimit(env.INFURA_DAILY_CREDITS),
-  );
-  return clients(
-    { ...env, RPC_PRIMARY_URL: primary },
-    { primaryTransport: infuraTransport(primary, quota) },
-  );
 }

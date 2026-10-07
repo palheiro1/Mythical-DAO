@@ -21,6 +21,7 @@ import {
   DataState,
   Icon,
   Notice,
+  ReadFreshness,
   StateBadge,
   usePortal,
 } from "./ui";
@@ -236,6 +237,7 @@ function Participation() {
             {m("Previously retrieved membership data may be out of date.")}
           </p>
         )}
+        <ReadFreshness read={member.data?.read} />
         <a href="#delegation">
           {m("Manage delegation")} <span aria-hidden="true">↗</span>
         </a>
@@ -375,9 +377,13 @@ export function JournalCamp() {
     readyForExecution: number | null;
     complete: boolean;
     countsVerified?: boolean;
+    countsAvailable?: boolean;
   }>("overview");
   const verified =
-      !totals.error && (totals.data?.complete || totals.data?.countsVerified),
+      !totals.error &&
+      (totals.data?.complete ||
+        totals.data?.countsVerified ||
+        totals.data?.countsAvailable),
     limited = totals.data?.countsVerified && !totals.data.complete;
   const items = [
     ...(proposals.data?.items ?? []).filter((p) => p.kind !== "legacy"),
@@ -445,9 +451,11 @@ export function JournalCamp() {
           <span>{m("Open votes")}</span>
           <strong>{verified ? totals.data!.activeVotes : "—"}</strong>
           <p>
-            {limited && verified
-              ? m("Among verified indexed proposals")
-              : m("On-chain executable proposals")}
+            {totals.data?.countsAvailable && verified
+              ? m("Among indexed proposals")
+              : limited && verified
+                ? m("Among verified indexed proposals")
+                : m("On-chain executable proposals")}
           </p>
         </div>
         <div className="journal-stat">
@@ -456,9 +464,11 @@ export function JournalCamp() {
             {verified ? (totals.data!.readyForExecution ?? "—") : "—"}
           </strong>
           <p>
-            {limited && verified
-              ? m("Among verified indexed proposals")
-              : m("Approved actions ready for direct execution")}
+            {totals.data?.countsAvailable && verified
+              ? m("Among indexed proposals")
+              : limited && verified
+                ? m("Among verified indexed proposals")
+                : m("Approved actions ready for direct execution")}
           </p>
         </div>
         <div className="journal-resources">
@@ -487,6 +497,7 @@ export function JournalCamp() {
           )}
         </div>
       </section>
+      <ReadFreshness read={treasury.data?.read} />
       <section className="journal-section">
         <div className="journal-section-title">
           <div>
@@ -496,6 +507,7 @@ export function JournalCamp() {
           <a href="#governance">{m("View all")} ↗</a>
         </div>
         <DataState
+          read={proposals.data?.read}
           loading={proposals.isPending || ballots.isPending}
           error={proposals.error || ballots.error}
           unavailable={proposals.data?.unavailable || ballots.data?.unavailable}
@@ -628,6 +640,7 @@ export function JournalGovernance() {
           </p>
           {tab === "community" && <Notice>{t("advisoryNotice")}</Notice>}
           <DataState
+            read={query.data?.read}
             loading={query.isPending}
             error={query.error}
             unavailable={query.data?.unavailable}
@@ -746,6 +759,7 @@ export function JournalTreasury() {
           {address && <AddressLink address={address} />}
         </div>
         <DataState
+          read={query.data?.read}
           loading={query.isPending}
           error={query.error}
           unavailable={query.data?.unavailable || !account}
@@ -845,12 +859,20 @@ export function JournalTreasury() {
               <h2>{m("Identified pending payments")}</h2>
             </div>
           </div>
+          {proposals.data?.items.some((p) => p.state === "Ended") && (
+            <Notice>
+              {m(
+                "Some voting outcomes require a live contract check. Review the proposal to check execution eligibility.",
+              )}
+            </Notice>
+          )}
           <p className="journal-small">
             {m(
               "Only payment actions identified in the loaded proposals are shown. This is not a complete commitment ledger.",
             )}
           </p>
           <DataState
+            read={proposals.data?.read}
             loading={proposals.isPending}
             error={proposals.error}
             unavailable={proposals.data?.unavailable}
@@ -897,7 +919,13 @@ export function JournalTreasury() {
             </div>
             <a href="#history">{m("History")} ↗</a>
           </div>
+          {events.data?.read && (
+            <p className="muted">
+              {m("Treasury activity uses saved history and may be incomplete.")}
+            </p>
+          )}
           <DataState
+            read={events.data?.read}
             loading={events.isPending}
             error={events.error}
             unavailable={events.data?.unavailable}

@@ -1,4 +1,5 @@
 import type { Health } from "../shared/domain";
+import { ReadFreshness } from "./ui";
 import { m } from "./i18n";
 
 const percentText = (value: number | null | undefined) =>
@@ -6,6 +7,17 @@ const percentText = (value: number | null | undefined) =>
 const blockText = (value: string) => BigInt(value).toLocaleString("en-US");
 
 export function SyncStatus({ health }: { health?: Health }) {
+  if (health?.operationVerification === "on-demand")
+    return (
+      <section className="sync-status">
+        <ReadFreshness read={health.read} />
+        <p className="muted">
+          {m(
+            "MANA and governance are indexed by The Graph. Treasury balances use the last verified update. Each wallet operation is checked live before signing.",
+          )}
+        </p>
+      </section>
+    );
   const sync = health?.sync;
   const failed = health?.status === "degraded";
   const label = !health

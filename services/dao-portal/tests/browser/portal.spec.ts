@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { controlledPortal } from "./fixtures";
 test.beforeEach(async ({ page }) => {
+  await controlledPortal(page);
   await page.route(
     /tally\.xyz|snapshot\.org|charmverse\.io|fonts\.googleapis\.com|fonts\.gstatic\.com/,
     (route) => route.abort(),
