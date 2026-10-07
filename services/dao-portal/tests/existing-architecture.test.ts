@@ -271,9 +271,13 @@ it("attests code at the confirmed block and discards a preview whose anchor chan
   ).rejects.toThrow("RAGEQUIT_BLOCK_CHANGED");
 });
 it("accepts the configured portal origin through a proxy and rejects unrelated origins", async () => {
-  env.PORTAL_ORIGIN = "https://mythical-dao-preview.vercel.app";
+  env.PORTAL_ORIGIN = "https://dao.mythicalbeings.io";
+  env.PORTAL_PREVIEW_ORIGIN = "https://dao-preview.mythicalbeings.io";
   for (const [origin, expected] of [
     [env.PORTAL_ORIGIN, 200],
+    [env.PORTAL_PREVIEW_ORIGIN, 200],
+    ["https://dao.mythicalbeings.io.unrelated.example", 403],
+    ["https://dao-preview.mythicalbeings.io.unrelated.example", 403],
     ["https://mythical-dao-preview.vercel.app.unrelated.example", 403],
   ] as const) {
     const response = await worker.fetch(

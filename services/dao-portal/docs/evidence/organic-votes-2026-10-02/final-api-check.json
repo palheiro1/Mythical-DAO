@@ -1,0 +1,78 @@
+{
+  "checkedAt": "2026-10-02T12:00:23.488Z",
+  "checks": [
+    {
+      "account": "0xa8938ced402299c359b2f82a5b68b45ea158e2f5",
+      "task": "members",
+      "status": 200,
+      "milliseconds": 4844,
+      "result": {
+        "balance": "318067699999999999999999",
+        "votes": "0",
+        "delegate": "0x0000000000000000000000000000000000000000",
+        "supply": "1000000000000000000000000",
+        "allowance": "0",
+        "asOfBlock": "94824855"
+      }
+    },
+    {
+      "account": "0xa8938ced402299c359b2f82a5b68b45ea158e2f5",
+      "task": "preflight",
+      "status": 200,
+      "milliseconds": 23123,
+      "result": {
+        "block": "94824858",
+        "blockHash": "0xd76d65b68508ad8e16b7622df32e1d78bf55f67054190b41a90ef5887e4c258a",
+        "chainId": 137,
+        "account": "0xa8938ced402299c359b2f82a5b68b45ea158e2f5",
+        "verification": {
+          "operation": "delegate",
+          "balance": "318067699999999999999999",
+          "representative": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9"
+        },
+        "gas": "99052",
+        "estimatedFee": "27414202275651464",
+        "checkedAt": "2026-10-02T12:00:51.428Z"
+      }
+    },
+    {
+      "account": "0xb96a76ad90b28690250c4ed734942a4224997c52",
+      "task": "members",
+      "status": 200,
+      "milliseconds": 6598,
+      "result": {
+        "balance": "147250000000000000000000",
+        "votes": "0",
+        "delegate": "0x0000000000000000000000000000000000000000",
+        "supply": "1000000000000000000000000",
+        "allowance": "0",
+        "asOfBlock": "94824875"
+      }
+    },
+    {
+      "account": "0xb96a76ad90b28690250c4ed734942a4224997c52",
+      "task": "preflight",
+      "status": 200,
+      "milliseconds": 13233,
+      "result": {
+        "block": "94824879",
+        "blockHash": "0x22014ea08a77c3c7e612b8c9f8183f4ae66da8ca3e0f290c3a42099c7b7d3816",
+        "chainId": 137,
+        "account": "0xb96a76ad90b28690250c4ed734942a4224997c52",
+        "verification": {
+          "operation": "delegate",
+          "balance": "147250000000000000000000",
+          "representative": "0xc4CCC6A11329558582c2dA79C18a9AEaC00f59F9"
+        },
+        "gas": "99052",
+        "estimatedFee": "27799278138833124",
+        "checkedAt": "2026-10-02T12:01:11.259Z"
+      }
+    }
+  ],
+  "health": {
+    "status": "syncing",
+    "signingAllowed": true,
+    "checkedAt": "2026-10-02T11:59:44.776Z"
+  }
+}

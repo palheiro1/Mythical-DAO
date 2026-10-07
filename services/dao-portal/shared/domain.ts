@@ -1,3 +1,4 @@
+import type { PortalIntegrations } from "./integrations";
 import {
   encodeAbiParameters,
   isAddress,
@@ -30,6 +31,7 @@ export interface ContractConfig {
   startBlock: string;
 }
 export interface PortalConfig {
+  integrations?: PortalIntegrations;
   schemaVersion?: number;
   architecture?: "existing-governor" | "v2-historical";
   snapshotUrl?: string;
@@ -96,6 +98,12 @@ export interface Proposal {
   transactionHash: Hex;
   state: string;
   votes?: string[];
+  results?: {
+    source: string;
+    block: string;
+    checkedAt: number;
+    fresh: boolean;
+  };
   quorum?: string;
   eta?: string;
   winner?: number;

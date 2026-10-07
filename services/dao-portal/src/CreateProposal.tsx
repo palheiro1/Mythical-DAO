@@ -1,3 +1,6 @@
+import { ReadableText } from "./ReadableIdentity";
+import { BlockDuration, useChainClock } from "./HumanTime";
+import { duration } from "./time-format";
 import { TokenAmount } from "./TokenAmount";
 import { useState } from "react";
 import {
@@ -49,6 +52,7 @@ export function CreateProposal({
   config: PortalConfig;
   canSign: boolean;
 }) {
+  const clock = useChainClock();
   const [draft, setDraft] = useState<Draft>(load),
     [message, setMessage] = useState(""),
     [error, setError] = useState("");
@@ -193,7 +197,7 @@ export function CreateProposal({
           {
             label: m("Voting delay / period"),
             value: rules.data
-              ? `${rules.data.votingDelay} / ${rules.data.votingPeriod} blocks`
+              ? `${clock.data ? `About ${duration(Number(rules.data.votingDelay) * clock.data.secondsPerBlock)} / ${duration(Number(rules.data.votingPeriod) * clock.data.secondsPerBlock)}; ` : ""}exact rules: ${rules.data.votingDelay} / ${rules.data.votingPeriod} blocks`
               : "Current rules could not be verified.",
           },
           {
@@ -261,7 +265,13 @@ export function CreateProposal({
             </button>
           )}
         </div>
-        <p>{actionSummary(action, config)}</p>
+        <p>
+          {step === 3 ? (
+            actionSummary(action, config)
+          ) : (
+            <ReadableText text={actionSummary(action, config)} />
+          )}
+        </p>
         <details>
           <summary>{m("Technical details")}</summary>
           <p>
@@ -317,6 +327,8 @@ export function CreateProposal({
   return (
     <div className="wizard">
       <PageHeading
+        art="sumanga"
+        chapter="04 / THE PLANNING TABLE"
         title={m("Create a proposal")}
         description={m(
           "Turn an idea into a decision members can review. Drafts stay on this device.",
@@ -390,371 +402,408 @@ export function CreateProposal({
           </li>
         ))}
       </ol>
-      <section className="panel wizard-section" aria-label={m("Proposal form")}>
-        {step === 0 && (
-          <>
-            <h2>{m("What should the DAO decide?")}</h2>
-            <div className="segmented">
-              <button
-                aria-pressed={draft.kind === "executable"}
-                className={draft.kind === "executable" ? "selected" : ""}
-                onClick={() => update({ kind: "executable" })}
-              >
-                {m("Executable proposal")}
-              </button>
-              <button
-                aria-pressed={draft.kind === "community"}
-                className={draft.kind === "community" ? "selected" : ""}
-                onClick={() => update({ kind: "community" })}
-              >
-                {m("Community ballot")}
-              </button>
-            </div>
-            <Notice>
-              {draft.kind === "community"
-                ? t("advisoryNotice")
-                : m(
-                    "Executable proposals authorize the exact contract actions you configure. Written promises need separate accountability.",
-                  )}
-            </Notice>
-            <label htmlFor="draft-title">{m("Proposal title")}</label>
-            <input
-              id="draft-title"
-              maxLength={160}
-              value={draft.title}
-              aria-invalid={issue?.field === "draft-title"}
-              onChange={(e) => update({ title: e.target.value })}
-              placeholder={m("A clear, specific decision")}
-            />
-          </>
-        )}
-        {step === 1 && (
-          <>
-            <h2>{m("How will the decision be delivered?")}</h2>
-            <p className="muted">
-              {m(
-                "Define acceptance criteria, measurable outcomes and the people responsible.",
-              )}
-            </p>
-          </>
-        )}
-        {visibleFields.map((field) => (
-          <div className="form-field" key={field}>
-            <label htmlFor={fieldId(field)}>{m(field)}</label>
-            <textarea
-              id={fieldId(field)}
-              rows={3}
-              value={draft.sections[field]}
-              aria-invalid={issue?.field === fieldId(field)}
-              aria-describedby={fieldId(field) + "-help"}
-              onChange={(e) =>
-                update({
-                  sections: { ...draft.sections, [field]: e.target.value },
-                })
-              }
-            />
-            <p className="field-help" id={fieldId(field) + "-help"}>
-              {fieldHelp[field]}
-            </p>
-            {field === "Budget" &&
-              draft.kind === "executable" &&
-              budgetSummary()}
-          </div>
-        ))}
-        {step === 0 && (
-          <div className="form-field">
-            <label htmlFor="draft-discussion">
-              {m("External discussion link (optional)")}
-            </label>
-            <input
-              id="draft-discussion"
-              type="url"
-              placeholder="https://"
-              value={draft.discussion}
-              aria-invalid={issue?.field === "draft-discussion"}
-              onChange={(e) => update({ discussion: e.target.value })}
-            />
-          </div>
-        )}
-        {step === 2 && (
-          <>
-            <h2>
-              {draft.kind === "community"
-                ? m("Define the choices")
-                : m("Define the executable actions")}
-            </h2>
-            <p className="muted">
-              {draft.kind === "community"
-                ? t("advisoryNotice")
-                : m(
-                    "Only encoded actions are automatically enforced. Review every amount and recipient.",
-                  )}
-            </p>
-            {draft.kind === "community" ? (
-              <>
-                {draft.options.map((option, i) => (
-                  <label key={i} htmlFor={"alternative-" + i}>
-                    {m("Alternative {number}", { number: i + 1 })}
-                    <div className="inline">
-                      <input
-                        id={"alternative-" + i}
-                        aria-label={m("Alternative {number}", {
-                          number: i + 1,
-                        })}
-                        value={option}
-                        maxLength={160}
-                        aria-invalid={issue?.field === "alternative-" + i}
-                        onChange={(e) =>
-                          update({
-                            options: draft.options.map((o, j) =>
-                              j === i ? e.target.value : o,
-                            ),
-                          })
-                        }
-                      />
-                      <button
-                        aria-label={m("Remove alternative {number}", {
-                          number: i + 1,
-                        })}
-                        disabled={draft.options.length <= 2}
-                        onClick={() =>
-                          update({
-                            options: draft.options.filter((_, j) => i !== j),
-                          })
-                        }
-                      >
-                        ×
-                      </button>
-                    </div>
-                  </label>
-                ))}
+      <div className="planning-layout">
+        <section
+          className="panel wizard-section"
+          aria-label={m("Proposal form")}
+        >
+          {step === 0 && (
+            <>
+              <h2>{m("What should the DAO decide?")}</h2>
+              <div className="segmented">
                 <button
-                  className="button"
-                  disabled={draft.options.length >= 20}
-                  onClick={() => update({ options: [...draft.options, ""] })}
+                  aria-pressed={draft.kind === "executable"}
+                  className={draft.kind === "executable" ? "selected" : ""}
+                  onClick={() => update({ kind: "executable" })}
                 >
-                  {m("+ Add alternative")}
+                  {m("Executable proposal")}
                 </button>
-                <p className="field-help">
-                  {m("Abstention is always available.")}
-                </p>
-              </>
-            ) : (
-              <>
-                <label htmlFor="action-template">
-                  {m("Action template")}
-                  <select
-                    id="action-template"
-                    value={template}
-                    onChange={(e) => setTemplate(e.target.value)}
+                <button
+                  aria-pressed={draft.kind === "community"}
+                  className={draft.kind === "community" ? "selected" : ""}
+                  onClick={() => update({ kind: "community" })}
+                >
+                  {m("Community ballot")}
+                </button>
+              </div>
+              <Notice>
+                {draft.kind === "community"
+                  ? t("advisoryNotice")
+                  : m(
+                      "Executable proposals authorize the exact contract actions you configure. Written promises need separate accountability.",
+                    )}
+              </Notice>
+              <label htmlFor="draft-title">{m("Proposal title")}</label>
+              <input
+                id="draft-title"
+                maxLength={160}
+                value={draft.title}
+                aria-invalid={issue?.field === "draft-title"}
+                onChange={(e) => update({ title: e.target.value })}
+                placeholder={m("A clear, specific decision")}
+              />
+            </>
+          )}
+          {step === 1 && (
+            <>
+              <h2>{m("How will the decision be delivered?")}</h2>
+              <p className="muted">
+                {m(
+                  "Define acceptance criteria, measurable outcomes and the people responsible.",
+                )}
+              </p>
+            </>
+          )}
+          {visibleFields.map((field) => (
+            <div className="form-field" key={field}>
+              <label htmlFor={fieldId(field)}>{m(field)}</label>
+              <textarea
+                id={fieldId(field)}
+                rows={3}
+                value={draft.sections[field]}
+                aria-invalid={issue?.field === fieldId(field)}
+                aria-describedby={fieldId(field) + "-help"}
+                onChange={(e) =>
+                  update({
+                    sections: { ...draft.sections, [field]: e.target.value },
+                  })
+                }
+              />
+              <p className="field-help" id={fieldId(field) + "-help"}>
+                {fieldHelp[field]}
+              </p>
+              {field === "Budget" &&
+                draft.kind === "executable" &&
+                budgetSummary()}
+            </div>
+          ))}
+          {step === 0 && (
+            <div className="form-field">
+              <label htmlFor="draft-discussion">
+                {m("External discussion link (optional)")}
+              </label>
+              <input
+                id="draft-discussion"
+                type="url"
+                placeholder="https://"
+                value={draft.discussion}
+                aria-invalid={issue?.field === "draft-discussion"}
+                onChange={(e) => update({ discussion: e.target.value })}
+              />
+            </div>
+          )}
+          {step === 2 && (
+            <>
+              <h2>
+                {draft.kind === "community"
+                  ? m("Define the choices")
+                  : m("Define the executable actions")}
+              </h2>
+              <p className="muted">
+                {draft.kind === "community"
+                  ? t("advisoryNotice")
+                  : m(
+                      "Only encoded actions are automatically enforced. Review every amount and recipient.",
+                    )}
+              </p>
+              {draft.kind === "community" ? (
+                <>
+                  {draft.options.map((option, i) => (
+                    <label key={i} htmlFor={"alternative-" + i}>
+                      {m("Alternative {number}", { number: i + 1 })}
+                      <div className="inline">
+                        <input
+                          id={"alternative-" + i}
+                          aria-label={m("Alternative {number}", {
+                            number: i + 1,
+                          })}
+                          value={option}
+                          maxLength={160}
+                          aria-invalid={issue?.field === "alternative-" + i}
+                          onChange={(e) =>
+                            update({
+                              options: draft.options.map((o, j) =>
+                                j === i ? e.target.value : o,
+                              ),
+                            })
+                          }
+                        />
+                        <button
+                          aria-label={m("Remove alternative {number}", {
+                            number: i + 1,
+                          })}
+                          disabled={draft.options.length <= 2}
+                          onClick={() =>
+                            update({
+                              options: draft.options.filter((_, j) => i !== j),
+                            })
+                          }
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </label>
+                  ))}
+                  <button
+                    className="button"
+                    disabled={draft.options.length >= 20}
+                    onClick={() => update({ options: [...draft.options, ""] })}
                   >
-                    <option value="payment">{m("Treasury payment")}</option>
-                    <option value="parameter">
-                      {m("Governance parameter")}
-                    </option>
-                    <option value="advanced">
-                      {m("Advanced contract action")}
-                    </option>
-                  </select>
-                </label>
-                {template === "advanced" ? (
-                  <label>
-                    {m("Actions JSON")}
-                    <textarea
-                      rows={6}
-                      value={advanced}
-                      onChange={(e) => setAdvanced(e.target.value)}
-                      placeholder={m(
-                        '[{"target":"0x…","value":"0","data":"0x…"}]',
+                    {m("+ Add alternative")}
+                  </button>
+                  <p className="field-help">
+                    {m("Abstention is always available.")}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <label htmlFor="action-template">
+                    {m("Action template")}
+                    <select
+                      id="action-template"
+                      value={template}
+                      onChange={(e) => setTemplate(e.target.value)}
+                    >
+                      <option value="payment">{m("Treasury payment")}</option>
+                      <option value="parameter">
+                        {m("Governance parameter")}
+                      </option>
+                      <option value="advanced">
+                        {m("Advanced contract action")}
+                      </option>
+                    </select>
+                  </label>
+                  {template === "advanced" ? (
+                    <label>
+                      {m("Actions JSON")}
+                      <textarea
+                        rows={6}
+                        value={advanced}
+                        onChange={(e) => setAdvanced(e.target.value)}
+                        placeholder={m(
+                          '[{"target":"0x…","value":"0","data":"0x…"}]',
+                        )}
+                      />
+                      <span className="field-help">
+                        {m(
+                          "Advanced: exact targets, native values in wei and encoded calldata. Unknown calls remain uninterpreted.",
+                        )}
+                      </span>
+                    </label>
+                  ) : (
+                    <>
+                      {template === "payment" ? (
+                        <div className="field-grid">
+                          <label>
+                            {m("Recipient")}
+                            <input
+                              value={recipient}
+                              onChange={(e) => setRecipient(e.target.value)}
+                              placeholder={m("0x…")}
+                            />
+                          </label>
+                          <label>
+                            {m("Asset")}
+                            <select
+                              value={asset}
+                              onChange={(e) => setAsset(e.target.value)}
+                            >
+                              <option>{m("GEM")}</option>
+                              <option>{m("USDC")}</option>
+                              <option>{m("POL")}</option>
+                              <option>{m("WETH")}</option>
+                              <option>{m("USDC.e")}</option>
+                            </select>
+                          </label>
+                        </div>
+                      ) : (
+                        <label>
+                          {m("Parameter")}
+                          <select
+                            value={parameter}
+                            onChange={(e) => setParameter(e.target.value)}
+                          >
+                            <option value="setVotingDelay">
+                              {m("Voting delay (blocks)")}
+                            </option>
+                            <option value="setVotingPeriod">
+                              {m("Voting period (blocks)")}
+                            </option>
+                            <option value="setProposalThreshold">
+                              {m("Proposal threshold (MANA wei)")}
+                            </option>
+                            <option value="updateQuorumNumerator">
+                              {m("Quorum (%)")}
+                            </option>
+                          </select>
+                        </label>
                       )}
+                      <label>
+                        {template === "payment" ? m("Amount") : m("New value")}
+                        <input
+                          inputMode="decimal"
+                          value={value}
+                          onChange={(e) => setValue(e.target.value)}
+                        />
+                      </label>
+                      {template !== "payment" &&
+                        ["setVotingDelay", "setVotingPeriod"].includes(
+                          parameter,
+                        ) &&
+                        /^\d+$/.test(value) && <BlockDuration blocks={value} />}
+                    </>
+                  )}
+                  <button className="button" onClick={addAction}>
+                    {m("+ Add action")}
+                  </button>
+                  {actionList()}
+                  <Notice>{t("fundingNotice")}</Notice>
+                </>
+              )}
+            </>
+          )}
+          {step === 3 && (
+            <>
+              <h2>{m("Review before publication")}</h2>
+              <p>
+                {m(
+                  "The text below is exactly what will be published. Existing on-chain proposals are never rewritten.",
+                )}
+              </p>
+              <pre className="proposal-text" id="exact-text" tabIndex={0}>
+                {description(draft)}
+              </pre>
+              {draft.kind === "community" ? (
+                <>
+                  <h3>{m("Voting alternatives")}</h3>
+                  <ol>
+                    {draft.options.map((o, i) => (
+                      <li key={i}>{o}</li>
+                    ))}
+                  </ol>
+                  <p>
+                    {m(
+                      "Plus abstention. The result does not authorize spending.",
+                    )}
+                  </p>
+                </>
+              ) : (
+                <>
+                  {budgetSummary()}
+                  {actionList()}
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      checked={coherent}
+                      onChange={(e) => setCoherent(e.target.checked)}
                     />
-                    <span className="field-help">
+                    <span>
                       {m(
-                        "Advanced: exact targets, native values in wei and encoded calldata. Unknown calls remain uninterpreted.",
+                        "I checked that the written budget and configured actions agree, including assets, amounts and recipients.",
                       )}
                     </span>
                   </label>
-                ) : (
-                  <>
-                    {template === "payment" ? (
-                      <div className="field-grid">
-                        <label>
-                          {m("Recipient")}
-                          <input
-                            value={recipient}
-                            onChange={(e) => setRecipient(e.target.value)}
-                            placeholder={m("0x…")}
-                          />
-                        </label>
-                        <label>
-                          {m("Asset")}
-                          <select
-                            value={asset}
-                            onChange={(e) => setAsset(e.target.value)}
-                          >
-                            <option>{m("GEM")}</option>
-                            <option>{m("USDC")}</option>
-                            <option>{m("POL")}</option>
-                            <option>{m("WETH")}</option>
-                            <option>{m("USDC.e")}</option>
-                          </select>
-                        </label>
-                      </div>
-                    ) : (
-                      <label>
-                        {m("Parameter")}
-                        <select
-                          value={parameter}
-                          onChange={(e) => setParameter(e.target.value)}
-                        >
-                          <option value="setVotingDelay">
-                            {m("Voting delay (blocks)")}
-                          </option>
-                          <option value="setVotingPeriod">
-                            {m("Voting period (blocks)")}
-                          </option>
-                          <option value="setProposalThreshold">
-                            {m("Proposal threshold (MANA wei)")}
-                          </option>
-                          <option value="updateQuorumNumerator">
-                            {m("Quorum (%)")}
-                          </option>
-                        </select>
-                      </label>
-                    )}
-                    <label>
-                      {template === "payment" ? m("Amount") : m("New value")}
-                      <input
-                        inputMode="decimal"
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                      />
-                    </label>
-                  </>
+                </>
+              )}
+              <Notice>
+                {m(
+                  "Publication requires the current on-chain proposal threshold, verified network data and a successful wallet simulation.",
                 )}
-                <button className="button" onClick={addAction}>
-                  {m("+ Add action")}
-                </button>
-                {actionList()}
-                <Notice>{t("fundingNotice")}</Notice>
-              </>
-            )}
-          </>
-        )}
-        {step === 3 && (
-          <>
-            <h2>{m("Review before publication")}</h2>
-            <p>
-              {m(
-                "The text below is exactly what will be published. Existing on-chain proposals are never rewritten.",
+              </Notice>
+              {issues.length > 0 && (
+                <div className="validation-summary">
+                  <h3>{m("Complete these fields before publishing")}</h3>
+                  <ul>
+                    {issues.map((item, i) => (
+                      <li key={i}>
+                        <button
+                          className="text-button"
+                          onClick={() => focusIssue(item)}
+                        >
+                          {item.message}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
+              <button
+                className="button primary full"
+                disabled={
+                  !canSign ||
+                  draft.kind === "community" ||
+                  tx.busy ||
+                  (draft.kind === "executable" && !coherent)
+                }
+                onClick={() => void publish()}
+              >
+                {m("Simulate & review publication")}
+              </button>
+              <ActionAvailability
+                extra={
+                  draft.kind === "executable" && !coherent
+                    ? m(
+                        "Confirm that your written budget and configured actions agree.",
+                      )
+                    : null
+                }
+              />
+            </>
+          )}
+          {error && (
+            <p role="alert" className="error field-error">
+              {error}
             </p>
-            <pre className="proposal-text" id="exact-text" tabIndex={0}>
-              {description(draft)}
-            </pre>
-            {draft.kind === "community" ? (
-              <>
-                <h3>{m("Voting alternatives")}</h3>
-                <ol>
-                  {draft.options.map((o, i) => (
-                    <li key={i}>{o}</li>
-                  ))}
-                </ol>
-                <p>
-                  {m(
-                    "Plus abstention. The result does not authorize spending.",
-                  )}
-                </p>
-              </>
-            ) : (
-              <>
-                {budgetSummary()}
-                {actionList()}
-                <label className="checkbox">
-                  <input
-                    type="checkbox"
-                    checked={coherent}
-                    onChange={(e) => setCoherent(e.target.checked)}
-                  />
-                  <span>
-                    {m(
-                      "I checked that the written budget and configured actions agree, including assets, amounts and recipients.",
-                    )}
-                  </span>
-                </label>
-              </>
+          )}
+          <div className="wizard-nav">
+            {step > 0 && (
+              <button
+                className="button"
+                onClick={() => {
+                  setStep(step - 1);
+                  setIssue(null);
+                  setError("");
+                }}
+              >
+                {m("Back")}
+              </button>
             )}
-            <Notice>
-              {m(
-                "Publication requires the current on-chain proposal threshold, verified network data and a successful wallet simulation.",
-              )}
-            </Notice>
-            {issues.length > 0 && (
-              <div className="validation-summary">
-                <h3>{m("Complete these fields before publishing")}</h3>
-                <ul>
-                  {issues.map((item, i) => (
-                    <li key={i}>
-                      <button
-                        className="text-button"
-                        onClick={() => focusIssue(item)}
-                      >
-                        {item.message}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {step < 3 && (
+              <button className="button primary next-step" onClick={advance}>
+                {m("Continue")}
+                <Icon name="arrow" />
+              </button>
             )}
-            <button
-              className="button primary full"
-              disabled={
-                !canSign ||
-                draft.kind === "community" ||
-                tx.busy ||
-                (draft.kind === "executable" && !coherent)
-              }
-              onClick={() => void publish()}
-            >
-              {m("Simulate & review publication")}
-            </button>
-            <ActionAvailability
-              extra={
-                draft.kind === "executable" && !coherent
-                  ? m(
-                      "Confirm that your written budget and configured actions agree.",
-                    )
-                  : null
-              }
-            />
-          </>
-        )}
-        {error && (
-          <p role="alert" className="error field-error">
-            {error}
+          </div>
+        </section>
+        <aside className="planning-context">
+          <p className="journal-kicker">IN YOUR NOTEBOOK</p>
+          <h2>{draft.title || "A decision takes shape"}</h2>
+          <p>
+            {draft.kind === "community"
+              ? "Advisory draft for Snapshot"
+              : "Executable Governor proposal"}
           </p>
-        )}
-        <div className="wizard-nav">
-          {step > 0 && (
-            <button
-              className="button"
-              onClick={() => {
-                setStep(step - 1);
-                setIssue(null);
-                setError("");
-              }}
-            >
-              {m("Back")}
-            </button>
-          )}
-          {step < 3 && (
-            <button className="button primary next-step" onClick={advance}>
-              {m("Continue")}
-              <Icon name="arrow" />
-            </button>
-          )}
-        </div>
-      </section>
+          <ol>
+            {[
+              "Define the decision",
+              "Explain the plan",
+              draft.kind === "community"
+                ? "Set the choices"
+                : "Configure the actions",
+              "Review exact text",
+            ].map((label, i) => (
+              <li key={label} aria-current={step === i ? "step" : undefined}>
+                {label}
+              </li>
+            ))}
+          </ol>
+          {budgetSummary()}
+          <p className="journal-small">
+            Saved drafts stay on this device. Export a copy to keep your work.
+          </p>
+        </aside>
+      </div>
     </div>
   );
 }

@@ -52,9 +52,10 @@ test.describe("visual acceptance matrix", () => {
             name,
           ).toEqual([]);
           await page.locator("#main-content").focus();
+          await page.evaluate(() => window.scrollTo(0, 0));
           await page.screenshot({
             path:
-              "docs/evidence/journal-pilot-2026-10-02/controlled-" +
+              "docs/evidence/journal-complete-2026-10-02/controlled-" +
               name +
               "-" +
               theme +
@@ -134,6 +135,20 @@ test.describe("visual acceptance matrix", () => {
                 () => document.documentElement.scrollWidth <= innerWidth,
               ),
             ).toBe(true);
+            const art = page.locator(".chapter-figure:visible");
+            if (await art.count()) {
+              const a = await art.boundingBox(),
+                title = await page.locator("h1").boundingBox();
+              expect(
+                !!a &&
+                  !!title &&
+                  a.x < title.x + title.width &&
+                  a.x + a.width > title.x &&
+                  a.y < title.y + title.height &&
+                  a.y + a.height > title.y,
+                route + " artwork must not overlap the title",
+              ).toBe(false);
+            }
             await expect(page.locator("main")).not.toContainText(
               /undefined|NaN/,
             );
@@ -149,6 +164,10 @@ test.describe("visual acceptance matrix", () => {
               })),
               route,
             ).toEqual([]);
+            for (const img of await page
+              .locator('img:visible[loading="lazy"]')
+              .all())
+              await img.scrollIntoViewIfNeeded();
             await expect
               .poll(() =>
                 page
@@ -164,12 +183,13 @@ test.describe("visual acceptance matrix", () => {
                   ),
               )
               .toEqual([]);
-            mkdirSync("docs/evidence/journal-pilot-2026-10-02", {
+            mkdirSync("docs/evidence/journal-complete-2026-10-02", {
               recursive: true,
             });
+            await page.evaluate(() => window.scrollTo(0, 0));
             await page.screenshot({
               path:
-                "docs/evidence/journal-pilot-2026-10-02/" +
+                "docs/evidence/journal-complete-2026-10-02/" +
                 route +
                 "-" +
                 theme +
@@ -225,7 +245,7 @@ test.describe("visual acceptance matrix", () => {
           await page.evaluate(() => window.scrollTo(0, 0));
           await page.screenshot({
             path:
-              "docs/evidence/journal-pilot-2026-10-02/controlled-" +
+              "docs/evidence/journal-complete-2026-10-02/controlled-" +
               name +
               "-" +
               theme +
@@ -284,6 +304,7 @@ test.describe("visual acceptance matrix", () => {
   test("system theme follows device changes, manual choice persists before app load", async ({
     page,
   }) => {
+    await controlledPortal(page);
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
@@ -299,6 +320,7 @@ test.describe("visual acceptance matrix", () => {
   test("mobile navigation supports keyboard, escape and direct proposal routes", async ({
     page,
   }) => {
+    await controlledPortal(page);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
     await page.getByRole("button", { name: "Open navigation" }).focus();

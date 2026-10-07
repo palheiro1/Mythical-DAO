@@ -1,3 +1,8 @@
+import { CommunityShortcuts } from "./Community";
+import { JournalHeading } from "./JournalHeading";
+import { BlockTime } from "./HumanTime";
+import { compactAddresses } from "./time-format";
+import { ReadableText, ProposalDocument } from "./ReadableIdentity";
 import { TokenAmount } from "./TokenAmount";
 import { useState } from "react";
 import {
@@ -35,7 +40,9 @@ export function ActionDetails({
       {proposalActions(p).map((action, i) => (
         <li className="action-item" key={i}>
           <strong>{m("Action {number}", { number: i + 1 })}</strong>
-          <p>{actionSummary(action, config)}</p>
+          <p>
+            <ReadableText text={actionSummary(action, config)} />
+          </p>
           <dl>
             <dt>{m("Target")}</dt>
             <dd>
@@ -73,18 +80,44 @@ export function ProposalDetail({
       data: p,
       isPending,
       error,
+      isRefetchError,
     } = useApi<Proposal>("proposals/" + contract + "/" + id),
     tx = useTransaction(),
-    { address } = useAccount();
+    { address, chainId } = useAccount();
+  const voter = useApi<{
+    hasVoted: boolean;
+    votingPower?: string | null;
+    currentBalance?: string;
+    snapshot?: string;
+    account: string;
+    checkedAt: number;
+  }>(
+    `vote-status/${contract}/${id}/${address ?? ""}`,
+    !!address &&
+      chainId === config.chainId &&
+      contract.toLowerCase() ===
+        config.contracts.governor?.address.toLowerCase(),
+    15_000,
+  );
+  const voteChecked =
+    !!address &&
+    !voter.isError &&
+    voter.data?.account === address.toLowerCase() &&
+    Date.now() - voter.data.checkedAt < 30_000;
+  const alreadyVoted = voteChecked && voter.data?.hasVoted === true;
   const [choice, setChoice] = useState(1),
     [localError, setLocalError] = useState("");
   if (isPending) return <p role="status">{m("Loading proposal…")}</p>;
-  if (error || !p)
+  if (!p)
     return (
       <Empty title={m("Proposal unavailable")}>
         {error?.message ?? m("This proposal has not been indexed.")}
       </Empty>
     );
+  const resultsStale =
+    isRefetchError ||
+    p.results?.fresh === false ||
+    (!!p.results && Date.now() - p.results.checkedAt > 180000);
   let intact = true;
   try {
     verifyProposal(p);
@@ -104,6 +137,15 @@ export function ProposalDetail({
     try {
       if (!intact)
         throw new Error(m("The proposal content failed its integrity check."));
+      if (operation === "vote") {
+        const current = await voter.refetch();
+        if (current.error || !current.data)
+          throw new Error(
+            "Your voting status could not be verified. Please try again.",
+          );
+        if (current.data.hasVoted)
+          throw new Error("This wallet has already voted on this proposal.");
+      }
       const args = [
         p.targets,
         p.values.map(BigInt),
@@ -161,33 +203,28 @@ export function ProposalDetail({
       setLocalError((e as Error).message);
     }
   };
-  const estimate = (block: string) =>
-    health?.head
-      ? new Date(
-          Date.now() + Number(BigInt(block) - BigInt(health.head)) * 2000,
-        ).toLocaleString() + " (estimated)"
-      : m("Block time determines the date");
   return (
     <>
       <a className="back" href="#governance">
         {m("← Governance")}
       </a>
-      <div className="page-heading">
-        <div className="section-top">
-          <span className="eyebrow">
-            {advisory
-              ? m("Community ballot")
-              : legacy
-                ? m("Historical Governor")
-                : m("Executable proposal")}
-          </span>
+      <JournalHeading
+        chapter={
+          advisory ? "COUNCIL / ADVISORY RECORD" : "COUNCIL / THE DECISION"
+        }
+        title={compactAddresses(
+          p.description.split("\n")[0].replace(/^#+\s*/, ""),
+        )}
+        art="haechi"
+      >
+        <div className="proposal-byline">
           <StateBadge state={p.state} />
+          <span>
+            {m("Proposed by")} <AddressLink address={p.proposer} />
+          </span>
         </div>
-        <h1>{p.description.split("\n")[0].replace(/^#+\s*/, "")}</h1>
-        <p>
-          {m("Proposed by")} <AddressLink address={p.proposer} />
-        </p>
-      </div>
+      </JournalHeading>
+      <CommunityShortcuts />
       {!intact && (
         <p role="alert" className="notice error">
           {m(
@@ -226,7 +263,11 @@ export function ProposalDetail({
       <div className="split-layout">
         <article className="panel">
           <h2>{m("The proposal")}</h2>
-          <pre className="proposal-text">{p.description}</pre>
+          <ProposalDocument text={p.description} />
+          <details className="original-document">
+            <summary>Original proposal text</summary>
+            <pre className="proposal-text">{p.description}</pre>
+          </details>
           {!advisory && intact && (
             <>
               <h2>{m("Proposed on-chain actions")}</h2>
@@ -259,6 +300,19 @@ export function ProposalDetail({
           <section className="panel">
             <span className="eyebrow">{m("Collective decision")}</span>
             <h2>{m("Voting results")}</h2>
+            {resultsStale && (
+              <p className="notice warning">
+                Results could not be refreshed. The last verified totals are
+                shown below.
+              </p>
+            )}
+            {p.results && (
+              <p className="muted">
+                Checked{" "}
+                {new Date(p.results.checkedAt).toLocaleTimeString("en-GB")} ·
+                refreshes every 2 minutes
+              </p>
+            )}
             {choices.map((c, i) => (
               <div className="vote-row" key={i}>
                 <div className="section-top">
@@ -316,14 +370,22 @@ export function ProposalDetail({
               </p>
             )}
             <dl className="timing">
-              <dt>
-                {m("Voting begins after block")} {p.snapshot}
-              </dt>
-              <dd>{estimate(p.snapshot)}</dd>
-              <dt>
-                {m("Voting ends at block")} {p.deadline}
-              </dt>
-              <dd>{estimate(p.deadline)}</dd>
+              <dt>Voting opens</dt>
+              <dd>
+                <BlockTime
+                  block={p.snapshot}
+                  futureLabel="Opens"
+                  pastLabel="Opened"
+                />
+              </dd>
+              <dt>Voting closes</dt>
+              <dd>
+                <BlockTime
+                  block={p.deadline}
+                  futureLabel="Closes"
+                  pastLabel="Closed"
+                />
+              </dd>
               {p.eta && BigInt(p.eta) > 0n && (
                 <>
                   <dt>{m("Earliest execution")}</dt>
@@ -333,6 +395,42 @@ export function ProposalDetail({
                 </>
               )}
             </dl>
+            {!legacy &&
+              address &&
+              voteChecked &&
+              voter.data?.votingPower != null && (
+                <section
+                  className="proposal-wallet-power"
+                  aria-label="Your voting power"
+                >
+                  <h3>Your voting power for this proposal</h3>
+                  <strong>
+                    <TokenAmount
+                      value={voter.data.votingPower}
+                      token={config.contracts.mana?.address}
+                      showSymbol
+                    />
+                  </strong>
+                  <p className="muted">
+                    Fixed when voting opened. Later transfers or delegation do
+                    not change this proposal.
+                  </p>
+                  <p>
+                    Current wallet balance:{" "}
+                    <TokenAmount
+                      value={voter.data.currentBalance}
+                      token={config.contracts.mana?.address}
+                      showSymbol
+                    />
+                  </p>
+                  {voter.data.votingPower === "0" && (
+                    <p className="muted">
+                      This wallet had no delegated voting power when voting
+                      opened. Delegate now to participate in future proposals.
+                    </p>
+                  )}
+                </section>
+              )}
             {!legacy && p.state === "Active" && (
               <>
                 <label>
@@ -350,11 +448,27 @@ export function ProposalDetail({
                 </label>
                 <button
                   className="button primary full"
-                  disabled={!canSign || !intact || tx.busy}
+                  disabled={
+                    !canSign ||
+                    !intact ||
+                    tx.busy ||
+                    !voteChecked ||
+                    alreadyVoted ||
+                    resultsStale
+                  }
                   onClick={() => void action("vote")}
                 >
-                  {m("Review vote →")}
+                  {alreadyVoted ? "Vote recorded" : m("Review vote →")}
                 </button>
+                <p role="status" className="muted">
+                  {alreadyVoted
+                    ? "This wallet has already voted on this proposal. Totals refresh every 2 minutes."
+                    : voter.isError
+                      ? "Voting status unavailable. Retrying automatically; voting stays disabled until verified."
+                      : address && !voteChecked
+                        ? "Checking whether this wallet has voted… Voting stays disabled until verified."
+                        : ""}
+                </p>
                 <p className="muted">
                   {m(
                     "One vote per address. It cannot be changed. Weight is fixed at the snapshot block.",

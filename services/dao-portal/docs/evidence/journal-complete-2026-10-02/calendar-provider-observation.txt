@@ -1,0 +1,6 @@
+Failed polygon-bor-rpc.publicnode.com net::ERR_ABORTED
+Failed polygon-bor-rpc.publicnode.com net::ERR_ABORTED
+Failed polygon-bor-rpc.publicnode.com net::ERR_ABORTED
+RPC HTTP 529 {"jsonrpc":"2.0","error":{"code":-32000,"message":"upstream overloaded"},"id":5}
+
+[ 'Checking date…', 'Checking date…', 'Checking date…' ]

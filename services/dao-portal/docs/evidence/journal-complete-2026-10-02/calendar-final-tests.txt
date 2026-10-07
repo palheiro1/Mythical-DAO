@@ -1,0 +1,15 @@
+
+Running 10 tests using 1 worker
+
+  ✓   1 [desktop] › tests/browser/readable.spec.ts:3:1 › future deadlines are human estimates and exact block metadata remains accessible (446ms)
+  ✓   2 [desktop] › tests/browser/readable.spec.ts:31:1 › titles abbreviate addresses, readers can reveal originals and copy an exact address (482ms)
+  ✓   3 [desktop] › tests/browser/readable.spec.ts:65:1 › unavailable date lookup never invents a historical date (288ms)
+  ✓   4 [desktop] › tests/browser/readable.spec.ts:81:1 › calendar uses its public fallback when the primary is overloaded (277ms)
+  ✓   5 [desktop] › tests/browser/readable.spec.ts:100:1 › calendar remains readable when backend health is unavailable (278ms)
+  ✓   6 [mobile] › tests/browser/readable.spec.ts:3:1 › future deadlines are human estimates and exact block metadata remains accessible (527ms)
+  ✓   7 [mobile] › tests/browser/readable.spec.ts:31:1 › titles abbreviate addresses, readers can reveal originals and copy an exact address (499ms)
+  ✓   8 [mobile] › tests/browser/readable.spec.ts:65:1 › unavailable date lookup never invents a historical date (267ms)
+  ✓   9 [mobile] › tests/browser/readable.spec.ts:81:1 › calendar uses its public fallback when the primary is overloaded (270ms)
+  ✓  10 [mobile] › tests/browser/readable.spec.ts:100:1 › calendar remains readable when backend health is unavailable (269ms)
+
+  10 passed (5.7s)

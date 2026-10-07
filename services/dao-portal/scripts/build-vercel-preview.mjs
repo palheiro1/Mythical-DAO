@@ -31,7 +31,7 @@ writeFileSync(
             "X-Frame-Options": "DENY",
             "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
             "Content-Security-Policy":
-              "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https: wss:; frame-ancestors 'none'; base-uri 'self'; object-src 'none';",
+              "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https: wss:; frame-src https://emerald.widgetbot.io; frame-ancestors 'none'; base-uri 'self'; object-src 'none';",
           },
           continue: true,
         },

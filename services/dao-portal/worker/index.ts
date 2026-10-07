@@ -1,8 +1,22 @@
+import { polygon } from "viem/chains";
+import { voterStatus } from "./voter-status";
+import { readClients } from "./infura";
+import {
+  presentSnapshot,
+  readProposalSnapshot,
+  refreshProposalSnapshot,
+} from "./proposal-snapshot";
 import { graphComparisonStatus, runGraphComparison } from "./graph-comparison";
 import { graphHistory } from "./graph-history";
 import { mergeHistoryRows } from "./graph-history-model";
 import { simulateActions } from "./simulation";
-import { isAddress, isHex, type Address, type Hex } from "viem";
+import {
+  isAddress,
+  isHex,
+  decodeFunctionData,
+  type Address,
+  type Hex,
+} from "viem";
 import { redeemPreview } from "./ragequit";
 import { verifyLive, verifyOperation } from "./live";
 import { recoverProposal } from "./proposal-receipt";
@@ -61,7 +75,8 @@ async function handle(request: Request, env: Env): Promise<Response> {
     request.method === "POST" &&
     request.headers.has("origin") &&
     request.headers.get("origin") !== url.origin &&
-    request.headers.get("origin") !== new URL(cfg.portalUrl).origin
+    request.headers.get("origin") !== new URL(cfg.portalUrl).origin &&
+    request.headers.get("origin") !== env.PORTAL_PREVIEW_ORIGIN
   )
     return json({ error: "Origin not allowed" }, 403);
   if (path === "/api/openapi.json") return json(openapi);
@@ -85,6 +100,66 @@ async function handle(request: Request, env: Env): Promise<Response> {
       })),
       readOnly: true,
     });
+  }
+  // Public proposal pages use a periodically refreshed materialized read, instead of
+  // repeating the complete verification pipeline in every visitor's CPU budget.
+  const cachedDetail = path.match(
+    /^\/api\/proposals\/(0x[0-9a-fA-F]{40})\/(\d+)$/,
+  );
+  if (
+    request.method === "GET" &&
+    (path === "/api/proposals" || path === "/api/health" || cachedDetail)
+  ) {
+    const snapshot = await readProposalSnapshot(env);
+    if (snapshot) {
+      if (path === "/api/health" && snapshot.health) {
+        const fresh =
+          Date.now() - snapshot.checkedAt <= 180000 &&
+          Date.now() >= snapshot.checkedAt;
+        return json({
+          ...snapshot.health,
+          ...(fresh
+            ? {}
+            : {
+                signingAllowed: false,
+                reason: "LIVE_CHECK_EXPIRED",
+                status: "degraded",
+              }),
+        });
+      }
+      const items = presentSnapshot(snapshot);
+      if (cachedDetail) {
+        const item = items.find(
+          (p) =>
+            p.contract.toLowerCase() === cachedDetail[1].toLowerCase() &&
+            p.id === cachedDetail[2],
+        );
+        if (item) return json(item);
+      } else if (path === "/api/proposals" && !url.searchParams.has("before")) {
+        const before = parseCursor(url.searchParams.get("before"), "before");
+        const rows = snapshot.rows
+          .filter(
+            (e) =>
+              e.block_number < before.block ||
+              (e.block_number === before.block &&
+                (e.log_index < before.log ||
+                  (e.log_index === before.log &&
+                    e.contract < before.contract))),
+          )
+          .slice(0, 20);
+        const keys = new Set(
+          rows.map(
+            (e) => e.contract + ":" + JSON.parse(e.args_json).proposalId,
+          ),
+        );
+        return json({
+          items: items.filter((p) => keys.has(p.contract + ":" + p.id)),
+          asOfBlock: snapshot.block,
+          checkedAt: snapshot.checkedAt,
+          nextBefore: rows.length === 20 ? eventCursor(rows.at(-1)!) : null,
+        });
+      }
+    }
   }
   let pair;
   try {
@@ -112,6 +187,33 @@ async function handle(request: Request, env: Env): Promise<Response> {
     )
       return json({ items: [], unavailable: true });
     return json({ error: "RPC_NOT_CONFIGURED" }, 503);
+  }
+  const voter = path.match(
+    /^\/api\/vote-status\/(0x[0-9a-fA-F]{40})\/(\d+)\/(0x[0-9a-fA-F]{40})$/,
+  );
+  if (voter && request.method === "GET") {
+    pair = readClients(env);
+    if (voter[1].toLowerCase() !== cfg.contracts.governor?.address)
+      return json({ error: "Unknown Governor" }, 400);
+    const chainIds = await Promise.all(pair.map((c) => c.getChainId()));
+    if (chainIds.some((id) => id !== cfg.chainId))
+      throw new RpcFault("RPC_WRONG_CHAIN");
+    const heads = await Promise.all(
+      pair.map((c) => c.getBlockNumber({ cacheTime: 0 })),
+    );
+    const blockNumber = heads[0] < heads[1] ? heads[0] : heads[1];
+    if (heads[0] > heads[1] + 8n || heads[1] > heads[0] + 8n)
+      throw new RpcFault("RPC_HEAD_DIVERGENCE");
+    return json(
+      await voterStatus(
+        pair,
+        voter[1] as Address,
+        cfg.contracts.mana!.address,
+        BigInt(voter[2]),
+        voter[3] as Address,
+        blockNumber,
+      ),
+    );
   }
   if (path === "/api/health") {
     const health = await indexHealth(env, cfg, pair);
@@ -148,6 +250,25 @@ async function handle(request: Request, env: Env): Promise<Response> {
     (path === "/api/preflight" || path === "/api/simulate-actions")
   ) {
     const input = await body(request);
+    // Delegation must not depend on a saturated anonymous RPC. Use the same
+    // metered Infura budget while retaining independent simulation and checks.
+    if (
+      path === "/api/preflight" &&
+      typeof input.to === "string" &&
+      input.to.toLowerCase() === cfg.contracts.mana?.address &&
+      typeof input.data === "string" &&
+      isHex(input.data)
+    ) {
+      try {
+        if (
+          decodeFunctionData({ abi: tokenAbi, data: input.data })
+            .functionName === "delegate"
+        )
+          pair = readClients(env);
+      } catch {
+        /* Invalid calldata is rejected by the normal operation verifier. */
+      }
+    }
     const { head, confirmed } = await commonHead(pair, cfg);
     // Live calls verify the current chain directly; no historical cursor is trusted.
     const blockHash = await agreed(
@@ -220,6 +341,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     });
   }
   if (request.method !== "GET") return json({ error: "Not found" }, 404);
+  if (/^\/api\/members\/0x[0-9a-fA-F]{40}$/.test(path)) pair = readClients(env);
   const { head, confirmed } = await commonHead(pair, cfg);
   // Request-local read: no public endpoint triggers Graph queries or cache writes.
   let historyRead: ReturnType<typeof graphHistory> | undefined;
@@ -553,48 +675,47 @@ async function handle(request: Request, env: Env): Promise<Response> {
   if (account) {
     const address = account[1] as Address,
       mana = cfg.contracts.mana!.address;
-    const [balance, votes, delegate, supply, allowance] = await agreed(
+    const [balance, votes, delegate, supply, moduleAllowance] = await agreed(
       pair,
       (c) =>
-        Promise.all([
-          c.readContract({
-            address: mana,
-            abi: tokenAbi,
-            functionName: "balanceOf",
-            args: [address],
-            blockNumber: head,
-          }),
-          c.readContract({
-            address: mana,
-            abi: tokenAbi,
-            functionName: "getVotes",
-            args: [address],
-            blockNumber: head,
-          }),
-          c.readContract({
-            address: mana,
-            abi: tokenAbi,
-            functionName: "delegates",
-            args: [address],
-            blockNumber: head,
-          }),
-          c.readContract({
-            address: mana,
-            abi: tokenAbi,
-            functionName: "totalSupply",
-            blockNumber: head,
-          }),
-          cfg.contracts.ragequitModule
-            ? c.readContract({
-                address: mana,
-                abi: tokenAbi,
-                functionName: "allowance",
-                args: [address, cfg.contracts.ragequitModule.address],
-                blockNumber: head,
-              })
-            : Promise.resolve(0n),
-        ]),
+        c.multicall({
+          multicallAddress: polygon.contracts.multicall3.address,
+          blockNumber: head,
+          allowFailure: false,
+          contracts: [
+            {
+              address: mana,
+              abi: tokenAbi,
+              functionName: "balanceOf",
+              args: [address],
+            },
+            {
+              address: mana,
+              abi: tokenAbi,
+              functionName: "getVotes",
+              args: [address],
+            },
+            {
+              address: mana,
+              abi: tokenAbi,
+              functionName: "delegates",
+              args: [address],
+            },
+            { address: mana, abi: tokenAbi, functionName: "totalSupply" },
+            {
+              address: mana,
+              abi: tokenAbi,
+              functionName: "allowance",
+              args: [
+                address,
+                cfg.contracts.ragequitModule?.address ??
+                  "0x0000000000000000000000000000000000000000",
+              ],
+            },
+          ] as const,
+        }),
     );
+    const allowance = cfg.contracts.ragequitModule ? moduleAllowance : 0n;
     return json({
       balance,
       votes,
@@ -687,19 +808,48 @@ export default {
       );
     }
   },
-  scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
+  scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
     ctx.waitUntil(
-      runGraphComparison(env)
-        .catch(() => {
+      (async () => {
+        // Separate invocations preserve the free Worker's subrequest budget.
+        // The existing minute trigger also bootstraps/retries an expired display
+        // while a newly configured trigger is propagating or has missed a run.
+        let refresh = event.cron === "*/2 * * * *";
+        try {
+          const previous = await readProposalSnapshot(env);
+          const age = previous ? Date.now() - previous.checkedAt : Infinity;
+          if (refresh && age >= 0 && age < 60000) return;
+          refresh ||= age > 90000 || age < 0;
+        } catch {
+          /* Cache availability must not prevent independent indexing. */
+        }
+        if (refresh) {
+          try {
+            await refreshProposalSnapshot(env, config(env));
+          } catch (error) {
+            const reason =
+              error instanceof Error && /^[A-Z_]+$/.test(error.message)
+                ? error.message
+                : "SNAPSHOT_READ_FAILED";
+            console.warn(
+              JSON.stringify({
+                event: "proposal_snapshot_refresh_failed",
+                reason,
+              }),
+            );
+          }
+          return;
+        }
+        const ran = await runGraphComparison(env).catch(() => {
           console.error(
             JSON.stringify({ event: "graph_scheduled_task_failed" }),
           );
           return false;
-        })
-        .then((ran) => (ran ? undefined : indexChain(env)))
-        .catch(() => {
-          console.error(JSON.stringify({ event: "scheduled_task_failed" }));
-        }),
+        });
+        if (!ran) await indexChain(env);
+      })().catch(() => {
+        console.error(JSON.stringify({ event: "scheduled_task_failed" }));
+      }),
     );
   },
 } satisfies ExportedHandler<Env>;

@@ -1,0 +1,152 @@
+
+> @mythical/dao-portal@0.1.0 test:browser
+> playwright test
+
+
+Running 114 tests using 1 worker
+
+  ✘    1 [desktop] › tests/browser/camp.spec.ts:5:1 › all six map locations open their existing routes and return to camp (5.5s)
+  ✓    2 [desktop] › tests/browser/camp.spec.ts:34:1 › camp follows the saved theme and remains usable without the artwork (635ms)
+  ✓    3 [desktop] › tests/browser/camp.spec.ts:70:1 › map has accessible mobile targets, reflows and respects reduced motion (1.3s)
+  ✓    4 [desktop] › tests/browser/camp.spec.ts:102:1 › treasury numbers expose exact fractions and distinguish zero, dust and revocable allowance (278ms)
+  ✓    5 [desktop] › tests/browser/camp.spec.ts:180:1 › Max and exit quote keep every MANA decimal even when the balance is rounded (510ms)
+  ✓    6 [desktop] › tests/browser/existing-governor.spec.ts:22:3 › existing Governor castVote uses its real direct call (503ms)
+  ✓    7 [desktop] › tests/browser/existing-governor.spec.ts:22:3 › existing Governor execute uses its real direct call (472ms)
+  ✓    8 [desktop] › tests/browser/existing-governor.spec.ts:22:3 › existing Governor cancel uses its real direct call (472ms)
+  ✓    9 [desktop] › tests/browser/existing-governor.spec.ts:55:1 › missing module leaves delegation available and points advisory votes to Snapshot (371ms)
+  ✓   10 [desktop] › tests/browser/existing-governor.spec.ts:88:1 › revoked allowance explains unavailability beside the exit controls (402ms)
+  ✓   11 [desktop] › tests/browser/flows.spec.ts:15:1 › verified treasury identifies payments and preserves exact balances (261ms)
+  ✓   12 [desktop] › tests/browser/flows.spec.ts:32:1 › unavailable, syncing, empty and stale data stay distinct (595ms)
+  ✓   13 [desktop] › tests/browser/flows.spec.ts:79:1 › live membership stays visible while history syncs and can recover after an RPC failure (492ms)
+  ✓   14 [desktop] › tests/browser/flows.spec.ts:135:1 › history keeps the original date separate from import provenance (402ms)
+  ✓   15 [desktop] › tests/browser/flows.spec.ts:159:1 › proposal detail presents direct execution and preserved advisory results (950ms)
+  ✓   16 [desktop] › tests/browser/flows.spec.ts:195:1 › draft import, export and reviewed text keep the existing format (359ms)
+  ✓   17 [desktop] › tests/browser/flows.spec.ts:224:1 › wallet menu avoids accidental disconnect and account changes invalidate a review (434ms)
+  ✓   18 [desktop] › tests/browser/flows.spec.ts:261:1 › exit edits and expiration invalidate acknowledgment; an unpinned module cannot reach signing (596ms)
+  ✓   19 [desktop] › tests/browser/flows.spec.ts:321:1 › an API-approved but unpinned module cannot obtain MANA authorization (421ms)
+  ✓   20 [desktop] › tests/browser/flows.spec.ts:345:1 › reviewed proposal text and choices reach the wallet unchanged (557ms)
+  ✓   21 [desktop] › tests/browser/flows.spec.ts:403:1 › failed final simulation prevents a wallet submission (458ms)
+  ✓   22 [desktop] › tests/browser/graph-history.spec.ts:7:1 › supplemental history shows scoped real counts, provenance and safe fallback without claiming full sync (1.6s)
+  ✓   23 [desktop] › tests/browser/journal.spec.ts:12:1 › decision summaries add exact payments by address and keep approvals distinct (279ms)
+  ✓   24 [desktop] › tests/browser/journal.spec.ts:62:1 › compact map expands, traps focus, closes with Escape and keeps the original destinations (418ms)
+  ✓   25 [desktop] › tests/browser/journal.spec.ts:96:1 › initial health loading is not presented as a confirmed failure (327ms)
+  ✓   26 [desktop] › tests/browser/journal.spec.ts:127:1 › the approved journal design covers every operational route (390ms)
+  ✓   27 [desktop] › tests/browser/journal.spec.ts:153:1 › official artwork, layouts and map dialog pass the pilot visual matrix (11.6s)
+  ✓   28 [desktop] › tests/browser/journal.spec.ts:246:1 › treasury activity starts with six dated entries and expands the loaded history (353ms)
+  ✓   29 [desktop] › tests/browser/live-governance.spec.ts:5:1 › receipt recovery is accessible during sync and preserves the direct proposal link (337ms)
+  ✓   30 [desktop] › tests/browser/live-governance.spec.ts:32:1 › live governance banner and recovery form fit both themes and reflow (1.6s)
+  ✓   31 [desktop] › tests/browser/live-governance.spec.ts:74:1 › an unverified action batch requires explicit acknowledgment before wallet signing (619ms)
+  -   32 [desktop] › tests/browser/portal-fork.spec.ts:96:1 › real Polygon Governor web lifecycle with an empty archive
+  ✓   33 [desktop] › tests/browser/portal.spec.ts:9:1 › public routes render without governance platforms, fonts or horizontal overflow (349ms)
+  ✓   34 [desktop] › tests/browser/portal.spec.ts:37:1 › old drafts and multi-step edits persist without a wallet (634ms)
+  ✓   35 [desktop] › tests/browser/portal.spec.ts:80:1 › overview meets automated accessibility checks (746ms)
+  ✓   36 [desktop] › tests/browser/readable.spec.ts:3:1 › future deadlines are human estimates and exact block metadata remains accessible (360ms)
+  ✓   37 [desktop] › tests/browser/readable.spec.ts:31:1 › titles abbreviate addresses, readers can reveal originals and copy an exact address (489ms)
+  ✓   38 [desktop] › tests/browser/readable.spec.ts:65:1 › unavailable date lookup never invents a historical date (276ms)
+  ✓   39 [desktop] › tests/browser/readable.spec.ts:81:1 › calendar uses its public fallback when the primary is overloaded (279ms)
+  ✓   40 [desktop] › tests/browser/sync.spec.ts:7:1 › sync percentage refreshes, exposes accessible source details and distinguishes errors from completion (1.1s)
+  ✓   41 [desktop] › tests/browser/sync.spec.ts:73:1 › sync indicator fits light/dark layouts and 320px reflow (414ms)
+  ✓   42 [desktop] › tests/browser/visual.spec.ts:23:3 › visual acceptance matrix › active proposal details and completed wizard steps in both themes at all widths (20.5s)
+  ✓   43 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 390 px: routes, contrast and local assets (4.0s)
+  ✓   44 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 768 px: routes, contrast and local assets (4.5s)
+  ✓   45 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 1440 px: routes, contrast and local assets (4.6s)
+  ✓   46 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 390 px: routes, contrast and local assets (4.0s)
+  ✓   47 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 768 px: routes, contrast and local assets (4.0s)
+  ✓   48 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 1440 px: routes, contrast and local assets (4.5s)
+  ✓   49 [desktop] › tests/browser/visual.spec.ts:206:3 › visual acceptance matrix › connected exit preview and unverified deployment warning stay accessible in both themes (7.2s)
+  ✓   50 [desktop] › tests/browser/visual.spec.ts:272:3 › visual acceptance matrix › 320 px and 200% zoom reflow without clipping (640ms)
+  ✓   51 [desktop] › tests/browser/visual.spec.ts:304:3 › visual acceptance matrix › system theme follows device changes, manual choice persists before app load (354ms)
+  ✓   52 [desktop] › tests/browser/visual.spec.ts:319:3 › visual acceptance matrix › mobile navigation supports keyboard, escape and direct proposal routes (363ms)
+  ✓   53 [desktop] › tests/browser/wallet.spec.ts:156:1 › wrong network requires switching before a review (363ms)
+  ✓   54 [desktop] › tests/browser/wallet.spec.ts:166:1 › RPC disagreement never opens a signing prompt (394ms)
+  ✓   55 [desktop] › tests/browser/wallet.spec.ts:177:1 › a declined signature leaves a clear recoverable review (456ms)
+  ✓   56 [desktop] › tests/browser/wallet.spec.ts:188:1 › reverted receipts are never shown as successful (431ms)
+  ✓   57 [desktop] › tests/browser/wallet.spec.ts:199:1 › a successful receipt completes only after the confirmation window (447ms)
+  ✓   58 [mobile] › tests/browser/camp.spec.ts:5:1 › all six map locations open their existing routes and return to camp (946ms)
+  ✓   59 [mobile] › tests/browser/camp.spec.ts:34:1 › camp follows the saved theme and remains usable without the artwork (562ms)
+  ✓   60 [mobile] › tests/browser/camp.spec.ts:70:1 › map has accessible mobile targets, reflows and respects reduced motion (1.3s)
+  ✓   61 [mobile] › tests/browser/camp.spec.ts:102:1 › treasury numbers expose exact fractions and distinguish zero, dust and revocable allowance (259ms)
+  ✓   62 [mobile] › tests/browser/camp.spec.ts:180:1 › Max and exit quote keep every MANA decimal even when the balance is rounded (427ms)
+  ✓   63 [mobile] › tests/browser/existing-governor.spec.ts:22:3 › existing Governor castVote uses its real direct call (437ms)
+  ✓   64 [mobile] › tests/browser/existing-governor.spec.ts:22:3 › existing Governor execute uses its real direct call (449ms)
+  ✓   65 [mobile] › tests/browser/existing-governor.spec.ts:22:3 › existing Governor cancel uses its real direct call (454ms)
+  ✓   66 [mobile] › tests/browser/existing-governor.spec.ts:55:1 › missing module leaves delegation available and points advisory votes to Snapshot (374ms)
+  ✓   67 [mobile] › tests/browser/existing-governor.spec.ts:88:1 › revoked allowance explains unavailability beside the exit controls (360ms)
+  ✓   68 [mobile] › tests/browser/flows.spec.ts:15:1 › verified treasury identifies payments and preserves exact balances (235ms)
+  ✓   69 [mobile] › tests/browser/flows.spec.ts:32:1 › unavailable, syncing, empty and stale data stay distinct (581ms)
+  ✓   70 [mobile] › tests/browser/flows.spec.ts:79:1 › live membership stays visible while history syncs and can recover after an RPC failure (491ms)
+  ✓   71 [mobile] › tests/browser/flows.spec.ts:135:1 › history keeps the original date separate from import provenance (369ms)
+  ✓   72 [mobile] › tests/browser/flows.spec.ts:159:1 › proposal detail presents direct execution and preserved advisory results (839ms)
+  ✓   73 [mobile] › tests/browser/flows.spec.ts:195:1 › draft import, export and reviewed text keep the existing format (391ms)
+  ✓   74 [mobile] › tests/browser/flows.spec.ts:224:1 › wallet menu avoids accidental disconnect and account changes invalidate a review (480ms)
+  ✓   75 [mobile] › tests/browser/flows.spec.ts:261:1 › exit edits and expiration invalidate acknowledgment; an unpinned module cannot reach signing (670ms)
+  ✓   76 [mobile] › tests/browser/flows.spec.ts:321:1 › an API-approved but unpinned module cannot obtain MANA authorization (513ms)
+  ✓   77 [mobile] › tests/browser/flows.spec.ts:345:1 › reviewed proposal text and choices reach the wallet unchanged (586ms)
+  ✓   78 [mobile] › tests/browser/flows.spec.ts:403:1 › failed final simulation prevents a wallet submission (458ms)
+  ✓   79 [mobile] › tests/browser/graph-history.spec.ts:7:1 › supplemental history shows scoped real counts, provenance and safe fallback without claiming full sync (1.8s)
+  ✓   80 [mobile] › tests/browser/journal.spec.ts:12:1 › decision summaries add exact payments by address and keep approvals distinct (298ms)
+  ✓   81 [mobile] › tests/browser/journal.spec.ts:62:1 › compact map expands, traps focus, closes with Escape and keeps the original destinations (439ms)
+  ✓   82 [mobile] › tests/browser/journal.spec.ts:96:1 › initial health loading is not presented as a confirmed failure (358ms)
+  ✓   83 [mobile] › tests/browser/journal.spec.ts:127:1 › the approved journal design covers every operational route (416ms)
+  -   84 [mobile] › tests/browser/journal.spec.ts:153:1 › official artwork, layouts and map dialog pass the pilot visual matrix
+  ✓   85 [mobile] › tests/browser/journal.spec.ts:246:1 › treasury activity starts with six dated entries and expands the loaded history (449ms)
+  ✓   86 [mobile] › tests/browser/live-governance.spec.ts:5:1 › receipt recovery is accessible during sync and preserves the direct proposal link (365ms)
+  ✓   87 [mobile] › tests/browser/live-governance.spec.ts:32:1 › live governance banner and recovery form fit both themes and reflow (1.6s)
+  ✓   88 [mobile] › tests/browser/live-governance.spec.ts:74:1 › an unverified action batch requires explicit acknowledgment before wallet signing (586ms)
+  -   89 [mobile] › tests/browser/portal-fork.spec.ts:96:1 › real Polygon Governor web lifecycle with an empty archive
+  ✓   90 [mobile] › tests/browser/portal.spec.ts:9:1 › public routes render without governance platforms, fonts or horizontal overflow (356ms)
+  ✓   91 [mobile] › tests/browser/portal.spec.ts:37:1 › old drafts and multi-step edits persist without a wallet (605ms)
+  ✓   92 [mobile] › tests/browser/portal.spec.ts:80:1 › overview meets automated accessibility checks (702ms)
+  ✓   93 [mobile] › tests/browser/readable.spec.ts:3:1 › future deadlines are human estimates and exact block metadata remains accessible (368ms)
+  ✓   94 [mobile] › tests/browser/readable.spec.ts:31:1 › titles abbreviate addresses, readers can reveal originals and copy an exact address (473ms)
+  ✓   95 [mobile] › tests/browser/readable.spec.ts:65:1 › unavailable date lookup never invents a historical date (259ms)
+  ✓   96 [mobile] › tests/browser/readable.spec.ts:81:1 › calendar uses its public fallback when the primary is overloaded (270ms)
+  ✓   97 [mobile] › tests/browser/sync.spec.ts:7:1 › sync percentage refreshes, exposes accessible source details and distinguishes errors from completion (1.0s)
+  ✓   98 [mobile] › tests/browser/sync.spec.ts:73:1 › sync indicator fits light/dark layouts and 320px reflow (388ms)
+  -   99 [mobile] › tests/browser/visual.spec.ts:23:3 › visual acceptance matrix › active proposal details and completed wizard steps in both themes at all widths
+  -  100 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 390 px: routes, contrast and local assets
+  -  101 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 768 px: routes, contrast and local assets
+  -  102 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 1440 px: routes, contrast and local assets
+  -  103 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 390 px: routes, contrast and local assets
+  -  104 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 768 px: routes, contrast and local assets
+  -  105 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 1440 px: routes, contrast and local assets
+  -  106 [mobile] › tests/browser/visual.spec.ts:206:3 › visual acceptance matrix › connected exit preview and unverified deployment warning stay accessible in both themes
+  -  107 [mobile] › tests/browser/visual.spec.ts:272:3 › visual acceptance matrix › 320 px and 200% zoom reflow without clipping
+  -  108 [mobile] › tests/browser/visual.spec.ts:304:3 › visual acceptance matrix › system theme follows device changes, manual choice persists before app load
+  -  109 [mobile] › tests/browser/visual.spec.ts:319:3 › visual acceptance matrix › mobile navigation supports keyboard, escape and direct proposal routes
+  ✓  110 [mobile] › tests/browser/wallet.spec.ts:156:1 › wrong network requires switching before a review (346ms)
+  ✓  111 [mobile] › tests/browser/wallet.spec.ts:166:1 › RPC disagreement never opens a signing prompt (393ms)
+  ✓  112 [mobile] › tests/browser/wallet.spec.ts:177:1 › a declined signature leaves a clear recoverable review (440ms)
+  ✓  113 [mobile] › tests/browser/wallet.spec.ts:188:1 › reverted receipts are never shown as successful (431ms)
+  ✓  114 [mobile] › tests/browser/wallet.spec.ts:199:1 › a successful receipt completes only after the confirmation window (425ms)
+
+
+  1) [desktop] › tests/browser/camp.spec.ts:5:1 › all six map locations open their existing routes and return to camp
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /#treasury$/
+    Received string:  "http://127.0.0.1:4173/#overview"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        14 × locator resolved to <html lang="en" data-theme="light" data-design="journal">…</html>
+           - unexpected value "http://127.0.0.1:4173/#overview"
+
+
+      21 |     await link.focus();
+      22 |     await page.keyboard.press("Enter");
+    > 23 |     await expect(page).toHaveURL(new RegExp(`#${route}$`));
+         |                        ^
+      24 |     await expect(
+      25 |       page.getByRole("heading", { name: heading, exact: true }),
+      26 |     ).toBeVisible();
+        at /home/usuario/Documentos/GitHub/Mythical DAO/services/dao-portal/tests/browser/camp.spec.ts:23:24
+
+    Error Context: test-results/camp-all-six-map-locations-07f33-g-routes-and-return-to-camp-desktop/error-context.md
+
+  1 failed
+    [desktop] › tests/browser/camp.spec.ts:5:1 › all six map locations open their existing routes and return to camp
+  14 skipped
+  99 passed (2.1m)

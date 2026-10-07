@@ -1,0 +1,98 @@
+{
+  "at": "2026-10-02T15:26:43.317Z",
+  "origin": "https://dao.mythicalbeings.io",
+  "pages": [
+    {
+      "theme": "light",
+      "width": 390,
+      "widgetRequests": 16,
+      "restrictedChat": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "widgetRequests": 16,
+      "restrictedChat": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "widgetRequests": 16,
+      "restrictedChat": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "widgetRequests": 16,
+      "restrictedChat": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "widgetRequests": 16,
+      "restrictedChat": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "widgetRequests": 16,
+      "restrictedChat": true,
+      "overflow": false,
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "artifacts": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "community/telegram.svg",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "community/discord.svg",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "assets/ccip-Hoq-EysU.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "assets/index-BtSx2E32.css",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "assets/index-DtTjh6k8.js",
+      "status": 200,
+      "matches": true
+    }
+  ],
+  "integrations": {
+    "telegram": {
+      "channelUrl": "https://t.me/+yod9k6rLKOo5YjQ8"
+    },
+    "discord": {
+      "serverId": "809857155401646151",
+      "channelId": "1195328129435177041",
+      "channelUrl": "https://discord.com/channels/809857155401646151/1195328129435177041"
+    }
+  },
+  "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https: wss:; frame-src https://emerald.widgetbot.io; frame-ancestors 'none'; base-uri 'self'; object-src 'none';"
+}

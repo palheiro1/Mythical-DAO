@@ -28,6 +28,8 @@ test("all six map locations open their existing routes and return to camp", asyn
     await expect(
       page.getByRole("heading", { name: "The Seekers’ Camp", exact: true }),
     ).toBeVisible();
+    // Route navigation restores focus on the next animation frame.
+    await expect(page.locator("#main-content")).toBeFocused();
   }
 });
 

@@ -39,7 +39,14 @@ const rpc = vi.hoisted(() => ({
 }));
 vi.mock("../worker/rpc", async (original) => ({
   ...(await original<typeof import("../worker/rpc")>()),
-  clients: () => [rpc, rpc],
+  clients: () => {
+    const c = {
+      ...rpc,
+      multicall: async ({ contracts }: { contracts: unknown[] }) =>
+        Promise.all(contracts.map((contract) => rpc.readContract(contract))),
+    };
+    return [c, c];
+  },
   commonHead: async () => ({ head: rpc.head + 64n, confirmed: rpc.head }),
 }));
 const member = "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9";

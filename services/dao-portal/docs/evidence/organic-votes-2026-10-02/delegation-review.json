@@ -1,0 +1,16 @@
+[
+  {
+    "account": "0xa8938ced402299c359b2f82a5b68b45ea158e2f5",
+    "selfDelegationReview": true,
+    "liveAPI": true,
+    "wallet": "read-only test provider; no signing capability",
+    "review": "WALLET OPERATION\n×\nVote in your own name\n\nDelegation changes future voting power. Your MANA stays in your wallet. Representatives cannot spend or redeem your tokens. Existing snapshots remain unchanged.\n\nNetwork\nPolygon · 137\nRepresentative\n0xa8938CEd402299C359b2f82A5B68B45eA158E2F5\nMANA balance\nUnavailable\nLive verification block\n94824630\nEstimated network fee\n≈0.02904147 POL\nExact amount: 0.02904146812369583 POL\nTechnical details\n\nReview before signing\n\nConfirm in wallet"
+  },
+  {
+    "account": "0xb96a76ad90b28690250c4ed734942a4224997c52",
+    "selfDelegationReview": true,
+    "liveAPI": true,
+    "wallet": "read-only test provider; no signing capability",
+    "review": "WALLET OPERATION\n×\nVote in your own name\n\nDelegation changes future voting power. Your MANA stays in your wallet. Representatives cannot spend or redeem your tokens. Existing snapshots remain unchanged.\n\nNetwork\nPolygon · 137\nRepresentative\n0xB96a76Ad90B28690250c4eD734942A4224997C52\nMANA balance\nUnavailable\nLive verification block\n94824640\nEstimated network fee\n≈0.02988164 POL\nExact amount: 0.029881644086588899 POL\nTechnical details\n\nReview before signing\n\nConfirm in wallet"
+  }
+]

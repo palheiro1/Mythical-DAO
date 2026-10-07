@@ -1,0 +1,191 @@
+/* Community resources share the journal's colors and control styles. */
+.stay-connected {
+  border-block: 1px solid var(--border);
+  padding-block: 28px;
+}
+.community-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+.community-service {
+  position: relative;
+  min-width: 0;
+  padding: 8px 24px 8px 0;
+}
+.community-service + .community-service {
+  border-left: 1px solid var(--border);
+  padding-left: 28px;
+}
+.community-service h3 {
+  font-size: 22px;
+  margin: 6px 0 12px;
+}
+.community-service p {
+  line-height: 1.6;
+}
+.community-service .field-help,
+.community-pending {
+  font-size: 14px;
+}
+.community-service .journal-kicker {
+  margin-top: 18px;
+  margin-bottom: 0;
+}
+.community-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+}
+.community-icon.telegram {
+  background: #e4f5ff;
+}
+.community-icon.discord {
+  background: #efedff;
+}
+.community-icon img {
+  width: 28px;
+  height: 28px;
+}
+.community-icon .asset-icon {
+  width: 38px;
+  height: 38px;
+}
+.community-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  margin-block: 18px 6px;
+}
+.community-shortcut {
+  min-width: 0;
+}
+.community-shortcuts .text-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding-block: 8px;
+}
+.community-pending {
+  color: var(--muted);
+  display: block;
+  padding-block: 10px;
+}
+.community-dialog {
+  box-sizing: border-box;
+  width: 560px;
+  max-width: calc(100% - 32px);
+  max-height: calc(100% - 32px);
+  padding: 24px;
+  overflow-y: auto;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.community-dialog-heading {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.community-dialog-heading h2 {
+  margin: 0;
+  font-size: 26px;
+}
+.community-dialog-heading button {
+  flex-shrink: 0;
+  min-height: 44px;
+}
+.community-dialog p {
+  line-height: 1.6;
+}
+.community-chat {
+  width: 960px;
+}
+.community-chat iframe {
+  width: 100%;
+  height: min(540px, 55dvh);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-soft);
+}
+.community-chat footer {
+  padding-top: 16px;
+}
+.trade-mana-form label {
+  display: block;
+  margin-top: 18px;
+}
+.trade-mana-form select,
+.trade-mana-form input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.trade-mana-form .segmented {
+  display: flex;
+}
+.trade-mana-form .segmented button {
+  flex: 1;
+  min-height: 44px;
+}
+.trade-route {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 18px 0;
+  border-block: 1px solid var(--border);
+  margin-top: 24px;
+}
+.trade-route > span:not(:nth-child(2)) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.trade-route strong {
+  flex-basis: 100%;
+}
+.trade-token-id {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+@media (max-width: 900px) {
+  .community-columns {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .community-service,
+  .community-service + .community-service {
+    padding: 24px 0;
+    border-left: 0;
+  }
+  .community-service + .community-service {
+    border-top: 1px solid var(--border);
+  }
+}
+@media (max-width: 480px) {
+  .community-dialog {
+    max-width: calc(100% - 16px);
+    max-height: calc(100% - 16px);
+    padding: 16px;
+  }
+  .community-dialog-heading h2 {
+    font-size: 23px;
+  }
+  .trade-route {
+    gap: 8px;
+  }
+}
+/* Use available space, including browser zoom, for the six existing destinations. */
+.camp-paths { container-type: inline-size; }
+@container (max-width: 600px) {
+  .camp-paths .journal-destinations { grid-template-columns: 1fr; }
+}

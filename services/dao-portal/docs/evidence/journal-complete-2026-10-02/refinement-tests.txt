@@ -1,0 +1,46 @@
+
+Running 40 tests using 1 worker
+
+  ✓   1 [desktop] › tests/browser/journal.spec.ts:12:1 › decision summaries add exact payments by address and keep approvals distinct (369ms)
+  ✓   2 [desktop] › tests/browser/journal.spec.ts:62:1 › compact map expands, traps focus, closes with Escape and keeps the original destinations (472ms)
+  ✓   3 [desktop] › tests/browser/journal.spec.ts:96:1 › initial health loading is not presented as a confirmed failure (304ms)
+  ✓   4 [desktop] › tests/browser/journal.spec.ts:127:1 › the approved journal design covers every operational route (350ms)
+  ✓   5 [desktop] › tests/browser/journal.spec.ts:153:1 › official artwork, layouts and map dialog pass the pilot visual matrix (11.7s)
+  ✓   6 [desktop] › tests/browser/journal.spec.ts:246:1 › treasury activity starts with six dated entries and expands the loaded history (370ms)
+  ✓   7 [desktop] › tests/browser/readable.spec.ts:3:1 › future deadlines are human estimates and exact block metadata remains accessible (385ms)
+  ✓   8 [desktop] › tests/browser/readable.spec.ts:31:1 › titles abbreviate addresses, readers can reveal originals and copy an exact address (488ms)
+  ✓   9 [desktop] › tests/browser/readable.spec.ts:65:1 › unavailable date lookup never invents a historical date (1.5s)
+  ✓  10 [desktop] › tests/browser/visual.spec.ts:23:3 › visual acceptance matrix › active proposal details and completed wizard steps in both themes at all widths (20.6s)
+  ✓  11 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 390 px: routes, contrast and local assets (3.9s)
+  ✓  12 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 768 px: routes, contrast and local assets (4.1s)
+  ✓  13 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 1440 px: routes, contrast and local assets (4.5s)
+  ✓  14 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 390 px: routes, contrast and local assets (3.7s)
+  ✓  15 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 768 px: routes, contrast and local assets (3.8s)
+  ✓  16 [desktop] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 1440 px: routes, contrast and local assets (4.3s)
+  ✓  17 [desktop] › tests/browser/visual.spec.ts:206:3 › visual acceptance matrix › connected exit preview and unverified deployment warning stay accessible in both themes (7.3s)
+  ✓  18 [desktop] › tests/browser/visual.spec.ts:272:3 › visual acceptance matrix › 320 px and 200% zoom reflow without clipping (729ms)
+  ✓  19 [desktop] › tests/browser/visual.spec.ts:304:3 › visual acceptance matrix › system theme follows device changes, manual choice persists before app load (352ms)
+  ✓  20 [desktop] › tests/browser/visual.spec.ts:319:3 › visual acceptance matrix › mobile navigation supports keyboard, escape and direct proposal routes (368ms)
+  ✓  21 [mobile] › tests/browser/journal.spec.ts:12:1 › decision summaries add exact payments by address and keep approvals distinct (322ms)
+  ✓  22 [mobile] › tests/browser/journal.spec.ts:62:1 › compact map expands, traps focus, closes with Escape and keeps the original destinations (510ms)
+  ✓  23 [mobile] › tests/browser/journal.spec.ts:96:1 › initial health loading is not presented as a confirmed failure (278ms)
+  ✓  24 [mobile] › tests/browser/journal.spec.ts:127:1 › the approved journal design covers every operational route (337ms)
+  -  25 [mobile] › tests/browser/journal.spec.ts:153:1 › official artwork, layouts and map dialog pass the pilot visual matrix
+  ✓  26 [mobile] › tests/browser/journal.spec.ts:246:1 › treasury activity starts with six dated entries and expands the loaded history (364ms)
+  ✓  27 [mobile] › tests/browser/readable.spec.ts:3:1 › future deadlines are human estimates and exact block metadata remains accessible (364ms)
+  ✓  28 [mobile] › tests/browser/readable.spec.ts:31:1 › titles abbreviate addresses, readers can reveal originals and copy an exact address (521ms)
+  ✓  29 [mobile] › tests/browser/readable.spec.ts:65:1 › unavailable date lookup never invents a historical date (1.6s)
+  -  30 [mobile] › tests/browser/visual.spec.ts:23:3 › visual acceptance matrix › active proposal details and completed wizard steps in both themes at all widths
+  -  31 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 390 px: routes, contrast and local assets
+  -  32 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 768 px: routes, contrast and local assets
+  -  33 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › light at 1440 px: routes, contrast and local assets
+  -  34 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 390 px: routes, contrast and local assets
+  -  35 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 768 px: routes, contrast and local assets
+  -  36 [mobile] › tests/browser/visual.spec.ts:114:7 › visual acceptance matrix › dark at 1440 px: routes, contrast and local assets
+  -  37 [mobile] › tests/browser/visual.spec.ts:206:3 › visual acceptance matrix › connected exit preview and unverified deployment warning stay accessible in both themes
+  -  38 [mobile] › tests/browser/visual.spec.ts:272:3 › visual acceptance matrix › 320 px and 200% zoom reflow without clipping
+  -  39 [mobile] › tests/browser/visual.spec.ts:304:3 › visual acceptance matrix › system theme follows device changes, manual choice persists before app load
+  -  40 [mobile] › tests/browser/visual.spec.ts:319:3 › visual acceptance matrix › mobile navigation supports keyboard, escape and direct proposal routes
+
+  12 skipped
+  28 passed (1.3m)

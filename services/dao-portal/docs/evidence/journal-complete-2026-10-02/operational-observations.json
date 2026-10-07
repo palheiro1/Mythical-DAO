@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-02T10:12:36.138145+00:00",
+  "publicHealthIssue": "Cloudflare HTML: Worker exceeded resource limits",
+  "observedOn": [
+    "https://dao-preview.mythicalbeings.io/api/health",
+    "new immutable Vercel deployment /api/health"
+  ],
+  "directWorkerFollowup": {
+    "status": "syncing",
+    "head": "94820495",
+    "signingAllowed": true
+  },
+  "backendChanged": false,
+  "calendarProviderIssue": "PublicNode HTTP 529 upstream overloaded; dRPC returned real block timestamps after calendar fallback was added"
+}

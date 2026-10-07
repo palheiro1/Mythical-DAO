@@ -1,10 +1,17 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 3,
   "date": "2026-10-02",
   "scope": [
     "Camp",
     "Governance",
-    "Treasury"
+    "Treasury",
+    "Proposal detail",
+    "Delegation",
+    "Create proposal",
+    "History",
+    "Exit DAO",
+    "Field guide",
+    "Dialogs"
   ],
   "assets": [
     {
@@ -66,7 +73,7 @@
         "bytes": 62482,
         "sha256": "ed68709ca580a1e180ac15e922a51ef85dc85cbfe57117d2d621e9efb019034f"
       },
-      "use": "Governance opening",
+      "use": "Preserved Stage A artwork, superseded by Haechi in active Governance",
       "transform": "Proportional resize and WebP encoding; original colors and alpha preserved",
       "theme": "Both, no recoloring"
     },
@@ -108,7 +115,7 @@
         "bytes": 58944,
         "sha256": "11b826adc0721c593476128ad8ce10875c3b3d4495dc2f51d800572fa0bbe40f"
       },
-      "use": "Reserved for Field guide after pilot review",
+      "use": "Planning table opening and Camp planning destination; craft/tools are an editorial association",
       "transform": "Proportional resize and WebP encoding; original colors and alpha preserved",
       "theme": "Both, no recoloring"
     },
@@ -388,6 +395,460 @@
       "license": "public/fonts/CinzelDecorative-OFL.txt",
       "use": "Narrative headings",
       "source": "See CAMP_ASSETS.md"
+    },
+    {
+      "id": "grootslang",
+      "file": "public/journal/grootslang.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/GrootslangRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 678,
+        "bytes": 478333,
+        "sha256": "7d0e11661a952d8d8edf60dc50c107ecd3cf1e4b355027752bad5c1d76394fe3"
+      },
+      "output": {
+        "width": 709,
+        "height": 678,
+        "bytes": 87652,
+        "sha256": "138a8bcfd17be0171f1c184575cf9d9762a2fae850e9b3a1feb98d63012bc7b3"
+      },
+      "use": "Treasury; Camp treasury destination",
+      "association": "The project catalogue associates Grootslang with gems and a guarded treasure.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "grootslang-small",
+      "file": "public/journal/grootslang-small.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/GrootslangRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 678,
+        "bytes": 478333,
+        "sha256": "7d0e11661a952d8d8edf60dc50c107ecd3cf1e4b355027752bad5c1d76394fe3"
+      },
+      "output": {
+        "width": 320,
+        "height": 306,
+        "bytes": 23940,
+        "sha256": "5b3cb9eb2b1c55d1d45a9750d4d2856fe28200d9c85a8885049f88bef78533e5"
+      },
+      "use": "Treasury; Camp treasury destination",
+      "association": "The project catalogue associates Grootslang with gems and a guarded treasure.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "haechi",
+      "file": "public/journal/haechi.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/HaechiRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 682,
+        "bytes": 449539,
+        "sha256": "6a4faf7e8a6110b5c60df455638c636bef6fccb4e1c28676f3b95e7c33315d29"
+      },
+      "output": {
+        "width": 709,
+        "height": 682,
+        "bytes": 75430,
+        "sha256": "0ee9173460990a9cfad6c2d2ea528b6748a21e397d787358d4050f7edd3b356c"
+      },
+      "use": "Governance; proposal detail; Camp council destination",
+      "association": "The project catalogue describes justice and integrity. Editorial association only.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "haechi-small",
+      "file": "public/journal/haechi-small.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/HaechiRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 682,
+        "bytes": 449539,
+        "sha256": "6a4faf7e8a6110b5c60df455638c636bef6fccb4e1c28676f3b95e7c33315d29"
+      },
+      "output": {
+        "width": 320,
+        "height": 308,
+        "bytes": 23744,
+        "sha256": "1f2093432c969a6444f447dd89a5f6f5513b210553c72ff53c29beff60aa0944"
+      },
+      "use": "Governance; proposal detail; Camp council destination",
+      "association": "The project catalogue describes justice and integrity. Editorial association only.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "companions",
+      "file": "public/journal/companions.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/Wati-kutjaraRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 681,
+        "bytes": 661530,
+        "sha256": "b8c1cae04a36c8b8624b705219f3ea0247037ddb068f2f4dec9710228198e6fa"
+      },
+      "output": {
+        "width": 709,
+        "height": 681,
+        "bytes": 110516,
+        "sha256": "c11d7238b1e1085ab9710e72c5cf6696b126bc412166328a826539b4df6810c1"
+      },
+      "use": "Delegation; Camp Seekers destination",
+      "association": "Paired travellers in the project catalogue; visual association only, no DAO office assigned.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "companions-small",
+      "file": "public/journal/companions-small.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/Wati-kutjaraRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 681,
+        "bytes": 661530,
+        "sha256": "b8c1cae04a36c8b8624b705219f3ea0247037ddb068f2f4dec9710228198e6fa"
+      },
+      "output": {
+        "width": 320,
+        "height": 307,
+        "bytes": 29186,
+        "sha256": "42ab895aaf0f7c1cf45149cb203cde240ee7097a592aabd0413ef1ad1db43098"
+      },
+      "use": "Delegation; Camp Seekers destination",
+      "association": "Paired travellers in the project catalogue; visual association only, no DAO office assigned.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "tulpar",
+      "file": "public/journal/tulpar.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/TulparRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 682,
+        "bytes": 437900,
+        "sha256": "a815a4ed58575e0d4577306137ec4347bc7c8911bcf7f9b2b7445c2084953398"
+      },
+      "output": {
+        "width": 709,
+        "height": 682,
+        "bytes": 79776,
+        "sha256": "39f1b375f19fd3bb319ba6db2193059212bb40f54837062d1a35bb5a9056ad9a"
+      },
+      "use": "Exit DAO; Camp departure destination",
+      "association": "A winged horse; travel is a visual association, not a prescribed DAO role.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "tulpar-small",
+      "file": "public/journal/tulpar-small.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/TulparRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 682,
+        "bytes": 437900,
+        "sha256": "a815a4ed58575e0d4577306137ec4347bc7c8911bcf7f9b2b7445c2084953398"
+      },
+      "output": {
+        "width": 320,
+        "height": 308,
+        "bytes": 21898,
+        "sha256": "262a18ca5e81ef185894e31c6add7d7e57264e54a42fbdd88b432f0bf786d525"
+      },
+      "use": "Exit DAO; Camp departure destination",
+      "association": "A winged horse; travel is a visual association, not a prescribed DAO role.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "shahmaran",
+      "file": "public/journal/shahmaran.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/ŞahmaranRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 683,
+        "bytes": 486099,
+        "sha256": "9e33bcc4701c5fe87aad895cc4df23ebda8c4f367818bbfd057241d165338111"
+      },
+      "output": {
+        "width": 709,
+        "height": 683,
+        "bytes": 86290,
+        "sha256": "5f824f3ca3ca5206e91bcd8bdb36e1391218121ad0540177189ec4284c13ad24"
+      },
+      "use": "Field guide",
+      "association": "Stories and wisdom; editorial illustration, not a character speaking on behalf of the DAO.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "shahmaran-small",
+      "file": "public/journal/shahmaran-small.webp",
+      "kind": "official",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/ŞahmaranRGB.jpg",
+      "sourceInfo": {
+        "width": 709,
+        "height": 683,
+        "bytes": 486099,
+        "sha256": "9e33bcc4701c5fe87aad895cc4df23ebda8c4f367818bbfd057241d165338111"
+      },
+      "output": {
+        "width": 320,
+        "height": 308,
+        "bytes": 25968,
+        "sha256": "29983365d55441c2cf2cff5de8611dd6af5a8911f1bc4bd9e0cee6a1852f1889"
+      },
+      "use": "Field guide",
+      "association": "Stories and wisdom; editorial illustration, not a character speaking on behalf of the DAO.",
+      "loreSource": "wallet/src/data/monsters.json",
+      "transform": "Proportional resize and WebP encoding. Original colors, paper, signatures and composition preserved.",
+      "theme": "Both"
+    },
+    {
+      "id": "organic-treasury-480",
+      "file": "public/journal/organic/treasury-480.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/GrootslangRGB.jpg",
+      "prompt": "organic-art-prompts.json: treasury",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 480,
+        "height": 320,
+        "bytes": 41552,
+        "sha256": "f5494f0d7a149aad412b365f375766d68acabd57d430aa852b9b2eba84698430"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-treasury-960",
+      "file": "public/journal/organic/treasury-960.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/GrootslangRGB.jpg",
+      "prompt": "organic-art-prompts.json: treasury",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 960,
+        "height": 640,
+        "bytes": 127158,
+        "sha256": "711c12829b2582186e5cefdc0bfa894c48ba6c65bf13d6a7ca0da83913de89ed"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-council-480",
+      "file": "public/journal/organic/council-480.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/HaechiRGB.jpg",
+      "prompt": "organic-art-prompts.json: council",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 480,
+        "height": 320,
+        "bytes": 54830,
+        "sha256": "025925eabdb9a404a947e76aa55117f9042cf9c28416d3612870d05fb166abf5"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-council-960",
+      "file": "public/journal/organic/council-960.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/HaechiRGB.jpg",
+      "prompt": "organic-art-prompts.json: council",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 960,
+        "height": 640,
+        "bytes": 162698,
+        "sha256": "8c59297053f828c8873d3be521e88c6d5fe32e3fff1af67785d12db3889de96e"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-companions-480",
+      "file": "public/journal/organic/companions-480.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/Wati-kutjaraRGB.jpg",
+      "prompt": "organic-art-prompts.json: companions",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 480,
+        "height": 320,
+        "bytes": 45300,
+        "sha256": "6bba82e6e26c531889a0b874d67fce44db70091c046cc01f91d790aa51a77197"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-companions-960",
+      "file": "public/journal/organic/companions-960.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/Wati-kutjaraRGB.jpg",
+      "prompt": "organic-art-prompts.json: companions",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 960,
+        "height": 640,
+        "bytes": 136074,
+        "sha256": "10bf2a3fc000cd48c6300315be33f6de5b5900ac48db6aca2de456bda6161155"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-tulpar-480",
+      "file": "public/journal/organic/tulpar-480.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/TulparRGB.jpg",
+      "prompt": "organic-art-prompts.json: tulpar",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 480,
+        "height": 320,
+        "bytes": 37900,
+        "sha256": "39b9da8b74207276090ca96c1c4853033397ea27ae01751ff78bb4695a6dff4c"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-tulpar-960",
+      "file": "public/journal/organic/tulpar-960.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/TulparRGB.jpg",
+      "prompt": "organic-art-prompts.json: tulpar",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 960,
+        "height": 640,
+        "bytes": 109170,
+        "sha256": "5a3ef9abf112beba7cfe2fbf7cf8fa78b6894605c58358659346c674ce6e27de"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-sumanga-480",
+      "file": "public/journal/organic/sumanga-480.webp",
+      "kind": "AI-derived official reference",
+      "source": "public/journal/sumanga.webp",
+      "prompt": "organic-art-prompts.json: sumanga",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 480,
+        "height": 320,
+        "bytes": 44112,
+        "sha256": "179e273b09dbcb0090c3877c9b40e3d2cf0ce029f6df46302a96b37bf84280d1"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-sumanga-960",
+      "file": "public/journal/organic/sumanga-960.webp",
+      "kind": "AI-derived official reference",
+      "source": "public/journal/sumanga.webp",
+      "prompt": "organic-art-prompts.json: sumanga",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 960,
+        "height": 640,
+        "bytes": 127812,
+        "sha256": "10a471e14281d612530ecb3e0184cc72bc5fbb2e3b45cea314bc3981a5bb5c2d"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-shahmaran-480",
+      "file": "public/journal/organic/shahmaran-480.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/ŞahmaranRGB.jpg",
+      "prompt": "organic-art-prompts.json: shahmaran",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 480,
+        "height": 320,
+        "bytes": 56206,
+        "sha256": "4bfefe68f297cef35bbdea1ffbf112cde32a79539f4c6f65279e300840a0699a"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-shahmaran-960",
+      "file": "public/journal/organic/shahmaran-960.webp",
+      "kind": "AI-derived official reference",
+      "source": "/home/usuario/MEGA/Illustrations/LowResolution/ŞahmaranRGB.jpg",
+      "prompt": "organic-art-prompts.json: shahmaran",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 960,
+        "height": 640,
+        "bytes": 166634,
+        "sha256": "003b75728025b78575f7d2c62b559c7bca80841355a58027ca0a555d712b2b30"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-garuda-480",
+      "file": "public/journal/organic/garuda-480.webp",
+      "kind": "AI-derived official reference",
+      "source": "public/journal/garuda.webp",
+      "prompt": "organic-art-prompts.json: garuda",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 480,
+        "height": 320,
+        "bytes": 45472,
+        "sha256": "756cbdb267272a38572380fd72c8537fab46f655f1fd4424d6b50f85211bcc2d"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
+    },
+    {
+      "id": "organic-garuda-960",
+      "file": "public/journal/organic/garuda-960.webp",
+      "kind": "AI-derived official reference",
+      "source": "public/journal/garuda.webp",
+      "prompt": "organic-art-prompts.json: garuda",
+      "tool": "built-in imagegen",
+      "output": {
+        "width": 960,
+        "height": 640,
+        "bytes": 133374,
+        "sha256": "757779b6b7ceb0b0b38d4ec5a788001e5aec9d7442f211e073844e30b6339efe"
+      },
+      "transform": "Dedicated contextual composition; proportional WebP resize with alpha preserved",
+      "theme": "Both, no recoloring"
     }
   ]
 }

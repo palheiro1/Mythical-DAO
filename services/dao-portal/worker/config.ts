@@ -1,3 +1,5 @@
+import { parseIntegrations } from "../shared/integrations";
+import integrations from "../deployments/integrations.json";
 import { isAddress, zeroAddress, type Address } from "viem";
 import baseManifest from "../deployments/polygon.json";
 import type { PortalConfig, Role } from "../shared/domain";
@@ -104,6 +106,7 @@ export function config(env: Env): PortalConfig {
   )
     throw new Error("Invalid Snapshot URL");
   return {
+    integrations: parseIntegrations(raw.integrations ?? integrations),
     schemaVersion: 2,
     architecture: "existing-governor",
     snapshotUrl,

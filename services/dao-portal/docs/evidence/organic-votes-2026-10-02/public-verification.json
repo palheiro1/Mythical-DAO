@@ -1,0 +1,882 @@
+{
+  "checkedAt": "2026-10-02T11:48:56.287Z",
+  "deployment": "https://mythical-dao-preview-26fblav25-palheiro1s-projects.vercel.app",
+  "origin": "https://dao-preview.mythicalbeings.io",
+  "artifacts": [
+    {
+      "file": "index.html",
+      "status": 200,
+      "sha256": "5e2df258699ade666c651cd41f5fa78d351e2daaf32120c0f7d73454647fb9b3",
+      "matches": true
+    },
+    {
+      "file": "journal/garuda.webp",
+      "status": 200,
+      "sha256": "0ed4016dbb0c5bd207d81405c01e313a3330c537017e6ce9e1fb7b9992f66360",
+      "matches": true
+    },
+    {
+      "file": "journal/garuda-small.webp",
+      "status": 200,
+      "sha256": "1e049ee9b27341710686df10b37414fe2ee9edc6d98e2fec321730483c4c2c46",
+      "matches": true
+    },
+    {
+      "file": "journal/bahana.webp",
+      "status": 200,
+      "sha256": "ed68709ca580a1e180ac15e922a51ef85dc85cbfe57117d2d621e9efb019034f",
+      "matches": true
+    },
+    {
+      "file": "journal/golden-fronds.webp",
+      "status": 200,
+      "sha256": "5d826bc070f20477bd3a635bc61cb5d7c73ff2c807d606363a38103b33638b81",
+      "matches": true
+    },
+    {
+      "file": "journal/sumanga.webp",
+      "status": 200,
+      "sha256": "11b826adc0721c593476128ad8ce10875c3b3d4495dc2f51d800572fa0bbe40f",
+      "matches": true
+    },
+    {
+      "file": "journal/map.webp",
+      "status": 200,
+      "sha256": "a98f3e619ff365a02e78ea4246c5d5f5fb9b6086a1bc6bf0e63406add9febbaf",
+      "matches": true
+    },
+    {
+      "file": "journal/map-small.webp",
+      "status": 200,
+      "sha256": "31345d6b8fd99ebd674dba6bdb9154434ebb7dc8e37d0a8ad6c59d4175a7b0eb",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/account.png",
+      "status": 200,
+      "sha256": "88c0cee60b45c6b36c688c09b5b7830b9b59b3d1d8e9f2543f671ad1f0ba5097",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/book.png",
+      "status": 200,
+      "sha256": "3b0372da1cba87701134fdac3ae26b6ca0f06e486993d3d6ed471898204078b3",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/history.png",
+      "status": 200,
+      "sha256": "fe90afb86d55c1deb9d2a2f43208e90b4711d1ee9754b88f7fdea65f980447d7",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/inventory.png",
+      "status": 200,
+      "sha256": "90d29802d9a647e665f5227203d07418f8217e72af2bfd57008db1d0d9f85d12",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/messages.png",
+      "status": 200,
+      "sha256": "671e243e5488254a2868e08b9cd69f27b5cfb9a7c22dc5b23ffd61e4a5b5077c",
+      "matches": true
+    },
+    {
+      "file": "journal/nav/overview.png",
+      "status": 200,
+      "sha256": "bf9ea16fe13903acb35816265cb93d251177e5be0c41dfe1dca22a053ee44f7a",
+      "matches": true
+    },
+    {
+      "file": "brand/gem.png",
+      "status": 200,
+      "sha256": "66571c19f0bc992f79664f8dd23107ae4d8a6fae340affbab4abc0b3e55e4514",
+      "matches": true
+    },
+    {
+      "file": "brand/logo-black.png",
+      "status": 200,
+      "sha256": "77fde0050a4948d05532dbce716f4adcbf163e49d74f33faf27c2af4ac38a816",
+      "matches": true
+    },
+    {
+      "file": "brand/logo-white.png",
+      "status": 200,
+      "sha256": "0599a2d30b3e44e2fde2179d58cc59dd789abfd4348550576b4ba6896800c1ad",
+      "matches": true
+    },
+    {
+      "file": "brand/mana.png",
+      "status": 200,
+      "sha256": "26d002e3f41c1e914da2b0c8832d4d3717c3dc740beb5b43a3c51825fa586c2d",
+      "matches": true
+    },
+    {
+      "file": "brand/polygon.png",
+      "status": 200,
+      "sha256": "9146df3f3fb40828811c013047890642a36bcfae325591e704c2f1bbc7cc4cb5",
+      "matches": true
+    },
+    {
+      "file": "brand/usdc.svg",
+      "status": 200,
+      "sha256": "fe4f9d5f34ef4ebeb5d80e1f5ff63dcaf5a0d5495f4adf206e4c3011d1f5c57d",
+      "matches": true
+    },
+    {
+      "file": "brand/weth.png",
+      "status": 200,
+      "sha256": "33752ceaa265daefcbe313fa7d7049030767180981f9b35f628a0f7a3e806793",
+      "matches": true
+    },
+    {
+      "file": "fonts/cinzel-decorative-700.ttf",
+      "status": 200,
+      "sha256": "33af29b321940453ee21556c041452d4a84337568505780e0d3c08a6cd1f16fd",
+      "matches": true
+    },
+    {
+      "file": "journal/grootslang.webp",
+      "status": 200,
+      "sha256": "138a8bcfd17be0171f1c184575cf9d9762a2fae850e9b3a1feb98d63012bc7b3",
+      "matches": true
+    },
+    {
+      "file": "journal/grootslang-small.webp",
+      "status": 200,
+      "sha256": "5b3cb9eb2b1c55d1d45a9750d4d2856fe28200d9c85a8885049f88bef78533e5",
+      "matches": true
+    },
+    {
+      "file": "journal/haechi.webp",
+      "status": 200,
+      "sha256": "0ee9173460990a9cfad6c2d2ea528b6748a21e397d787358d4050f7edd3b356c",
+      "matches": true
+    },
+    {
+      "file": "journal/haechi-small.webp",
+      "status": 200,
+      "sha256": "1f2093432c969a6444f447dd89a5f6f5513b210553c72ff53c29beff60aa0944",
+      "matches": true
+    },
+    {
+      "file": "journal/companions.webp",
+      "status": 200,
+      "sha256": "c11d7238b1e1085ab9710e72c5cf6696b126bc412166328a826539b4df6810c1",
+      "matches": true
+    },
+    {
+      "file": "journal/companions-small.webp",
+      "status": 200,
+      "sha256": "42ab895aaf0f7c1cf45149cb203cde240ee7097a592aabd0413ef1ad1db43098",
+      "matches": true
+    },
+    {
+      "file": "journal/tulpar.webp",
+      "status": 200,
+      "sha256": "39f1b375f19fd3bb319ba6db2193059212bb40f54837062d1a35bb5a9056ad9a",
+      "matches": true
+    },
+    {
+      "file": "journal/tulpar-small.webp",
+      "status": 200,
+      "sha256": "262a18ca5e81ef185894e31c6add7d7e57264e54a42fbdd88b432f0bf786d525",
+      "matches": true
+    },
+    {
+      "file": "journal/shahmaran.webp",
+      "status": 200,
+      "sha256": "5f824f3ca3ca5206e91bcd8bdb36e1391218121ad0540177189ec4284c13ad24",
+      "matches": true
+    },
+    {
+      "file": "journal/shahmaran-small.webp",
+      "status": 200,
+      "sha256": "29983365d55441c2cf2cff5de8611dd6af5a8911f1bc4bd9e0cee6a1852f1889",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/treasury-480.webp",
+      "status": 200,
+      "sha256": "f5494f0d7a149aad412b365f375766d68acabd57d430aa852b9b2eba84698430",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/treasury-960.webp",
+      "status": 200,
+      "sha256": "711c12829b2582186e5cefdc0bfa894c48ba6c65bf13d6a7ca0da83913de89ed",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/council-480.webp",
+      "status": 200,
+      "sha256": "025925eabdb9a404a947e76aa55117f9042cf9c28416d3612870d05fb166abf5",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/council-960.webp",
+      "status": 200,
+      "sha256": "8c59297053f828c8873d3be521e88c6d5fe32e3fff1af67785d12db3889de96e",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/companions-480.webp",
+      "status": 200,
+      "sha256": "6bba82e6e26c531889a0b874d67fce44db70091c046cc01f91d790aa51a77197",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/companions-960.webp",
+      "status": 200,
+      "sha256": "10bf2a3fc000cd48c6300315be33f6de5b5900ac48db6aca2de456bda6161155",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/tulpar-480.webp",
+      "status": 200,
+      "sha256": "39b9da8b74207276090ca96c1c4853033397ea27ae01751ff78bb4695a6dff4c",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/tulpar-960.webp",
+      "status": 200,
+      "sha256": "5a3ef9abf112beba7cfe2fbf7cf8fa78b6894605c58358659346c674ce6e27de",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/sumanga-480.webp",
+      "status": 200,
+      "sha256": "179e273b09dbcb0090c3877c9b40e3d2cf0ce029f6df46302a96b37bf84280d1",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/sumanga-960.webp",
+      "status": 200,
+      "sha256": "10a471e14281d612530ecb3e0184cc72bc5fbb2e3b45cea314bc3981a5bb5c2d",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/shahmaran-480.webp",
+      "status": 200,
+      "sha256": "4bfefe68f297cef35bbdea1ffbf112cde32a79539f4c6f65279e300840a0699a",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/shahmaran-960.webp",
+      "status": 200,
+      "sha256": "003b75728025b78575f7d2c62b559c7bca80841355a58027ca0a555d712b2b30",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/garuda-480.webp",
+      "status": 200,
+      "sha256": "756cbdb267272a38572380fd72c8537fab46f655f1fd4424d6b50f85211bcc2d",
+      "matches": true
+    },
+    {
+      "file": "journal/organic/garuda-960.webp",
+      "status": 200,
+      "sha256": "757779b6b7ceb0b0b38d4ec5a788001e5aec9d7442f211e073844e30b6339efe",
+      "matches": true
+    },
+    {
+      "file": "assets/ccip-DqNtWr_I.js",
+      "status": 200,
+      "sha256": "b3e631d59f0370e6445901c21dfbb5771977d32b7808e2d5b38918a2fd1b258d",
+      "matches": true
+    },
+    {
+      "file": "assets/index-CInBFXhj.css",
+      "status": 200,
+      "sha256": "de8242133c9cecb018c5a37c1e9fc075b3cdf83b66f6c7b433c8d3b86ac55ce5",
+      "matches": true
+    },
+    {
+      "file": "assets/index-mvWHLavg.js",
+      "status": 200,
+      "sha256": "f7ac3a8b73d2cbfdc8bfa58d0550a79e76cd6549910097ced9a2a879c29d35df",
+      "matches": true
+    }
+  ],
+  "pages": [
+    {
+      "route": "overview",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "The Seekers’ Camp",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-overview-light-390.png"
+    },
+    {
+      "route": "governance",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Governance",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-governance-light-390.png"
+    },
+    {
+      "route": "treasury",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Treasury",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "3 Nov 2023, 20:01 CETTiming detailsConfirmed timestamp from the block.Block 49,504,304 ↗",
+        "3 Nov 2023, 00:32 CETTiming detailsConfirmed timestamp from the block.Block 49,471,616 ↗",
+        "3 Nov 2023, 00:30 CETTiming detailsConfirmed timestamp from the block.Block 49,471,578 ↗",
+        "31 Oct 2023, 22:24 CETTiming detailsConfirmed timestamp from the block.Block 49,388,569 ↗",
+        "31 Oct 2023, 22:16 CETTiming detailsConfirmed timestamp from the block.Block 49,388,326 ↗",
+        "31 Oct 2023, 21:06 CETTiming detailsConfirmed timestamp from the block.Block 49,386,346 ↗"
+      ],
+      "screenshot": "public-treasury-light-390.png"
+    },
+    {
+      "route": "delegation",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Delegation",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-delegation-light-390.png"
+    },
+    {
+      "route": "create",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Create a proposal",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-create-light-390.png"
+    },
+    {
+      "route": "history",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Governance history",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-history-light-390.png"
+    },
+    {
+      "route": "ragequit",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Exit DAO",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-ragequit-light-390.png"
+    },
+    {
+      "route": "guide",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "How governance works",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-guide-light-390.png"
+    },
+    {
+      "route": "proposal/0x7b9e327748462f1038c9d081c98d189b22c60a27/28380386844107398034034691570755427638127941114420426233333446520814279739334",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Authorize Mythical DAO ragequit module 0xef06…C8C9",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Opened · 2 Oct 2026, 09:57 CESTTiming detailsConfirmed timestamp from the block.Block 94,815,126 ↗",
+        "Closes in about 5 days7 Oct 2026, 09:57 CEST · estimatedTiming detailsEstimated 7 Oct 2026, 09:57 CEST. Based on the recent observed block pace; the Governor’s block number determines the actual deadline.Block 95,103,126 ↗"
+      ],
+      "screenshot": "public-proposal-light-390.png"
+    },
+    {
+      "route": "overview",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "The Seekers’ Camp",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-overview-light-1440.png"
+    },
+    {
+      "route": "governance",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Governance",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-governance-light-1440.png"
+    },
+    {
+      "route": "treasury",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Treasury",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "3 Nov 2023, 20:01 CETTiming detailsConfirmed timestamp from the block.Block 49,504,304 ↗",
+        "3 Nov 2023, 00:32 CETTiming detailsConfirmed timestamp from the block.Block 49,471,616 ↗",
+        "3 Nov 2023, 00:30 CETTiming detailsConfirmed timestamp from the block.Block 49,471,578 ↗",
+        "31 Oct 2023, 22:24 CETTiming detailsConfirmed timestamp from the block.Block 49,388,569 ↗",
+        "31 Oct 2023, 22:16 CETTiming detailsConfirmed timestamp from the block.Block 49,388,326 ↗",
+        "31 Oct 2023, 21:06 CETTiming detailsConfirmed timestamp from the block.Block 49,386,346 ↗"
+      ],
+      "screenshot": "public-treasury-light-1440.png"
+    },
+    {
+      "route": "delegation",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Delegation",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-delegation-light-1440.png"
+    },
+    {
+      "route": "create",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Create a proposal",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-create-light-1440.png"
+    },
+    {
+      "route": "history",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Governance history",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-history-light-1440.png"
+    },
+    {
+      "route": "ragequit",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Exit DAO",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-ragequit-light-1440.png"
+    },
+    {
+      "route": "guide",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "How governance works",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-guide-light-1440.png"
+    },
+    {
+      "route": "proposal/0x7b9e327748462f1038c9d081c98d189b22c60a27/28380386844107398034034691570755427638127941114420426233333446520814279739334",
+      "theme": "light",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Authorize Mythical DAO ragequit module 0xef06…C8C9",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Opened · 2 Oct 2026, 09:57 CESTTiming detailsConfirmed timestamp from the block.Block 94,815,126 ↗",
+        "Closes in about 5 days7 Oct 2026, 09:57 CEST · estimatedTiming detailsEstimated 7 Oct 2026, 09:57 CEST. Based on the recent observed block pace; the Governor’s block number determines the actual deadline.Block 95,103,126 ↗"
+      ],
+      "screenshot": "public-proposal-light-1440.png"
+    },
+    {
+      "route": "overview",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "The Seekers’ Camp",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-overview-dark-390.png"
+    },
+    {
+      "route": "governance",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Governance",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-governance-dark-390.png"
+    },
+    {
+      "route": "treasury",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Treasury",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "3 Nov 2023, 20:01 CETTiming detailsConfirmed timestamp from the block.Block 49,504,304 ↗",
+        "3 Nov 2023, 00:32 CETTiming detailsConfirmed timestamp from the block.Block 49,471,616 ↗",
+        "3 Nov 2023, 00:30 CETTiming detailsConfirmed timestamp from the block.Block 49,471,578 ↗",
+        "31 Oct 2023, 22:24 CETTiming detailsConfirmed timestamp from the block.Block 49,388,569 ↗",
+        "31 Oct 2023, 22:16 CETTiming detailsConfirmed timestamp from the block.Block 49,388,326 ↗",
+        "31 Oct 2023, 21:06 CETTiming detailsConfirmed timestamp from the block.Block 49,386,346 ↗"
+      ],
+      "screenshot": "public-treasury-dark-390.png"
+    },
+    {
+      "route": "delegation",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Delegation",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-delegation-dark-390.png"
+    },
+    {
+      "route": "create",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Create a proposal",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-create-dark-390.png"
+    },
+    {
+      "route": "history",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Governance history",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-history-dark-390.png"
+    },
+    {
+      "route": "ragequit",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Exit DAO",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-ragequit-dark-390.png"
+    },
+    {
+      "route": "guide",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "How governance works",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-guide-dark-390.png"
+    },
+    {
+      "route": "proposal/0x7b9e327748462f1038c9d081c98d189b22c60a27/28380386844107398034034691570755427638127941114420426233333446520814279739334",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Authorize Mythical DAO ragequit module 0xef06…C8C9",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Opened · 2 Oct 2026, 09:57 CESTTiming detailsConfirmed timestamp from the block.Block 94,815,126 ↗",
+        "Closes in about 5 days7 Oct 2026, 09:57 CEST · estimatedTiming detailsEstimated 7 Oct 2026, 09:57 CEST. Based on the recent observed block pace; the Governor’s block number determines the actual deadline.Block 95,103,126 ↗"
+      ],
+      "screenshot": "public-proposal-dark-390.png"
+    },
+    {
+      "route": "overview",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "The Seekers’ Camp",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-overview-dark-1440.png"
+    },
+    {
+      "route": "governance",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Governance",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-governance-dark-1440.png"
+    },
+    {
+      "route": "treasury",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Treasury",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "3 Nov 2023, 20:01 CETTiming detailsConfirmed timestamp from the block.Block 49,504,304 ↗",
+        "3 Nov 2023, 00:32 CETTiming detailsConfirmed timestamp from the block.Block 49,471,616 ↗",
+        "3 Nov 2023, 00:30 CETTiming detailsConfirmed timestamp from the block.Block 49,471,578 ↗",
+        "31 Oct 2023, 22:24 CETTiming detailsConfirmed timestamp from the block.Block 49,388,569 ↗",
+        "31 Oct 2023, 22:16 CETTiming detailsConfirmed timestamp from the block.Block 49,388,326 ↗",
+        "31 Oct 2023, 21:06 CETTiming detailsConfirmed timestamp from the block.Block 49,386,346 ↗"
+      ],
+      "screenshot": "public-treasury-dark-1440.png"
+    },
+    {
+      "route": "delegation",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Delegation",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-delegation-dark-1440.png"
+    },
+    {
+      "route": "create",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Create a proposal",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-create-dark-1440.png"
+    },
+    {
+      "route": "history",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Governance history",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Closes in about 5 days",
+        "Voting ended · 2 Jul 2026, 02:53 CEST",
+        "Voting ended · 29 Jun 2024, 19:27 CEST"
+      ],
+      "screenshot": "public-history-dark-1440.png"
+    },
+    {
+      "route": "ragequit",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Exit DAO",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-ragequit-dark-1440.png"
+    },
+    {
+      "route": "guide",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "How governance works",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [],
+      "screenshot": "public-guide-dark-1440.png"
+    },
+    {
+      "route": "proposal/0x7b9e327748462f1038c9d081c98d189b22c60a27/28380386844107398034034691570755427638127941114420426233333446520814279739334",
+      "theme": "dark",
+      "width": 1440,
+      "overflow": false,
+      "heading": "Authorize Mythical DAO ragequit module 0xef06…C8C9",
+      "sync": "2.39%",
+      "unavailableText": [
+        "Supplemental history is unavailable. Showing the independent index while verification retries."
+      ],
+      "timings": [
+        "Opened · 2 Oct 2026, 09:57 CESTTiming detailsConfirmed timestamp from the block.Block 94,815,126 ↗",
+        "Closes in about 5 days7 Oct 2026, 09:57 CEST · estimatedTiming detailsEstimated 7 Oct 2026, 09:57 CEST. Based on the recent observed block pace; the Governor’s block number determines the actual deadline.Block 95,103,126 ↗"
+      ],
+      "screenshot": "public-proposal-dark-1440.png"
+    }
+  ],
+  "errors": [],
+  "availability": [
+    {
+      "path": "treasury",
+      "status": 503,
+      "contentType": "application/json"
+    }
+  ],
+  "captureNotes": "Live public pages, including real backend unavailable states; no API responses mocked. Populated controlled screenshots are separately identified.",
+  "api": {
+    "health": {
+      "status": "syncing",
+      "head": "94824283",
+      "signingAllowed": true,
+      "syncPercent": 2.39
+    },
+    "config": {
+      "chainId": 137,
+      "architecture": "existing-governor",
+      "enabled": true
+    }
+  },
+  "finishedAt": "2026-10-02T11:49:32.659Z"
+}

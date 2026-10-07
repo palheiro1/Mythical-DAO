@@ -166,8 +166,12 @@ test("proposal detail presents direct execution and preserved advisory results",
   await expect(
     page.getByRole("button", { name: "Review execution →", exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("Pay 10 POL to " + recipient)).toBeVisible();
-  await expect(page.locator("main")).toContainText("(estimated)");
+  await expect(page.locator(".actions")).toContainText("Pay 10 POL to");
+  await page.locator(".actions .address-toggle").first().click();
+  await expect(
+    page.locator(".actions .address-details code").first(),
+  ).toHaveText(recipient);
+  await expect(page.locator(".timing")).toContainText("Voting closes");
   await expect(page.locator(".proposal-text")).toHaveText(
     paymentProposal.description,
   );
@@ -177,7 +181,7 @@ test("proposal detail presents direct execution and preserved advisory results",
   expect(axe.violations.map((v) => v.id)).toEqual([]);
   await page.screenshot({
     path:
-      "docs/evidence/journal-pilot-2026-10-02/proposal-controlled-" +
+      "docs/evidence/journal-complete-2026-10-02/proposal-controlled-" +
       test.info().project.name +
       ".png",
     fullPage: true,
@@ -227,7 +231,7 @@ test("wallet menu avoids accidental disconnect and account changes invalidate a 
     .getByRole("button", { name: "Connect wallet", exact: true })
     .click();
   await page.getByRole("button", { name: "Injected", exact: true }).click();
-  await page.getByRole("button", { name: "0x1111…1111" }).click();
+  await page.locator(".wallet > button").click();
   await expect(
     page.getByRole("button", { name: "Disconnect", exact: true }),
   ).toBeVisible();

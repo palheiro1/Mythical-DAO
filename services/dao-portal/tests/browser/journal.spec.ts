@@ -124,7 +124,7 @@ test("initial health loading is not presented as a confirmed failure", async ({
   }
 });
 
-test("the pilot is limited to three pages and does not change operational pages", async ({
+test("the approved journal design covers every operational route", async ({
   page,
 }) => {
   await controlledPortal(page);
@@ -143,7 +143,10 @@ test("the pilot is limited to three pages and does not change operational pages"
     "guide",
   ]) {
     await page.goto("/#" + route);
-    await expect(page.locator("html")).toHaveAttribute("data-design", "camp");
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-design",
+      "journal",
+    );
   }
 });
 
@@ -179,6 +182,10 @@ test("official artwork, layouts and map dialog pass the pilot visual matrix", as
         await page.goto("/#" + route);
         await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
         await expect(page.locator(".sync-percent")).toHaveText("27.50%");
+        for (const img of await page
+          .locator('img:visible[loading="lazy"]')
+          .all())
+          await img.scrollIntoViewIfNeeded();
         await expect
           .poll(() =>
             page
@@ -215,7 +222,7 @@ test("official artwork, layouts and map dialog pass the pilot visual matrix", as
         await page.locator("#main-content").focus();
         await page.evaluate(() => window.scrollTo(0, 0));
         await page.screenshot({
-          path: `docs/evidence/journal-pilot-2026-10-02/pilot-${route}-${theme}-${width}.png`,
+          path: `docs/evidence/journal-complete-2026-10-02/pilot-${route}-${theme}-${width}.png`,
           fullPage: true,
         });
       }
@@ -234,4 +241,37 @@ test("official artwork, layouts and map dialog pass the pilot visual matrix", as
     ).toEqual([]);
     await page.keyboard.press("Escape");
   }
+});
+
+test("treasury activity starts with six dated entries and expands the loaded history", async ({
+  page,
+}) => {
+  await controlledPortal(page);
+  await page.route("**/api/events", (r) =>
+    r.fulfill({
+      json: {
+        items: Array.from({ length: 9 }, (_, i) => ({
+          chain_id: 137,
+          contract: config.contracts.usdcNative!.address,
+          block_number: 900 - i,
+          block_hash: "0x" + "a".repeat(64),
+          tx_hash: "0x" + String(i).padStart(64, "0"),
+          log_index: i,
+          event_name: "Transfer",
+          args: {},
+        })),
+      },
+    }),
+  );
+  await page.goto("/#treasury");
+  await expect(page.locator(".journal-activity")).toHaveCount(6);
+  await expect(page.locator(".journal-activity time").first()).toBeVisible();
+  await page
+    .getByRole("button", { name: "Show all 9 loaded entries", exact: true })
+    .click();
+  await expect(page.locator(".journal-activity")).toHaveCount(9);
+  await page
+    .getByRole("button", { name: "Show fewer entries", exact: true })
+    .click();
+  await expect(page.locator(".journal-activity")).toHaveCount(6);
 });

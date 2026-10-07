@@ -1,0 +1,57 @@
+{
+  "at": "2026-10-02T15:27:15.149Z",
+  "checks": [
+    {
+      "host": "https://dao.mythicalbeings.io",
+      "status": 200,
+      "portalUrl": "https://dao.mythicalbeings.io",
+      "telegram": {
+        "channelUrl": "https://t.me/+yod9k6rLKOo5YjQ8"
+      }
+    },
+    {
+      "host": "https://dao.mythicalbeings.io",
+      "health": "syncing",
+      "signingAllowed": true,
+      "historyComplete": false
+    },
+    {
+      "host": "https://dao.mythicalbeings.io",
+      "origin": "https://dao.mythicalbeings.io",
+      "status": 400,
+      "body": "{\"error\":\"Invalid transaction\"}"
+    },
+    {
+      "host": "https://dao.mythicalbeings.io",
+      "origin": "https://unrelated.example",
+      "status": 403,
+      "body": "{\"error\":\"Origin not allowed\"}"
+    },
+    {
+      "host": "https://dao-preview.mythicalbeings.io",
+      "status": 200,
+      "portalUrl": "https://dao.mythicalbeings.io",
+      "telegram": {
+        "channelUrl": "https://t.me/+yod9k6rLKOo5YjQ8"
+      }
+    },
+    {
+      "host": "https://dao-preview.mythicalbeings.io",
+      "health": "syncing",
+      "signingAllowed": true,
+      "historyComplete": false
+    },
+    {
+      "host": "https://dao-preview.mythicalbeings.io",
+      "origin": "https://dao-preview.mythicalbeings.io",
+      "status": 400,
+      "body": "{\"error\":\"Invalid transaction\"}"
+    },
+    {
+      "host": "https://dao-preview.mythicalbeings.io",
+      "origin": "https://unrelated.example",
+      "status": 403,
+      "body": "{\"error\":\"Origin not allowed\"}"
+    }
+  ]
+}

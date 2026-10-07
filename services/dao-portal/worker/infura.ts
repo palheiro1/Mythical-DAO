@@ -3,11 +3,14 @@ import { timedBoundedFetch, clients, RpcFault } from "./rpc";
 
 const DAY = 86_400_000;
 // One request per 1.1 seconds stays below Free's 500 credits/second even for
-// two adjacent eth_getLogs requests (255 each). No JSON-RPC batches or retries.
+// two adjacent eth_estimateGas requests (300 each), spaced across seconds. No JSON-RPC batches or retries.
 const INTERVAL = 1_100;
 const DEFAULT_DAILY_CREDITS = 2_400_000;
 const COSTS: Record<string, number> = {
   eth_chainId: 5,
+  eth_call: 80,
+  eth_estimateGas: 300,
+  eth_gasPrice: 80,
   eth_blockNumber: 80,
   eth_getBlockByNumber: 80,
   eth_getLogs: 255,
@@ -46,7 +49,7 @@ export class InfuraQuota {
   private cached: Quota | null | undefined;
   constructor(
     private db: D1Database,
-    private owner: string,
+    private owner: string | null,
     private limit: number,
     private time: Clock = clock,
     private background: () => boolean = () => false,
@@ -85,7 +88,7 @@ export class InfuraQuota {
           `
         INSERT INTO rpc_quota(provider,day,credits,requests,not_before,blocked_until)
         SELECT 'infura',?,?,1,?,0
-        WHERE EXISTS(SELECT 1 FROM index_lock WHERE id=1 AND owner=? AND expires_at>unixepoch())
+        WHERE (? IS NULL OR EXISTS(SELECT 1 FROM index_lock WHERE id=1 AND owner=? AND expires_at>unixepoch()))
         ON CONFLICT(provider) DO UPDATE SET
           day=excluded.day,
           credits=CASE WHEN rpc_quota.day=excluded.day THEN rpc_quota.credits ELSE 0 END+excluded.credits,
@@ -96,7 +99,16 @@ export class InfuraQuota {
         RETURNING day,credits,requests,not_before,blocked_until
       `,
         )
-        .bind(day, cost, now + INTERVAL, this.owner, now, now, available)
+        .bind(
+          day,
+          cost,
+          now + INTERVAL,
+          this.owner,
+          this.owner,
+          now,
+          now,
+          available,
+        )
         .first<Quota>();
       if (reserved) {
         this.cached = reserved;
@@ -108,6 +120,14 @@ export class InfuraQuota {
     }
   }
   private async refresh(): Promise<void> {
+    if (this.owner === null) {
+      this.cached = await this.db
+        .prepare(
+          "SELECT day,credits,requests,not_before,blocked_until FROM rpc_quota WHERE provider='infura'",
+        )
+        .first<Quota>();
+      return;
+    }
     const row = await this.db
       .prepare(
         "SELECT q.day,q.credits,q.requests,q.not_before,q.blocked_until FROM index_lock l LEFT JOIN rpc_quota q ON q.provider='infura' WHERE l.id=1 AND l.owner=? AND l.expires_at>unixepoch()",
@@ -310,4 +330,19 @@ export function indexClients(env: Env, owner: string) {
       { primaryTransport: infuraTransport(primary, quota), timeout: 25_000 },
     ),
   };
+}
+
+/** Read-only UI/Graph refreshes share the indexer's free-tier quota and cooldown. */
+export function readClients(env: Env) {
+  if (env.INDEX_RPC_MODE !== "infura-free") return clients(env);
+  const primary = infuraUrl(env.INFURA_API_KEY);
+  const quota = new InfuraQuota(
+    env.DAO_DB,
+    null,
+    infuraDailyLimit(env.INFURA_DAILY_CREDITS),
+  );
+  return clients(
+    { ...env, RPC_PRIMARY_URL: primary },
+    { primaryTransport: infuraTransport(primary, quota) },
+  );
 }

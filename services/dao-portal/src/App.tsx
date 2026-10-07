@@ -1,3 +1,5 @@
+import { DecisionList } from "./Journal";
+import { BlockDuration } from "./HumanTime";
 import { CampBreadcrumb, campPlaces } from "./Camp";
 import {
   JournalCamp,
@@ -138,7 +140,7 @@ export function App() {
     configuration = useApi<PortalConfig>("config", true, 60000),
     healthQuery = useApi<Health>("health", true, 20000),
     { address, chainId } = useAccount();
-  const journal = ["overview", "governance", "treasury"].includes(route);
+  const journal = true;
   useLayoutEffect(() => {
     document.documentElement.dataset.design = journal ? "journal" : "camp";
     return () => {
@@ -294,7 +296,11 @@ export function App() {
                 )}
                 {config.enabled && <SyncStatus health={health} />}
               </div>
-              <main id="main-content" tabIndex={-1}>
+              <main
+                id="main-content"
+                tabIndex={-1}
+                className={`page-${route.split("/")[0]}`}
+              >
                 {route !== "overview" && <CampBreadcrumb route={route} />}
                 {route === "overview" ? (
                   <JournalCamp />
@@ -422,6 +428,8 @@ function History() {
   return (
     <>
       <PageHeading
+        art="map"
+        chapter="05 / THE CHRONICLE"
         title={m("Governance history")}
         description={m(
           "Original decisions, with their sources and verification limits.",
@@ -524,11 +532,7 @@ function History() {
             empty={!proposals.data?.items.length}
             retry={() => void proposals.refetch()}
           >
-            <div className="proposal-grid">
-              {proposals.data?.items.map((p) => (
-                <ProposalCard key={p.contract + p.id} p={p} />
-              ))}
-            </div>
+            <DecisionList items={proposals.data?.items ?? []} />
           </DataState>
           <Pagination
             before={before}
@@ -546,10 +550,12 @@ function Guide() {
   return (
     <>
       <PageHeading
+        art="shahmaran"
+        chapter="FIELD GUIDE / KNOW THE CAMP"
         title={m("How governance works")}
         description={m("Community-governed. Powered by MANA.")}
       />
-      <section className="panel">
+      <section className="panel" aria-busy={rules.isPending}>
         <h2>{m("Current Governor rules")}</h2>
         {rules.data ? (
           <dl>
@@ -563,22 +569,39 @@ function Guide() {
             </dd>
             <dt>{m("Voting delay / period")}</dt>
             <dd>
-              {rules.data.votingDelay} / {rules.data.votingPeriod} blocks
+              <div>
+                Delay: <BlockDuration blocks={rules.data.votingDelay} />
+              </div>
+              <div>
+                Voting: <BlockDuration blocks={rules.data.votingPeriod} />
+              </div>
             </dd>
             <dt>{m("Quorum")}</dt>
             <dd>
               {rules.data.quorumNumerator} / {rules.data.quorumDenominator}
             </dd>
-            <dt>{m("Counting mode")}</dt>
-            <dd>{rules.data.countingMode}</dd>
-            <dt>{m("Verified at block")}</dt>
-            <dd>{rules.data.block}</dd>
+            <dt>{m("Rule verification")}</dt>
+            <dd>
+              <details>
+                <summary>{m("Technical details")}</summary>
+                <p>
+                  {m("Counting mode")}: {rules.data.countingMode}
+                </p>
+                <p>
+                  {m("Verified at block")}: {rules.data.block}
+                </p>
+              </details>
+            </dd>
           </dl>
         ) : (
-          <p>{m("Current rules could not be verified.")}</p>
+          <p>
+            {rules.isPending
+              ? m("Checking current rules…")
+              : m("Current rules could not be verified.")}
+          </p>
         )}
       </section>
-      <div className="guide-grid">
+      <div className="guide-grid guide-chapters">
         {[
           [
             m("1. Activate voting power"),

@@ -1,3 +1,8 @@
+import { StayConnected, CommunityShortcuts } from "./Community";
+import { VoteResults } from "./VoteResults";
+import { JournalHeading as ChapterHeading } from "./JournalHeading";
+import { ProposalTiming, BlockTime } from "./HumanTime";
+import { compactAddresses } from "./time-format";
 import { useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 import { decodeFunctionData, zeroAddress } from "viem";
@@ -26,6 +31,14 @@ import { paymentFor, proposalActions, type Payment } from "./action-view";
 import { campPlaces } from "./Camp";
 import { RecoverProposal } from "./RecoverProposal";
 
+const destinationArt: Record<string, string> = {
+  governance: "organic/council-480",
+  treasury: "organic/treasury-480",
+  delegation: "organic/companions-480",
+  create: "organic/sumanga-480",
+  history: "organic/shahmaran-480",
+  ragequit: "organic/tulpar-480",
+};
 const navImages: Record<string, string> = {
   overview: "overview",
   governance: "messages",
@@ -49,38 +62,6 @@ export function JournalIcon({ name }: { name: string }) {
         <Icon name={name} />
       )}
     </span>
-  );
-}
-
-function ChapterHeading({
-  chapter,
-  title,
-  description,
-  art,
-  children,
-}: {
-  chapter: string;
-  title: string;
-  description: string;
-  art: "bahana" | "golden-fronds";
-  children?: ReactNode;
-}) {
-  return (
-    <header className={`chapter-heading chapter-${art}`}>
-      <div className="chapter-copy">
-        <p className="journal-kicker">{chapter}</p>
-        <h1>{title}</h1>
-        <p>{description}</p>
-        {children}
-      </div>
-      <img
-        className="chapter-art"
-        src={`/journal/${art}.webp`}
-        alt=""
-        width={art === "bahana" ? 500 : 720}
-        height={art === "bahana" ? 382 : 416}
-      />
-    </header>
   );
 }
 
@@ -318,8 +299,9 @@ function DecisionRow({ p }: { p: Proposal }) {
             : m("Executable proposal")}
         </span>
         <h3>
-          {p.description.split("\n")[0].replace(/^#+\s*/, "") ||
-            m("Untitled proposal")}
+          {compactAddresses(
+            p.description.split("\n")[0].replace(/^#+\s*/, ""),
+          ) || m("Untitled proposal")}
         </h3>
         <span className="decision-author">
           {m("By {author}", { author: short(p.proposer) })}
@@ -327,17 +309,7 @@ function DecisionRow({ p }: { p: Proposal }) {
       </div>
       <div className="decision-state">
         <StateBadge state={p.state} />
-        <span>
-          {p.kind === "community"
-            ? m("Publication block {block}", { block: p.blockNumber })
-            : p.state === "Pending"
-              ? m("Opens at block {block}", {
-                  block: BigInt(p.snapshot).toLocaleString("en-US"),
-                })
-              : m("Voting deadline · block {block}", {
-                  block: BigInt(p.deadline).toLocaleString("en-US"),
-                })}
-        </span>
+        <ProposalTiming proposal={p} compact />
       </div>
       <div className="decision-effect">
         <strong>{effect}</strong>
@@ -350,10 +322,11 @@ function DecisionRow({ p }: { p: Proposal }) {
         </span>
       </div>
       <Icon name="arrow" />
+      <VoteResults proposal={p} />
     </a>
   );
 }
-function DecisionList({ items }: { items: Proposal[] }) {
+export function DecisionList({ items }: { items: Proposal[] }) {
   return (
     <div className="journal-decisions">
       <div className="decision-columns" aria-hidden="true">
@@ -449,12 +422,12 @@ export function JournalCamp() {
             <picture className="garuda-art">
               <source
                 media="(max-width: 767px)"
-                srcSet="/journal/garuda-small.webp"
+                srcSet="/journal/organic/garuda-480.webp"
               />
               <img
-                src="/journal/garuda.webp"
-                width="720"
-                height="705"
+                src="/journal/organic/garuda-960.webp"
+                width="960"
+                height="640"
                 alt=""
                 fetchPriority="high"
               />
@@ -536,6 +509,7 @@ export function JournalCamp() {
           <DecisionList items={items} />
         </DataState>
       </section>
+      <StayConnected />
       <section className="camp-paths">
         <div className="journal-section-title">
           <div>
@@ -552,6 +526,14 @@ export function JournalCamp() {
         >
           {campPlaces.map((p, i) => (
             <a key={p.route} href={`#${p.route}`}>
+              <img
+                className="destination-art"
+                src={`/journal/${destinationArt[p.route]}.webp`}
+                alt=""
+                width="100"
+                height="96"
+                loading="lazy"
+              />
               <JournalIcon name={p.route} />
               <div>
                 <span className="journal-destination-number">0{i + 1}</span>
@@ -595,7 +577,7 @@ export function JournalGovernance() {
         description={m(
           "Every voice helps shape the journey. Bring an idea, weigh a decision, cast your vote.",
         )}
-        art="bahana"
+        art="haechi"
       >
         <div className="button-row">
           <a className="button primary" href="#create">
@@ -605,6 +587,7 @@ export function JournalGovernance() {
           <a href="#guide">{m("How decisions work")} ↗</a>
         </div>
       </ChapterHeading>
+      <CommunityShortcuts />
       <div className="council-layout">
         <section
           className="council-decisions"
@@ -707,6 +690,7 @@ export function JournalGovernance() {
 }
 
 export function JournalTreasury() {
+  const [showAllMovements, setShowAllMovements] = useState(false);
   const { config } = usePortal(),
     query = useApi<TreasuryResponse>("treasury"),
     events = useApi<EventList>("events"),
@@ -745,7 +729,7 @@ export function JournalTreasury() {
         description={m(
           "The resources we hold together. Follow the funds and the decisions that put them to work.",
         )}
-        art="golden-fronds"
+        art="grootslang"
       >
         <div className="treasury-heading-assets" aria-hidden="true">
           <AssetIcon symbol="GEM" />
@@ -880,8 +864,9 @@ export function JournalTreasury() {
                 <div className="section-top">
                   <h3>
                     <a href={`#proposal/${p.contract}/${p.id}`}>
-                      {p.description.split("\n")[0].replace(/^#+\s*/, "") ||
-                        m("Untitled proposal")}
+                      {compactAddresses(
+                        p.description.split("\n")[0].replace(/^#+\s*/, ""),
+                      ) || m("Untitled proposal")}
                     </a>
                   </h3>
                   <StateBadge state={p.state} />
@@ -918,14 +903,12 @@ export function JournalTreasury() {
             unavailable={events.data?.unavailable}
             empty={!movements.length}
           >
-            {movements.map((e) => (
+            {(showAllMovements ? movements : movements.slice(0, 6)).map((e) => (
               <div className="journal-activity" key={e.tx_hash + e.log_index}>
                 <Icon name="arrow" />
                 <div>
                   <strong>{e.event_name}</strong>
-                  <p className="journal-small">
-                    {m("Block {block} · confirmed", { block: e.block_number })}
-                  </p>
+                  <BlockTime block={String(e.block_number)} />
                 </div>
                 <a
                   href={`https://polygonscan.com/tx/${e.tx_hash}`}
@@ -936,6 +919,19 @@ export function JournalTreasury() {
                 </a>
               </div>
             ))}
+            {movements.length > 6 && (
+              <button
+                className="button small"
+                aria-expanded={showAllMovements}
+                onClick={() => setShowAllMovements(!showAllMovements)}
+              >
+                {showAllMovements
+                  ? m("Show fewer entries")
+                  : m("Show all {count} loaded entries", {
+                      count: movements.length,
+                    })}
+              </button>
+            )}
           </DataState>
         </section>
       </div>

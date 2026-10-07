@@ -1,0 +1,25 @@
+{
+  "snapshotTime": "2026-10-02T07:57:09.000Z",
+  "accounts": [
+    {
+      "address": "0xa8938ced402299c359b2f82a5b68b45ea158e2f5",
+      "snapshotVotes": "0",
+      "POL": "50.478765562187104753"
+    },
+    {
+      "address": "0xb96a76ad90b28690250c4ed734942a4224997c52",
+      "snapshotVotes": "0",
+      "POL": "0.779169088472880953"
+    },
+    {
+      "address": "0xc4ccc6a11329558582c2da79c18a9aeac00f59f9",
+      "snapshotVotes": "33670936971428589697113",
+      "POL": "8.905450455402772983"
+    },
+    {
+      "address": "0x09bff4758b652309704079f8a3cf271a2cf6220e",
+      "snapshotVotes": "1000000000000000000000",
+      "POL": "6.494504687969421945"
+    }
+  ]
+}

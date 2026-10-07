@@ -1,3 +1,5 @@
+import { TradeManaAccess } from "./Community";
+import { Identicon } from "./ReadableIdentity";
 import { TokenAmount } from "./TokenAmount";
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
@@ -74,12 +76,17 @@ export function Delegation({
   return (
     <>
       <PageHeading
+        art="companions"
+        chapter="03 / THE SEEKERS"
         title={m("Delegation")}
         description={m(
           "Activate your voting power or choose someone to represent you.",
         )}
       />
-      <div className="metric-grid">
+      <div className="community-shortcuts">
+        <TradeManaAccess compact />
+      </div>
+      <div className="metric-grid membership-flow">
         <div className="metric">
           <span>
             <AssetIcon symbol="MANA" />
@@ -201,7 +208,8 @@ export function Delegation({
             retry={() => void delegates.refetch()}
           >
             {delegates.data?.items.map((d) => (
-              <div className="table-row" key={d.address}>
+              <div className="table-row delegate-row" key={d.address}>
+                <Identicon address={d.address} />
                 <AddressLink address={d.address} />
                 <TokenAmount
                   value={d.votes}
@@ -433,6 +441,8 @@ export function Ragequit({
   return (
     <>
       <PageHeading
+        art="tulpar"
+        chapter="06 / DEPARTURE"
         title={m("Exit DAO")}
         eyebrow={m("DAO treasury · optional exit")}
         description={m(

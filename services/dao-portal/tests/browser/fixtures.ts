@@ -106,6 +106,39 @@ export const ballot: Proposal = {
   quorumReached: true,
 };
 export async function controlledPortal(page: Page) {
+  await page.route(
+    /^https:\/\/(polygon-bor-rpc\.publicnode\.com|polygon\.drpc\.org)\//,
+    async (route) => {
+      const request = route.request().postDataJSON();
+      if (request.method !== "eth_getBlockByNumber") return route.fallback();
+      const number =
+        request.params[0] === "latest" ? 1000n : BigInt(request.params[0]);
+      await route.fulfill({
+        json: {
+          jsonrpc: "2.0",
+          id: request.id,
+          result: {
+            number: "0x" + number.toString(16),
+            timestamp:
+              "0x" +
+              (
+                BigInt(Math.floor(Date.now() / 1000)) -
+                2000n +
+                number * 2n
+              ).toString(16),
+            hash: "0x" + "a".repeat(64),
+            transactions: [],
+            parentHash: "0x" + "b".repeat(64),
+            gasLimit: "0x100000",
+            gasUsed: "0x0",
+            difficulty: "0x0",
+            extraData: "0x",
+            size: "0x1",
+          },
+        },
+      });
+    },
+  );
   const state = { health: "ok", unavailable: false, empty: false, fail: false };
   await page.route("**/api/**", async (route) => {
     const url = new URL(route.request().url());
@@ -211,6 +244,8 @@ export async function controlledPortal(page: Page) {
             nextBefore: null,
             asOfBlock: "936",
           };
+    else if (url.pathname.startsWith("/api/vote-status/"))
+      result = {hasVoted:false, account:url.pathname.split("/").at(-1)?.toLowerCase(), checkedAt:Date.now(), block:"1000"};
     else if (url.pathname.startsWith("/api/proposals/"))
       result = url.pathname.includes(config.contracts.ballots!.address)
         ? ballot

@@ -1,14 +1,23 @@
-# Expedition journal — art direction pilot
+# Expedition journal — complete art direction
 
-Prepared on 2026-10-02. The machine-readable local inventory is [journal-assets.json](journal-assets.json). It records source and output dimensions, SHA-256, transformations, variants and intended use. Official illustrations retain their colors, watercolor edges and transparency. No creature has been assigned a new canonical role or dialogue.
+## Current organic compositions (2026-10-02)
+
+The current portal replaces framed prints with seven dedicated transparent watercolor scenes created using the built-in **imagegen** tool, with the official illustrations as visual references: Grootslang for Treasury, Haechi for Council, Wati-kutjara for Delegation, Tulpar for Departure, Sumangâ for Planning/Chronicle, Şahmaran for the guide, and Garuda for Camp. These are adaptations, not unmodified official artwork or new canonical roles.
+
+The exact prompts and generated source files are recorded in [organic-art-prompts.json](organic-art-prompts.json). Optimized responsive files are saved in `public/journal/organic/` as 480 px and 960 px WebPs, with actual alpha transparency. The [asset manifest](journal-assets.json) records provenance, dimensions and hashes. No image contains interface text. HTML navigation, forms and amounts remain readable if images fail.
+
+The following sections document the preceding official-print implementation and the retained map; framed prints are no longer the current page openings.
+
+
+Prepared on 2026-10-02. The machine-readable local inventory is [journal-assets.json](journal-assets.json). It records source and output dimensions, SHA-256, transformations, variants and intended use. Official illustrations retain their colors, watercolor edges and original paper or transparency. No creature has been assigned a new canonical role or dialogue.
 
 ## Official material
 
-Sources are the existing sibling `wallet/public/images` library. Garuda accompanies Camp; Bahana accompanies Governance; the golden botanical motif from `criatures/fu.png` accompanies Treasury and the Council margin. Sumanga is prepared for a future Field guide revision, but is not used by these three pilots. White wallet navigation symbols are copied unchanged and paired with explicit labels. Departure retains a functional exit icon because none of the selected official symbols clearly means exit.
+Sources are the existing sibling `wallet/public/images` library and `/home/usuario/MEGA/Illustrations/LowResolution`, supplied by the user. Garuda accompanies Camp. Grootslang now accompanies Treasury; its appetite for gems and association with a guarded treasure are described in `wallet/src/data/monsters.json`. Haechi accompanies Governance and proposal detail, with its documented association with justice and integrity. Wati-kutjara accompanies Delegation, Tulpar the Departure, Sumangâ the Planning table, and Şahmaran the Field guide. These are editorial associations drawn from the existing catalogue, not new canonical DAO offices or dialogue. Chronicle uses the cartographic illustration. Bahana remains in the inventory and prior deployment as the Stage A selection. White wallet navigation symbols are copied unchanged and paired with explicit labels. Departure retains a functional exit icon because none of the selected official symbols clearly means exit.
 
 Brand and token artwork in `public/brand` and the locally served Cinzel Decorative font are reused unchanged. The manifest also inventories these dependencies. USDC and USDC.e share their issuer's symbol but remain distinct named and addressed assets. Body text and numbers retain the wallet's system font family; no font is fetched from a third-party service.
 
-The output paths are `public/journal/{garuda,garuda-small,bahana,golden-fronds,sumanga,map,map-small}.webp` and `public/journal/nav/*.png`. Existing ImageMagick was used only for resizing and WebP encoding. No dependencies were installed. Responsive images have explicit dimensions; art outside the opening is lazy-loaded. The same original colors are used in both themes; surrounding surfaces adapt to the selected theme.
+The output paths are listed individually in the manifest under `public/journal/`, alongside the existing navigation symbols. The five additions have full (709 px) and mobile (320 px) variants. Original JPEG illustrations are displayed as framed prints: their white paper, signatures and composition have not been removed, recolored or regenerated. Together the ten additional WebPs contain approximately 563 kB. The previous artwork is retained for rollback. Existing ImageMagick was used only for resizing and WebP encoding. No dependencies were installed. Responsive images have explicit dimensions; art outside the opening is lazy-loaded. The same original colors are used in both themes; surrounding surfaces adapt to the selected theme.
 
 ## Supplementary map
 

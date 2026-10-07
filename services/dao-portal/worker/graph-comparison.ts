@@ -1,3 +1,4 @@
+import { readClients } from "./infura";
 import {
   encodeAbiParameters,
   keccak256,
@@ -11,7 +12,7 @@ import {
   historySnapshotQuery,
   verifyGraphHistory,
 } from "./graph-history-model";
-import { agreed, clients, commonHead } from "./rpc";
+import { agreed, commonHead } from "./rpc";
 import {
   GOVERNOR,
   MANA,
@@ -134,7 +135,7 @@ export async function compareGraph(env: Env) {
       cfg.contracts.mana?.address === MANA,
     "GRAPH_CONFIG_MISMATCH",
   );
-  const pair = clients(env),
+  const pair = readClients(env),
     { confirmed } = await commonHead(pair, cfg);
   const query = <T = unknown>(q: string, v: Record<string, unknown> = {}) => {
     checkTime();

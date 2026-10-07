@@ -1,3 +1,6 @@
+import { AddressDisclosure } from "./ReadableIdentity";
+import { BlockTime } from "./HumanTime";
+import { compactAddresses } from "./time-format";
 import { displayAsset, formatTokenAmount } from "./token-format";
 import {
   useConnect,
@@ -69,7 +72,9 @@ export function Wallet({ config }: { config: PortalConfig }) {
           {address ? (
             <>
               <p className="eyebrow">{m("Connected Polygon wallet")}</p>
-              <p className="break-word">{address}</p>
+              <p className="break-word">
+                <AddressDisclosure address={address} />
+              </p>
               <a href="#delegation" onClick={() => setOpen(false)}>
                 {m("Manage delegation")}
               </a>
@@ -153,17 +158,7 @@ export function AddressLink({
   address: Address;
   full?: boolean;
 }) {
-  return (
-    <a
-      className="address"
-      href={"https://polygonscan.com/address/" + address}
-      target="_blank"
-      rel="noreferrer"
-      title={address}
-    >
-      {full ? address : short(address)} <span aria-hidden="true">↗</span>
-    </a>
-  );
+  return <AddressDisclosure address={address} full={full} />;
 }
 export function ProposalCard({ p }: { p: Proposal }) {
   const { config } = usePortal(),
@@ -183,7 +178,7 @@ export function ProposalCard({ p }: { p: Proposal }) {
         <StateBadge state={p.state} />
       </div>
       <h3>
-        {p.description.split("\n")[0].replace(/^#+\s*/, "") ||
+        {compactAddresses(p.description.split("\n")[0].replace(/^#+\s*/, "")) ||
           m("Untitled proposal")}
       </h3>
       <p>
@@ -206,7 +201,7 @@ export function ProposalCard({ p }: { p: Proposal }) {
             : m("{count} on-chain actions", { count: p.targets.length })}
       </p>
       <p className="muted">
-        {m("Publication block {block}", { block: p.blockNumber })}
+        <BlockTime block={p.blockNumber} pastLabel="Published" compact />
       </p>
       <div className="card-bottom">
         <span>{m("By {author}", { author: short(p.proposer) })}</span>

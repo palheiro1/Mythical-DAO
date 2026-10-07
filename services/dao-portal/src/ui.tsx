@@ -1,3 +1,4 @@
+import { JournalHeading, type ChapterArt } from "./JournalHeading";
 import { createContext, useContext, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 import type { Health, PortalConfig } from "../shared/domain";
@@ -117,6 +118,8 @@ export function Notice({
   );
 }
 export function PageHeading({
+  art,
+  chapter,
   title,
   description,
   eyebrow,
@@ -126,7 +129,20 @@ export function PageHeading({
   description?: string;
   eyebrow?: string;
   action?: ReactNode;
+  art?: ChapterArt;
+  chapter?: string;
 }) {
+  if (art)
+    return (
+      <JournalHeading
+        art={art}
+        chapter={chapter ?? eyebrow ?? ""}
+        title={title}
+        description={description}
+      >
+        {action}
+      </JournalHeading>
+    );
   return (
     <div className="page-heading with-action">
       <div>

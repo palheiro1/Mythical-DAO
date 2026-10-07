@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-02T10:26:01.780935+00:00",
+  "estimatedPeakAdditionalBytes": 1500000000,
+  "initialAvailableBytes": 342011822080,
+  "finalAvailableBytes": 344094437376,
+  "allocatedBytes": {
+    "docs/evidence/journal-complete-2026-10-02": 49188864,
+    "public/journal": 1626112,
+    "dist": 4214784,
+    ".vercel/output": 4227072
+  },
+  "reserveBytes": 40000000000,
+  "dependenciesReused": true,
+  "originalArtworkAndPreviousEvidencePreserved": true
+}

@@ -284,3 +284,23 @@ it("preserves a bounded-response overflow as a resizable log failure", () => {
     "INFURA_LOG_RANGE_LIMIT",
   );
 });
+
+it("metered presentation reads share quota without borrowing the indexer's lease", async () => {
+  await fixture.db.prepare("DELETE FROM index_lock").run();
+  const presentation = new InfuraQuota(fixture.db, null, 160, time);
+  await presentation.reserve("eth_call");
+  await presentation.reserve("eth_call");
+  expect(await state()).toMatchObject({ credits: 160, requests: 2 });
+  await expect(presentation.reserve("eth_chainId")).rejects.toThrow(
+    "INFURA_DAILY_BUDGET_EXHAUSTED",
+  );
+  await expect(quota().reserve("eth_chainId")).rejects.toThrow(
+    "INDEX_LEASE_EXPIRED",
+  );
+});
+it("accounts for delegation simulation gas estimation and fee pricing", async () => {
+  const live = new InfuraQuota(fixture.db, null, 2400000, time);
+  await live.reserve("eth_estimateGas");
+  await live.reserve("eth_gasPrice");
+  expect(await state()).toMatchObject({ credits: 380, requests: 2 });
+});

@@ -21,7 +21,38 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "object",
+                  "properties": {
+                    "integrations": {
+                      "type": "object",
+                      "properties": {
+                        "telegram": {
+                          "type": "object",
+                          "properties": {
+                            "channelUrl": {
+                              "type": "string",
+                              "format": "uri"
+                            }
+                          }
+                        },
+                        "discord": {
+                          "type": "object",
+                          "properties": {
+                            "serverId": {
+                              "type": "string"
+                            },
+                            "channelId": {
+                              "type": "string"
+                            },
+                            "channelUrl": {
+                              "type": "string",
+                              "format": "uri"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -29,7 +60,8 @@
           "503": {
             "description": "RPC, index or configuration unavailable"
           }
-        }
+        },
+        "description": "Optional integrations contain validated Telegram channel and Discord destination identifiers. Missing or invalid integrations are omitted independently and do not disable governance. No bot credentials are exposed."
       }
     },
     "/api/health": {
@@ -117,7 +149,7 @@
     },
     "/api/proposals/{contract}/{id}": {
       "get": {
-        "summary": "Proposal with exact content, all actions and confirmed state",
+        "summary": "Proposal with exact content and latest verified totals; results contains source, block, checkedAt and freshness. Stale state is Unknown.",
         "parameters": [
           {
             "name": "contract",
@@ -298,7 +330,12 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["account", "to", "data", "value"],
+                "required": [
+                  "account",
+                  "to",
+                  "data",
+                  "value"
+                ],
                 "properties": {
                   "account": {
                     "type": "string"
@@ -340,7 +377,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["actions"],
+                "required": [
+                  "actions"
+                ],
                 "properties": {
                   "actions": {
                     "type": "array",
@@ -348,7 +387,11 @@
                     "maxItems": 20,
                     "items": {
                       "type": "object",
-                      "required": ["target", "value", "data"],
+                      "required": [
+                        "target",
+                        "value",
+                        "data"
+                      ],
                       "properties": {
                         "target": {
                           "type": "string"
@@ -433,7 +476,10 @@
                   ],
                   "properties": {
                     "module": {
-                      "type": ["string", "null"]
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     },
                     "basket": {
                       "type": "array",
@@ -508,7 +554,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["transactionHash"],
+                "required": [
+                  "transactionHash"
+                ],
                 "properties": {
                   "transactionHash": {
                     "type": "string",
@@ -535,6 +583,92 @@
         "responses": {
           "200": {
             "description": "Disabled, pending, stale or latest sanitized comparison. keyPolicy distinguishes provider subgraph restriction from an explicit server-only exception; D1 and RPC remain independent."
+          }
+        }
+      }
+    },
+    "/api/vote-status/{contract}/{id}/{account}": {
+      "get": {
+        "summary": "Fresh voting status, historical Governor voting power and current MANA balance for the selected wallet; never a signing authorization",
+        "parameters": [
+          {
+            "name": "contract",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[0-9a-fA-F]{40}$"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          },
+          {
+            "name": "account",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[0-9a-fA-F]{40}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Two providers agree at the indicated block",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "hasVoted",
+                    "account",
+                    "block",
+                    "checkedAt",
+                    "snapshot",
+                    "votingPower",
+                    "currentBalance"
+                  ],
+                  "properties": {
+                    "hasVoted": {
+                      "type": "boolean"
+                    },
+                    "account": {
+                      "type": "string"
+                    },
+                    "block": {
+                      "type": "string"
+                    },
+                    "checkedAt": {
+                      "type": "integer"
+                    },
+                    "snapshot": {
+                      "type": "string"
+                    },
+                    "votingPower": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Governor.getVotes(account, proposalSnapshot), null before the snapshot is in the past"
+                    },
+                    "currentBalance": {
+                      "type": "string",
+                      "description": "Current MANA balance, not the weight of this proposal"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Voting status unavailable; the UI must not enable voting"
           }
         }
       }

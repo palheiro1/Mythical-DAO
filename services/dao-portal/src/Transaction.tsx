@@ -268,6 +268,7 @@ export function TransactionProvider({
         </div>
       )}
       <dialog
+        className="review-dialog"
         ref={dialog}
         onClose={() => {
           if (reviewOrigin.current?.isConnected) reviewOrigin.current.focus();
