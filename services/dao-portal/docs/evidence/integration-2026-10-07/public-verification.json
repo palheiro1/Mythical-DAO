@@ -1,0 +1,134 @@
+{
+  "at": "2026-10-07T20:30:58.543Z",
+  "origin": "https://dao.mythicalbeings.io",
+  "artifacts": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "community/telegram.svg",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "community/discord.svg",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "assets/ccip-CGwMsSUO.js",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "assets/index-BtSx2E32.css",
+      "status": 200,
+      "matches": true
+    },
+    {
+      "path": "assets/index-S2ld_MBu.js",
+      "status": 200,
+      "matches": true
+    }
+  ],
+  "pages": [
+    {
+      "theme": "light",
+      "width": 390,
+      "routes": 8,
+      "widgetRequests": 1,
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "routes": 8,
+      "widgetRequests": 1,
+      "errors": []
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "routes": 8,
+      "widgetRequests": 1,
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "routes": 8,
+      "widgetRequests": 1,
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "routes": 8,
+      "widgetRequests": 1,
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "routes": 8,
+      "widgetRequests": 1,
+      "errors": []
+    }
+  ],
+  "api": [
+    {
+      "path": "config",
+      "status": 200,
+      "integrations": {
+        "telegram": {
+          "channelUrl": "https://t.me/+yod9k6rLKOo5YjQ8"
+        },
+        "discord": {
+          "serverId": "809857155401646151",
+          "channelId": "1195328129435177041",
+          "channelUrl": "https://discord.com/channels/809857155401646151/1195328129435177041"
+        }
+      }
+    },
+    {
+      "path": "health",
+      "status": 200,
+      "read": {
+        "source": "The Graph",
+        "cached": true,
+        "status": "fresh",
+        "asOfBlock": "95133235",
+        "blockTimestamp": 1791405044000,
+        "checkedAt": 1791405046123
+      },
+      "operationVerification": "on-demand"
+    },
+    {
+      "path": "proposals?kind=executable",
+      "status": 200,
+      "read": {
+        "source": "The Graph",
+        "cached": true,
+        "status": "fresh",
+        "asOfBlock": "95133235",
+        "blockTimestamp": 1791405044000,
+        "checkedAt": 1791405046123
+      },
+      "items": 3
+    },
+    {
+      "path": "treasury",
+      "status": 200,
+      "read": {
+        "source": "RPC",
+        "cached": true,
+        "status": "fresh",
+        "asOfBlock": "95133151",
+        "checkedAt": 1791405026226
+      },
+      "accounts": 1
+    }
+  ]
+}

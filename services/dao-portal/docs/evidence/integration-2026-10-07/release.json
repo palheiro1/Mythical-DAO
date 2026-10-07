@@ -1,0 +1,48 @@
+{
+  "sourceCommit": "decd5ec8e6d58732207bf6ea1e2ab1c5cf614647",
+  "sourceParents": [
+    "a78c960",
+    "b8394e7"
+  ],
+  "frontend": {
+    "id": "dpl_2H4nDUVGDiHdbw3oTjw6dZirbhWD",
+    "url": "https://mythical-dao-preview-cwrz0m9su-palheiro1s-projects.vercel.app",
+    "domains": [
+      "https://dao.mythicalbeings.io",
+      "https://dao-preview.mythicalbeings.io"
+    ],
+    "previousId": "dpl_EsKciiNCaW7LmWs36dm8LCWTquL5"
+  },
+  "worker": {
+    "name": "mythical-dao-portal-staging",
+    "version": "68eb6778-b474-4dcb-9f1b-16f7ba6e8fb1",
+    "previousVersion": "c614679f-6937-4f87-b38b-516860c7e560",
+    "graphReadMode": "primary",
+    "cron": "* * * * *",
+    "migrationsPending": false
+  },
+  "tests": {
+    "unit": 215,
+    "browserDistinctPassed": 138,
+    "browserSkipped": 14,
+    "contractsPassed": 44,
+    "contractsSkipped": 2,
+    "publicRoutes": 8,
+    "publicViewports": [
+      390,
+      768,
+      1440
+    ],
+    "publicThemes": [
+      "light",
+      "dark"
+    ],
+    "publicJavascriptErrors": 0
+  },
+  "disk": {
+    "preflightAdditionalGB": 0.8,
+    "availableBeforeBytes": 293100855296,
+    "availableAfterBytes": 292908032000
+  },
+  "secretsScan": "Source snapshot, integration diff and Vercel publication artifacts passed gitleaks."
+}

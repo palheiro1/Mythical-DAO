@@ -45,3 +45,13 @@ Previous Worker: `c614679f-6937-4f87-b38b-516860c7e560` (`graph-primary-release`
 Remaining service limits: Discord anonymous access may be denied by the existing channel permissions; the direct link remains available. Graph does not supply historical quorum in this schema, so ended proposals require a live execution check. Treasury event history can remain incomplete. These are explicitly presented, not replaced with guessed values.
 
 Publication evidence and final version identifiers are recorded in `evidence/integration-2026-10-07/` after release verification.
+
+## Published result
+
+Published both domains from source `decd5ec` as Vercel `dpl_2H4nDUVGDiHdbw3oTjw6dZirbhWD`; Worker version `68eb6778-b474-4dcb-9f1b-16f7ba6e8fb1`. Public HTML, JS, CSS and community icons match the tested local build byte for byte on both aliases.
+
+All eight public routes passed at 390/768/1440 px in both themes, with zero JavaScript errors or horizontal overflow. The public API returns the confirmed Telegram invitation and Campfire channel; three proposals are served by Graph and one treasury account by the RPC-backed cache. WidgetBot has no requests before opening, loads the exact channel and unloads on closing. Trade links preserve the input decimal string.
+
+See [public verification](evidence/integration-2026-10-07/public-verification.json), [release identifiers](evidence/integration-2026-10-07/release.json), and [community screenshot](evidence/integration-2026-10-07/community-light-1440.png). Controlled regression screenshots are stored separately from the preserved October 2 evidence.
+
+Disk remained around 293 GB available; existing dependencies were reused, no new installation or full checkout was created, and the 40 GB reserve was preserved.
